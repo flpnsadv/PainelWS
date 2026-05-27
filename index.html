@@ -916,17 +916,28 @@
 
   </section>
 
-  <!-- ── PÁGINA 4: Histórico de Propostas ── -->
+  <!-- ── PÁGINA 4: Histórico ── -->
   <section id="page-historico" class="page-section" style="padding:28px 24px 64px;">
     <div style="max-width:860px;margin:0 auto;">
       <div class="page-header" style="margin-bottom:24px;">
         <div class="page-eyebrow">Histórico</div>
-        <div class="page-title">Propostas geradas</div>
-        <div class="page-sub">Todas as propostas criadas pela sua conta.</div>
+        <div class="page-title">Registros</div>
+        <div class="page-sub">Propostas enviadas e análises BACEN realizadas.</div>
       </div>
-      <div id="historico-lista">
-        <div style="color:var(--t3);font-size:14px;text-align:center;padding:40px 0;">Carregando...</div>
+
+      <!-- Tabs -->
+      <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;">
+        <button id="tab-btn-propostas" onclick="switchHistoricoTab('propostas')"
+          style="padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid var(--a1);color:var(--a1);font-family:'Sora',sans-serif;">
+          Propostas
+        </button>
+        <button id="tab-btn-bacen" onclick="switchHistoricoTab('bacen')"
+          style="padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--t3);font-family:'Sora',sans-serif;">
+          Análises BACEN
+        </button>
       </div>
+
+      <div id="historico-lista"></div>
     </div>
   </section>
 

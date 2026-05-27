@@ -2505,7 +2505,33 @@ window._currentUser = null;
    HISTÓRICO DE PROPOSTAS
 ══════════════════════════════════════════════ */
 
+// ── Estado da aba ativa no histórico
+let _historicoTabAtiva = 'propostas';
+
+function switchHistoricoTab(aba) {
+  _historicoTabAtiva = aba;
+
+  const btnP = document.getElementById('tab-btn-propostas');
+  const btnB = document.getElementById('tab-btn-bacen');
+  if (btnP && btnB) {
+    if (aba === 'propostas') {
+      btnP.style.borderBottomColor = 'var(--a1)'; btnP.style.color = 'var(--a1)';
+      btnB.style.borderBottomColor = 'transparent'; btnB.style.color = 'var(--t3)';
+    } else {
+      btnB.style.borderBottomColor = 'var(--a1)'; btnB.style.color = 'var(--a1)';
+      btnP.style.borderBottomColor = 'transparent'; btnP.style.color = 'var(--t3)';
+    }
+  }
+
+  if (aba === 'propostas') carregarHistoricoPropostas();
+  else carregarHistoricoBacen();
+}
+
 async function carregarHistorico() {
+  switchHistoricoTab(_historicoTabAtiva);
+}
+
+async function carregarHistoricoPropostas() {
   const lista = document.getElementById('historico-lista');
   if (!lista) return;
   if (!window._sb || !window._currentUser) {
@@ -2516,12 +2542,12 @@ async function carregarHistorico() {
 
   const { data, error } = await window._sb
     .from('propostas')
-    .select('id, criado_em, nome_cliente, tipo_servico, total_fixo, total_final, dados_completos')
+    .select('id, criado_em, nome_cliente, tipo_servico, total_fixo, total_final, status')
     .order('criado_em', { ascending: false })
     .limit(50);
 
   if (error || !data || data.length === 0) {
-    lista.innerHTML = '<div style="color:var(--t3);font-size:14px;text-align:center;padding:40px 0;">Nenhuma proposta encontrada. Gere sua primeira proposta na calculadora.</div>';
+    lista.innerHTML = '<div style="color:var(--t3);font-size:14px;text-align:center;padding:40px 0;">Nenhuma proposta encontrada.</div>';
     return;
   }
 
@@ -2531,9 +2557,19 @@ async function carregarHistorico() {
     const servicos = Array.isArray(p.tipo_servico) && p.tipo_servico.length > 0
       ? p.tipo_servico.map(function(i) { return SERVICOS[i] ? SERVICOS[i].title : ''; }).filter(Boolean).join(', ')
       : '—';
+    const status = p.status || 'aguardando';
+
+    const statusCores = {
+      aguardando: { bg: '#fff8e1', cor: '#f59e0b', label: 'Aguardando' },
+      enviado:    { bg: '#e0f2fe', cor: '#0284c7', label: 'Enviado'    },
+      assinado:   { bg: '#dcfce7', cor: '#16a34a', label: 'Assinado'   },
+      nao_aceito: { bg: '#fee2e2', cor: '#dc2626', label: 'Não Aceito' }
+    };
+    const sc = statusCores[status] || statusCores.aguardando;
+
     return `
-      <div class="calc-block" style="margin-bottom:10px;cursor:pointer;" onclick="reabrirProposta('${p.id}')">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+      <div class="calc-block" style="margin-bottom:10px;" id="proposta-card-${p.id}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;cursor:pointer;" onclick="reabrirProposta('${p.id}')">
           <div>
             <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--t1);margin-bottom:3px;">${escHtml(p.nome_cliente)}</div>
             <div style="font-size:12px;color:var(--t3);">${servicos}</div>
@@ -2543,8 +2579,82 @@ async function carregarHistorico() {
             <div style="font-size:11px;color:var(--t3);margin-top:2px;">${data_fmt}</div>
           </div>
         </div>
+        <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          <span style="font-size:11px;color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;">Status:</span>
+          <span style="display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;background:${sc.bg};color:${sc.cor};">${sc.label}</span>
+          <div style="display:flex;gap:6px;margin-left:auto;flex-wrap:wrap;">
+            ${status !== 'aguardando' ? `<button onclick="alterarStatusProposta('${p.id}', 'aguardando')" style="padding:4px 10px;font-size:11px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--t2);cursor:pointer;font-family:'Sora',sans-serif;">Aguardando</button>` : ''}
+            ${status !== 'enviado'    ? `<button onclick="alterarStatusProposta('${p.id}', 'enviado')"    style="padding:4px 10px;font-size:11px;border-radius:6px;border:1px solid #bae6fd;background:#e0f2fe;color:#0284c7;cursor:pointer;font-family:'Sora',sans-serif;">Enviado</button>` : ''}
+            ${status !== 'assinado'   ? `<button onclick="alterarStatusProposta('${p.id}', 'assinado')"   style="padding:4px 10px;font-size:11px;border-radius:6px;border:1px solid #bbf7d0;background:#dcfce7;color:#16a34a;cursor:pointer;font-family:'Sora',sans-serif;">Assinado</button>` : ''}
+            ${status !== 'nao_aceito' ? `<button onclick="alterarStatusProposta('${p.id}', 'nao_aceito')" style="padding:4px 10px;font-size:11px;border-radius:6px;border:1px solid #fecaca;background:#fee2e2;color:#dc2626;cursor:pointer;font-family:'Sora',sans-serif;">Não Aceito</button>` : ''}
+          </div>
+        </div>
       </div>`;
   }).join('');
+}
+
+async function alterarStatusProposta(id, novoStatus) {
+  if (!window._sb || !window._currentUser) return;
+
+  if (novoStatus === 'nao_aceito') {
+    const confirmar = confirm('Marcar como "Não Aceito" irá excluir este registro permanentemente. Confirmar?');
+    if (!confirmar) return;
+    await window._sb.from('propostas').delete().eq('id', id);
+    const card = document.getElementById('proposta-card-' + id);
+    if (card) card.remove();
+    return;
+  }
+
+  const { error } = await window._sb.from('propostas').update({ status: novoStatus }).eq('id', id);
+  if (!error) carregarHistoricoPropostas();
+}
+
+async function carregarHistoricoBacen() {
+  const lista = document.getElementById('historico-lista');
+  if (!lista) return;
+  if (!window._sb || !window._currentUser) {
+    lista.innerHTML = '<div style="color:var(--t3);font-size:14px;text-align:center;padding:40px 0;">Faça login para ver o histórico.</div>';
+    return;
+  }
+  lista.innerHTML = '<div style="color:var(--t3);font-size:14px;text-align:center;padding:40px 0;">Carregando...</div>';
+
+  const { data, error } = await window._sb
+    .from('bacen_analises')
+    .select('id, nome_cliente, banco, atualizado_em')
+    .eq('user_id', window._currentUser.id)
+    .order('atualizado_em', { ascending: false })
+    .limit(50);
+
+  if (error || !data || data.length === 0) {
+    lista.innerHTML = '<div style="color:var(--t3);font-size:14px;text-align:center;padding:40px 0;">Nenhuma análise BACEN encontrada.</div>';
+    return;
+  }
+
+  lista.innerHTML = data.map(function(a) {
+    const data_fmt = new Date(a.atualizado_em).toLocaleDateString('pt-BR', { day:'2-digit', month:'short', year:'numeric' });
+    return `
+      <div class="calc-block" style="margin-bottom:10px;cursor:pointer;" onclick="reabrirAnalise('${a.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+          <div>
+            <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--t1);margin-bottom:3px;">${escHtml(a.nome_cliente || '—')}</div>
+            <div style="font-size:12px;color:var(--t3);">Banco: ${escHtml(a.banco || '—')}</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:11px;color:var(--t3);">${data_fmt}</div>
+            <div style="margin-top:6px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#f0f9ff;color:#0284c7;display:inline-block;">Ver análise →</div>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+async function reabrirAnalise(id) {
+  if (!window._sb || !window._currentUser) return;
+  const { data, error } = await window._sb.from('bacen_analises').select('dados_completos').eq('id', id).single();
+  if (error || !data) return;
+  Object.assign(estado, data.dados_completos);
+  navigate('bacen');
+  setTimeout(function() { goToStep(1); }, 100);
 }
 
 function reabrirProposta(id) {
