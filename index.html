@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windsor &amp; Serrão — Calculadora de Honorários</title>
+
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600&display=swap" rel="stylesheet">
+
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Estilos do painel -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-active">
+
+<!-- ══════════════════════════════════════════════
+     AUTH SCREENS
+══════════════════════════════════════════════ -->
+<div id="screen-login" class="auth-screen">
+  <div class="auth-card">
+
+    <div class="auth-brand">
+      <div class="auth-brand-logo">
+        <svg id="Camada_1" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 375 375"><defs><style>.st0{fill:none}.st1{clip-path:url(#clippath-1)}.st2{clip-path:url(#clippath)}.st3{fill:#eeece7}</style><clipPath id="clippath"><rect class="st0" x="29.9" y="27.41" width="315.57" height="311.1"/></clipPath><clipPath id="clippath-1"><rect class="st0" x="17.75" y="15.43" width="339.5" height="334.69"/></clipPath></defs><g class="st2"><path class="st3" d="M31.91,336.72h311.74V29.39H31.91v307.33ZM345.66,338.7H29.9V27.41h315.76v311.29Z"/></g><g class="st1"><path class="st3" d="M19.91,348.55h335.73V17.56H19.91v330.98ZM357.81,350.68H17.75V15.43h340.06v335.25Z"/></g><g><path class="st3" d="M52.11,73.36s11.21,6.33,15.48,21.58l62.03,173.69s2.75,5.39,5.49,5.49,5.39-1.73,6-5.59-.1.53-.1.53l19.53-58.39-9.86-7.32-6.51,16.88s-1.73,2.24-4.27-.51l-36.28-101.12-9.44-27.75s-3.28-11.73,7.63-17.5h-49.69Z"/><path class="st3" d="M271.28,203.44l-10.91-7.4,34.86-101.29s3.2-11.59-10.53-21.51h42.66s-15.66,8.14-20.69,27.36l-35.39,102.84Z"/><path class="st3" d="M244.92,193.85l-.06-.02-24.65-7.08s-5.69-1.44-7.63-8.56l-22.98-54.81-16.27,41.39s-2.95,11.08,3.46,15.36c0,0,12.41,10.68,24,13.02,11.59,2.34,32.85,9.46,32.85,9.46,0,0,19.53,5.9,25.53,14.75,0,0,11.19,11.8,10.68,28.68-.51,16.88-5.29,31.32-18.61,41.08-13.32,9.76-22.68,17.19-58.17,16.68,0,0-25.63-1.22-41.08-14.85l7.73-22.98s19.53,20.75,36.81,24.51c0,0,26.95,5.59,40.58-14.64,0,0,10.98-10.07,6.86-32.49,0,0-5.64-14.19-22.27-19.83l-43.47-14.95s-18.15-7.78-19.98-18.76-1.37-21.05-1.37-21.05l33.1-90.76,1.83-2.29,10.68-.61,42.86,115.17s.65,2.91-.41,3.61Z"/></g></svg>
+      </div>
+      <div class="auth-brand-title">Painel Windsor e Serrão Advogados</div>
+      <div class="auth-brand-tagline">Painel estratégico para advogados</div>
+    </div>
+
+    <div class="auth-form-label">Acessar painel</div>
+
+    <div id="login-error" class="auth-alert" style="display:none"></div>
+    <div id="login-success" class="auth-alert auth-alert-ok" style="display:none"></div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="login-email">E-mail</label>
+      <input class="auth-input" id="login-email" type="email" placeholder="seu@email.com" autocomplete="email">
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="login-senha">Senha</label>
+      <div class="auth-pwd-wrap">
+        <input class="auth-input" id="login-senha" type="password" placeholder="••••••••" autocomplete="current-password">
+        <button type="button" class="auth-eye" id="toggle-login-senha" aria-label="Mostrar senha" tabindex="-1">
+          <svg id="eye-login-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg id="eye-login-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <button class="auth-btn-primary" id="btn-login">Entrar</button>
+    <div class="auth-forgot-wrap">
+      <button type="button" class="auth-forgot-link" id="btn-esqueci">Esqueci minha senha</button>
+    </div>
+    <div class="auth-divider"><span>ou</span></div>
+    <button class="auth-btn-ghost" id="btn-ir-cadastro">Criar conta</button>
+  </div>
+</div>
+
+<div id="screen-cadastro" class="auth-screen" style="display:none">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 375"><defs><style>.st0{fill:none}.st1{clip-path:url(#cp1)}.st2{clip-path:url(#cp0)}.st3{fill:#eeece7}</style><clipPath id="cp0"><rect class="st0" x="29.9" y="27.41" width="315.57" height="311.1"/></clipPath><clipPath id="cp1"><rect class="st0" x="17.75" y="15.43" width="339.5" height="334.69"/></clipPath></defs><g class="st2"><path class="st3" d="M31.91,336.72h311.74V29.39H31.91v307.33ZM345.66,338.7H29.9V27.41h315.76v311.29Z"/></g><g class="st1"><path class="st3" d="M19.91,348.55h335.73V17.56H19.91v330.98ZM357.81,350.68H17.75V15.43h340.06v335.25Z"/></g><g><path class="st3" d="M52.11,73.36s11.21,6.33,15.48,21.58l62.03,173.69s2.75,5.39,5.49,5.49,5.39-1.73,6-5.59-.1.53-.1.53l19.53-58.39-9.86-7.32-6.51,16.88s-1.73,2.24-4.27-.51l-36.28-101.12-9.44-27.75s-3.28-11.73,7.63-17.5h-49.69Z"/><path class="st3" d="M271.28,203.44l-10.91-7.4,34.86-101.29s3.2-11.59-10.53-21.51h42.66s-15.66,8.14-20.69,27.36l-35.39,102.84Z"/><path class="st3" d="M244.92,193.85l-.06-.02-24.65-7.08s-5.69-1.44-7.63-8.56l-22.98-54.81-16.27,41.39s-2.95,11.08,3.46,15.36c0,0,12.41,10.68,24,13.02,11.59,2.34,32.85,9.46,32.85,9.46,0,0,19.53,5.9,25.53,14.75,0,0,11.19,11.8,10.68,28.68-.51,16.88-5.29,31.32-18.61,41.08-13.32,9.76-22.68,17.19-58.17,16.68,0,0-25.63-1.22-41.08-14.85l7.73-22.98s19.53,20.75,36.81,24.51c0,0,26.95,5.59,40.58-14.64,0,0,10.98-10.07,6.86-32.49,0,0-5.64-14.19-22.27-19.83l-43.47-14.95s-18.15-7.78-19.98-18.76-1.37-21.05-1.37-21.05l33.1-90.76,1.83-2.29,10.68-.61,42.86,115.17s.65,2.91-.41,3.61Z"/></g></svg>
+      </div>
+      <div class="auth-brand-title">Painel Windsor e Serrão Advogados</div>
+      <div class="auth-brand-tagline">Painel estratégico para advogados</div>
+    </div>
+    <div class="auth-form-label">Criar conta</div>
+
+    <div id="cadastro-error" class="auth-alert" style="display:none"></div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="cad-nome">Nome completo</label>
+      <input class="auth-input" id="cad-nome" type="text" placeholder="Seu nome completo" autocomplete="name">
+      <span class="auth-field-hint" id="hint-nome"></span>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="cad-email">E-mail</label>
+      <input class="auth-input" id="cad-email" type="email" placeholder="seu@email.com" autocomplete="email">
+      <span class="auth-field-hint" id="hint-email"></span>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="cad-whatsapp">WhatsApp</label>
+      <input class="auth-input" id="cad-whatsapp" type="tel" placeholder="(00) 00000-0000" autocomplete="tel" maxlength="15" inputmode="numeric">
+      <span class="auth-field-hint" id="hint-wpp"></span>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="cad-senha">Senha de acesso</label>
+      <div class="auth-pwd-wrap">
+        <input class="auth-input" id="cad-senha" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+        <button type="button" class="auth-eye" id="toggle-cad-senha" aria-label="Mostrar senha" tabindex="-1">
+          <svg id="eye-cad-off" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg id="eye-cad-on" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+        </button>
+      </div>
+      <div class="pwd-strength" id="pwd-strength">
+        <div class="pwd-strength-track">
+          <div class="pwd-strength-fill" id="pwd-strength-fill"></div>
+        </div>
+        <span class="pwd-strength-label" id="pwd-strength-label"></span>
+      </div>
+    </div>
+
+    <button class="auth-btn-primary" id="btn-cadastrar">Cadastrar</button>
+    <div class="auth-divider"><span>ou</span></div>
+    <button class="auth-btn-ghost" id="btn-ir-login">Já tenho cadastro — Entrar</button>
+  </div>
+</div>
+
+<div id="screen-email-confirmado" class="auth-screen" style="display:none">
+  <div class="auth-card" style="text-align:center; align-items:center;">
+    <div style="width:64px;height:64px;border-radius:50%;background:var(--ok-d);display:flex;align-items:center;justify-content:center;margin:0 auto 4px;">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="auth-brand-title" style="margin-top:10px;">E-mail confirmado!</div>
+    <div class="auth-brand-tagline" style="margin-top:4px;margin-bottom:8px;">Sua conta foi verificada com sucesso.<br>Agora você pode acessar o painel.</div>
+    <button class="auth-btn-primary" id="btn-ir-login-confirmado" style="margin-top:4px;width:100%;">Entrar no painel</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: RECUPERAR SENHA
+══════════════════════════════════════════════ -->
+<div id="screen-recuperar-senha" class="auth-screen" style="display:none">
+  <div class="auth-card">
+
+    <div class="auth-brand">
+      <div class="auth-brand-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 375"><defs><style>.rp0{fill:none}.rp1{clip-path:url(#rcp1)}.rp2{clip-path:url(#rcp0)}.rp3{fill:#eeece7}</style><clipPath id="rcp0"><rect class="rp0" x="29.9" y="27.41" width="315.57" height="311.1"/></clipPath><clipPath id="rcp1"><rect class="rp0" x="17.75" y="15.43" width="339.5" height="334.69"/></clipPath></defs><g class="rp2"><path class="rp3" d="M31.91,336.72h311.74V29.39H31.91v307.33ZM345.66,338.7H29.9V27.41h315.76v311.29Z"/></g><g class="rp1"><path class="rp3" d="M19.91,348.55h335.73V17.56H19.91v330.98ZM357.81,350.68H17.75V15.43h340.06v335.25Z"/></g><g><path class="rp3" d="M52.11,73.36s11.21,6.33,15.48,21.58l62.03,173.69s2.75,5.39,5.49,5.49,5.39-1.73,6-5.59-.1.53-.1.53l19.53-58.39-9.86-7.32-6.51,16.88s-1.73,2.24-4.27-.51l-36.28-101.12-9.44-27.75s-3.28-11.73,7.63-17.5h-49.69Z"/><path class="rp3" d="M271.28,203.44l-10.91-7.4,34.86-101.29s3.2-11.59-10.53-21.51h42.66s-15.66,8.14-20.69,27.36l-35.39,102.84Z"/><path class="rp3" d="M244.92,193.85l-.06-.02-24.65-7.08s-5.69-1.44-7.63-8.56l-22.98-54.81-16.27,41.39s-2.95,11.08,3.46,15.36c0,0,12.41,10.68,24,13.02,11.59,2.34,32.85,9.46,32.85,9.46,0,0,19.53,5.9,25.53,14.75,0,0,11.19,11.8,10.68,28.68-.51,16.88-5.29,31.32-18.61,41.08-13.32,9.76-22.68,17.19-58.17,16.68,0,0-25.63-1.22-41.08-14.85l7.73-22.98s19.53,20.75,36.81,24.51c0,0,26.95,5.59,40.58-14.64,0,0,10.98-10.07,6.86-32.49,0,0-5.64-14.19-22.27-19.83l-43.47-14.95s-18.15-7.78-19.98-18.76-1.37-21.05-1.37-21.05l33.1-90.76,1.83-2.29,10.68-.61,42.86,115.17s.65,2.91-.41,3.61Z"/></g></svg>
+      </div>
+      <div class="auth-brand-title">Painel Windsor e Serrão Advogados</div>
+      <div class="auth-brand-tagline">Painel estratégico para advogados</div>
+    </div>
+
+    <div class="auth-form-label">Recuperar senha</div>
+
+    <p class="auth-sub" style="text-align:center;font-size:13px;color:var(--t2);margin-top:-4px;line-height:1.5;">
+      Digite seu e-mail e enviaremos um link para redefinir sua senha.
+    </p>
+
+    <div id="recuperar-alert" class="auth-alert" style="display:none"></div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="rec-email">E-mail</label>
+      <input class="auth-input" id="rec-email" type="email" placeholder="seu@email.com" autocomplete="email" inputmode="email">
+    </div>
+
+    <button class="auth-btn-primary" id="btn-recuperar">Enviar link de recuperação</button>
+    <div class="auth-divider"><span>ou</span></div>
+    <button class="auth-btn-ghost" id="btn-voltar-login-rec">Voltar ao login</button>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SCREEN: RECUPERAÇÃO ENVIADA
+══════════════════════════════════════════════ -->
+<div id="screen-recuperar-enviado" class="auth-screen" style="display:none">
+  <div class="auth-card" style="text-align:center;align-items:center;gap:16px;">
+
+    <div style="width:68px;height:68px;border-radius:50%;background:var(--adim);border:1.5px solid rgba(91,138,245,.25);display:flex;align-items:center;justify-content:center;margin:0 auto;">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--a1)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+      </svg>
+    </div>
+
+    <div>
+      <div class="auth-brand-title" style="margin-bottom:6px;">E-mail enviado!</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.6;">
+        Verifique sua caixa de entrada e clique no link para redefinir sua senha.<br>
+        <span style="color:var(--t3);font-size:12px;">Não recebeu? Cheque o spam.</span>
+      </div>
+    </div>
+
+    <button class="auth-btn-ghost" id="btn-voltar-login-env" style="width:100%;">Voltar ao login</button>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SIDEBAR OVERLAY (mobile)
+══════════════════════════════════════════════ -->
+<div id="sidebar-overlay"></div>
+
+<!-- ══════════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════════ -->
+<nav id="sidebar">
+
+  <div class="sidebar-header">
+    <div class="sidebar-logo-wrap" id="sidebar-logo"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfQAAAH0CAYAAADL1t+KAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAEwWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSfvu78nIGlkPSdXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQnPz4KPHg6eG1wbWV0YSB4bWxuczp4PSdhZG9iZTpuczptZXRhLyc+CjxyZGY6UkRGIHhtbG5zOnJkZj0naHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyc+CgogPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9JycKICB4bWxuczpBdHRyaWI9J2h0dHA6Ly9ucy5hdHRyaWJ1dGlvbi5jb20vYWRzLzEuMC8nPgogIDxBdHRyaWI6QWRzPgogICA8cmRmOlNlcT4KICAgIDxyZGY6bGkgcmRmOnBhcnNlVHlwZT0nUmVzb3VyY2UnPgogICAgIDxBdHRyaWI6Q3JlYXRlZD4yMDI1LTEwLTMwPC9BdHRyaWI6Q3JlYXRlZD4KICAgICA8QXR0cmliOkV4dElkPjRmYzJlODA3LWYxNWQtNGFiOS05NTRkLTkzN2M3ZjVmZWRmYjwvQXR0cmliOkV4dElkPgogICAgIDxBdHRyaWI6RmJJZD41MjUyNjU5MTQxNzk1ODA8L0F0dHJpYjpGYklkPgogICAgIDxBdHRyaWI6VG91Y2hUeXBlPjI8L0F0dHJpYjpUb3VjaFR5cGU+CiAgICA8L3JkZjpsaT4KICAgPC9yZGY6U2VxPgogIDwvQXR0cmliOkFkcz4KIDwvcmRmOkRlc2NyaXB0aW9uPgoKIDxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PScnCiAgeG1sbnM6ZGM9J2h0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvJz4KICA8ZGM6dGl0bGU+CiAgIDxyZGY6QWx0PgogICAgPHJkZjpsaSB4bWw6bGFuZz0neC1kZWZhdWx0Jz5XaW5kc29yICZhbXA7IFNlcnLDo28gLSA0PC9yZGY6bGk+CiAgIDwvcmRmOkFsdD4KICA8L2RjOnRpdGxlPgogPC9yZGY6RGVzY3JpcHRpb24+CgogPHJkZjpEZXNj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" alt="Windsor &amp; Serrão"></div>
+    <div class="sidebar-brand">
+      <div class="sidebar-brand-name">Windsor &amp; Serrão</div>
+      <div class="sidebar-brand-sub">Advogados</div>
+    </div>
+  </div>
+
+  <div class="sidebar-nav">
+
+    <div class="nav-item active"
+         data-page="calcHonorarios"
+         data-tooltip="Calculadora de Honorários">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+          <path d="M18.375 2.625a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/>
+        </svg>
+      </span>
+      <span class="nav-label">Calc. de Honorários</span>
+    </div>
+
+    <div class="nav-item"
+         data-page="distribuicao"
+         data-tooltip="Distribuição de Honorários">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 3v9l4.5 4.5"/>
+          <path d="M12 12 7.5 7.5"/>
+        </svg>
+      </span>
+      <span class="nav-label">Distribuição</span>
+    </div>
+
+    <div class="nav-item"
+         data-page="bacen"
+         data-tooltip="Análise Revisional - BACEN">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24">
+          <rect x="3" y="10" width="18" height="11" rx="1"/>
+          <path d="M3 10 12 3l9 7"/>
+          <path d="M9 21V14h6v7"/>
+        </svg>
+      </span>
+      <span class="nav-label">Análise Revisional - BACEN</span>
+    </div>
+
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user" id="sidebar-user">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebar-user-name">—</div>
+        <div class="sidebar-user-email" id="sidebar-user-email">—</div>
+      </div>
+    </div>
+    <button class="sidebar-logout-btn" id="btn-logout" title="Sair">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span class="logout-label">Sair</span>
+    </button>
+    <div class="sidebar-collapse-btn" id="collapse-btn">
+      <span class="collapse-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </span>
+      <span class="collapse-label">Recolher menu</span>
+    </div>
+    <div class="sidebar-version">v1.0 · W&amp;S Advogados</div>
+  </div>
+
+</nav>
+
+<!-- ══════════════════════════════════════════════
+     TOPBAR MOBILE
+══════════════════════════════════════════════ -->
+<div id="mobile-topbar">
+  <!-- Brand -->
+  <div class="topbar-brand">
+    <div class="topbar-logo">
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 375 375'%3E%3Cdefs%3E%3CclipPath id='tc1'%3E%3Crect x='29.9' y='27.41' width='315.57' height='311.1'/%3E%3C/clipPath%3E%3CclipPath id='tc2'%3E%3Crect x='17.75' y='15.43' width='339.5' height='334.69'/%3E%3C/clipPath%3E%3C/defs%3E%3Cg clip-path='url(%23tc1)'%3E%3Cpath fill='%23111827' d='M31.91 336.72h311.74V29.39H31.91v307.33ZM345.66 338.7H29.9V27.41h315.76v311.29Z'/%3E%3C/g%3E%3Cg clip-path='url(%23tc2)'%3E%3Cpath fill='%23111827' d='M19.91 348.55h335.73V17.56H19.91v330.98ZM357.81 350.68H17.75V15.43h340.06v335.25Z'/%3E%3C/g%3E%3Cg%3E%3Cpath fill='%23111827' d='M52.11 73.36s11.21 6.33 15.48 21.58l62.03 173.69s2.75 5.39 5.49 5.49 5.39-1.73 6-5.59l19.53-58.39-9.86-7.32-6.51 16.88s-1.73 2.24-4.27-.51L103.72 118.07l-9.44-27.75s-3.28-11.73 7.63-17.5H52.11Z'/%3E%3Cpath fill='%23111827' d='M271.28 203.44l-10.91-7.4 34.86-101.29s3.2-11.59-10.53-21.51h42.66s-15.66 8.14-20.69 27.36l-35.39 102.84Z'/%3E%3Cpath fill='%23111827' d='M244.92 193.85l-.06-.02-24.65-7.08s-5.69-1.44-7.63-8.56l-22.98-54.81-16.27 41.39s-2.95 11.08 3.46 15.36c0 0 12.41 10.68 24 13.02 11.59 2.34 32.85 9.46 32.85 9.46s19.53 5.9 25.53 14.75c0 0 11.19 11.8 10.68 28.68-.51 16.88-5.29 31.32-18.61 41.08-13.32 9.76-22.68 17.19-58.17 16.68 0 0-25.63-1.22-41.08-14.85l7.73-22.98s19.53 20.75 36.81 24.51c0 0 26.95 5.59 40.58-14.64 0 0 10.98-10.07 6.86-32.49 0 0-5.64-14.19-22.27-19.83l-43.47-14.95s-18.15-7.78-19.98-18.76-1.37-21.05-1.37-21.05l33.1-90.76 1.83-2.29 10.68-.61 42.86 115.17s.65 2.91-.41 3.61Z'/%3E%3C/g%3E%3C/svg%3E" alt="WS">
+    </div>
+    <div class="topbar-title-wrap">
+      <div class="topbar-brand-name">Windsor &amp; Serrão</div>
+      <div class="topbar-page-name" id="topbar-title">Calculadora de Honorários</div>
+    </div>
+  </div>
+  <!-- Actions -->
+  <div class="topbar-actions">
+    <div class="topbar-avatar" id="topbar-avatar">?</div>
+    <div class="hamburger-btn" id="hamburger-btn">
+      <svg viewBox="0 0 24 24">
+        <line x1="3" y1="6"  x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════════ -->
+<div id="main-content">
+
+  <!-- ── PÁGINA 1: Calculadora de Honorários ── -->
+  <section id="page-calcHonorarios" class="page-section active">
+
+    <header class="page-header">
+      <div class="page-header-icon">⚖️</div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">Windsor &amp; Serrão</div>
+        <div class="page-header-title">Calculadora de Honorários</div>
+        <div class="page-header-sub">Proposta advocatícia com parâmetros OAB/SC — cálculo de honorários mínimos, justos e ideais</div>
+      </div>
+    </header>
+
+    <div class="wizard-card">
+      <div id="step-container"></div>
+
+      <div class="progress-area">
+        <div class="step-dots">
+          <div class="step-dot-wrap">
+            <div class="step-dot" id="dot1">
+              <div class="step-dot-circle">1</div>
+              <div class="step-dot-label">Dados do Caso</div>
+            </div>
+          </div>
+          <div class="step-connector" id="con1"></div>
+          <div class="step-dot-wrap">
+            <div class="step-dot" id="dot2">
+              <div class="step-dot-circle">2</div>
+              <div class="step-dot-label">Cálculo</div>
+            </div>
+          </div>
+          <div class="step-connector" id="con2"></div>
+          <div class="step-dot-wrap">
+            <div class="step-dot" id="dot3">
+              <div class="step-dot-circle">3</div>
+              <div class="step-dot-label">Pagamento</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-ghost btn-invisible" id="btn-prev">← Anterior</button>
+          <button class="btn btn-primary" id="btn-next">Próximo →</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── PÁGINA 2: Distribuição de Honorários ── -->
+  <section id="page-distribuicao" class="page-section">
+
+    <header class="page-header">
+      <div class="page-header-icon">💰</div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">Windsor &amp; Serrão</div>
+        <div class="page-header-title">Distribuição de Honorários</div>
+        <div class="page-header-sub">Rateio interno — impostos, escritório, pró-labore e reserva de emergência</div>
+      </div>
+    </header>
+
+    <div class="dist-layout">
+
+      <!-- Coluna esquerda: input + tabela -->
+      <div class="dist-input-card">
+
+        <label class="dist-input-label" for="dist-input">Valor Bruto dos Honorários</label>
+        <div class="dist-input-wrap">
+          <span class="dist-input-prefix">R$</span>
+          <input type="text" id="dist-input" placeholder="0,00" inputmode="numeric" autocomplete="off">
+        </div>
+
+        <table class="dist-table">
+          <thead>
+            <tr>
+              <th>Categoria</th>
+              <th>%</th>
+              <th>Valor</th>
+            </tr>
+          </thead>
+          <tbody id="dist-tbody">
+            <!-- preenchido via JS -->
+          </tbody>
+        </table>
+
+        <div class="dist-total-box">
+          <span class="lbl">Valor Bruto</span>
+          <span class="val" id="dist-total-val">R$ 0,00</span>
+        </div>
+
+      </div><!-- /coluna esquerda -->
+
+      <!-- Coluna direita: cards de parâmetro -->
+      <div>
+        <div class="dist-param-title" style="margin-bottom:10px;">Parâmetros de distribuição</div>
+        <div class="dist-params">
+
+          <div class="dist-param-card dpc-card-imposto">
+            <div class="dpc-label"><span class="dpc-icon">🏛️</span> Simples Nacional</div>
+            <div class="dpc-pct dpc-pct-imposto">4,5%</div>
+            <div class="dpc-desc">Tributação sobre honorários</div>
+            <div class="dpc-val" id="dpc-val-imposto">—</div>
+          </div>
+
+          <div class="dist-param-card dpc-card-invest">
+            <div class="dpc-label"><span class="dpc-icon">📈</span> Investimento</div>
+            <div class="dpc-pct dpc-pct-invest">15%</div>
+            <div class="dpc-desc">Reserva para crescimento</div>
+            <div class="dpc-val" id="dpc-val-invest">—</div>
+          </div>
+
+          <div class="dist-param-card dpc-card-escritorio">
+            <div class="dpc-label"><span class="dpc-icon">🏢</span> Escritório</div>
+            <div class="dpc-pct dpc-pct-escritorio">10%</div>
+            <div class="dpc-desc">Custos operacionais</div>
+            <div class="dpc-val" id="dpc-val-escritorio">—</div>
+          </div>
+
+          <div class="dist-param-card dpc-card-prolabore">
+            <div class="dpc-label"><span class="dpc-icon">👤</span> Pró-labore</div>
+            <div class="dpc-pct dpc-pct-prolabore">75% do restante</div>
+            <div class="dpc-desc">≈ 52,875% do bruto</div>
+            <div class="dpc-val" id="dpc-val-prolabore">—</div>
+          </div>
+
+          <div class="dist-param-card dpc-card-reserva">
+            <div class="dpc-label"><span class="dpc-icon">🛡️</span> Reserva de emergência</div>
+            <div class="dpc-pct dpc-pct-reserva">25% do restante</div>
+            <div class="dpc-desc">≈ 17,625% do bruto</div>
+            <div class="dpc-val" id="dpc-val-reserva">—</div>
+          </div>
+
+          <div class="dist-info-note">
+            ℹ️ O <strong>Restante</strong> (70,5% do bruto) é rateado entre Pró-labore e Reserva de emergência na proporção 75/25.
+          </div>
+
+        </div><!-- /dist-params -->
+      </div><!-- /coluna direita -->
+
+    </div><!-- /dist-layout -->
+
+  </section>
+
+  <!-- ── PÁGINA 3: Análise Revisional - BACEN ── -->
+  <section id="page-bacen" class="page-section">
+
+    <header class="page-header">
+      <div class="page-header-icon">🏛️</div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">Windsor &amp; Serrão</div>
+        <div class="page-header-title">Análise Revisional BACEN</div>
+        <div class="page-header-sub">Triagem técnica, jurídica e financeira de contratos — comparação com taxa média BACEN, checklist de irregularidades e relatório completo</div>
+      </div>
+      <div class="page-header-right">
+        <span class="plat-header-badge badge-loading" id="platBadgeAtualizacao">⏳ Atualizando taxas...</span>
+      </div>
+    </header>
+
+    <div class="plat-page-body">
+
+    <div class="plat-stepper" id="platStepper">
+      <div class="plat-step-pill active" data-plat-step="1">1 · Identificação</div>
+      <div class="plat-step-pill" data-plat-step="2">2 · Valores</div>
+      <div class="plat-step-pill" data-plat-step="3">3 · Tarifas</div>
+      <div class="plat-step-pill" data-plat-step="4">4 · Seguros</div>
+      <div class="plat-step-pill" data-plat-step="5">5 · Capitalização</div>
+      <div class="plat-step-pill" data-plat-step="6">6 · Mora &amp; Outras</div>
+      <div class="plat-step-pill" data-plat-step="7">7 · Resultado</div>
+    </div>
+
+    <!-- STEP 1 -->
+    <section class="plat-card plat-anim" id="platStep1">
+      <div class="plat-card-title"><span class="plat-icon">1</span>Identificação do contrato</div>
+      <div class="plat-card-subtitle">Dados básicos da operação, contratante e instituição financeira. A modalidade é o campo mais crítico — ela define a série BACEN usada na comparação.</div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Contratante</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group">
+            <label for="cliNome">Nome / Razão Social</label>
+            <input type="text" id="cliNome" placeholder="Ex: João da Silva" autocomplete="off">
+          </div>
+          <div class="plat-form-group">
+            <label for="cliDoc">CPF / CNPJ <span class="hint">opcional</span></label>
+            <input type="text" id="cliDoc" placeholder="000.000.000-00" autocomplete="off">
+          </div>
+          <div class="plat-form-group">
+            <label>Tipo</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="cliTipo" value="PF" checked>Pessoa Física</label>
+              <label class="plat-opt-pill"><input type="radio" name="cliTipo" value="PJ">Pessoa Jurídica</label>
+            </div>
+          </div>
+          <div class="plat-form-group" id="grpVulnerabilidade" style="display:none;">
+            <label>Vulnerabilidade da PJ <span class="hint">para fins de CDC</span></label>
+            <select id="cliVulnerab">
+              <option value="">— Selecionar —</option>
+              <option value="ME-EPP">Microempresa / EPP</option>
+              <option value="tecnica">Vulnerabilidade técnica</option>
+              <option value="economica">Vulnerabilidade econômica</option>
+              <option value="informacional">Vulnerabilidade informacional</option>
+              <option value="nao">Sem vulnerabilidade clara</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Contrato</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group">
+            <label for="banco">Instituição financeira</label>
+            <input type="text" id="banco" placeholder="Ex: Banco PINE S/A" autocomplete="off">
+          </div>
+          <div class="plat-form-group">
+            <label for="numContrato">Número do contrato</label>
+            <input type="text" id="numContrato" placeholder="Ex: 000000123456789" autocomplete="off">
+          </div>
+          <div class="plat-form-group">
+            <label for="dataContrato">Data de contratação</label>
+            <input type="month" id="dataContrato" min="2000-01" max="2026-12">
+          </div>
+          <div class="plat-form-group">
+            <label for="modalidade">Modalidade <span class="hint">define a série BACEN</span></label>
+            <select id="modalidade">
+              <option value="">— Selecionar modalidade —</option>
+              <optgroup label="Pessoa Física">
+                <option value="pf-veic">Aquisição de veículos</option>
+                <option value="pf-bens">Aquisição de outros bens</option>
+                <option value="pf-naoconsig">Crédito pessoal não consignado</option>
+                <option value="pf-consig-total">Crédito pessoal consignado (total)</option>
+                <option value="pf-consig-inss">Consignado INSS</option>
+                <option value="pf-consig-pub">Consignado servidor público</option>
+                <option value="pf-consig-priv">Consignado setor privado</option>
+                <option value="pf-cheque">Cheque especial</option>
+                <option value="pf-cartao-rot">Cartão de crédito rotativo</option>
+                <option value="pf-cartao-parc">Cartão de crédito parcelado</option>
+                <option value="pf-rmc">Cartão consignado RMC</option>
+                <option value="pf-leasing">Leasing financeiro</option>
+              </optgroup>
+              <optgroup label="Pessoa Jurídica">
+                <option value="pj-veic">Aquisição de veículos</option>
+                <option value="pj-bens">Aquisição de outros bens</option>
+                <option value="pj-cg365">Capital de giro até 365 dias</option>
+                <option value="pj-cg365mais">Capital de giro acima de 365 dias</option>
+                <option value="pj-cg-rot">Capital de giro rotativo</option>
+                <option value="pj-contagar">Conta garantida</option>
+                <option value="pj-cheque">Cheque especial PJ</option>
+                <option value="pj-duplic">Desconto de duplicatas</option>
+                <option value="pj-vendor">Vendor</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="plat-form-group full">
+            <label for="modalidadeDetalhe">Observações <span class="hint">renegociação, portabilidade, garantia específica, etc.</span></label>
+            <input type="text" id="modalidadeDetalhe" placeholder="Ex: refinanciamento de operação anterior" autocomplete="off">
+          </div>
+        </div>
+        <div id="modAlert" class="hidden"></div>
+      </div>
+    </section>
+    <div class="plat-step-nav" data-plat-step-nav="1">
+      <button class="plat-btn plat-btn-secondary" onclick="platLoadCase()">📂 Carregar caso</button>
+      <span class="plat-step-nav-info">Etapa 1 de 7</span>
+      <button class="plat-btn plat-btn-primary" onclick="platGoToStep(2)">Próximo →</button>
+    </div>
+
+    <!-- STEP 2 -->
+    <section class="plat-card plat-anim hidden" id="platStep2">
+      <div class="plat-card-title"><span class="plat-icon">2</span>Valores, prazo e taxas</div>
+      <div class="plat-card-subtitle">Dados financeiros do contrato. A plataforma valida automaticamente a coerência entre valor financiado, parcela e taxa, e sinaliza encargos embutidos não declarados.</div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Valores principais</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group"><label for="vLiberado">Valor liberado ao cliente (R$)</label><input type="text" id="vLiberado" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+          <div class="plat-form-group"><label for="vFinanciado">Valor financiado / principal (R$)</label><input type="text" id="vFinanciado" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+          <div class="plat-form-group"><label for="nParcelas">Quantidade de parcelas</label><input type="number" id="nParcelas" placeholder="Ex: 48" min="1" max="600"></div>
+          <div class="plat-form-group"><label for="vParcela">Valor da parcela (R$)</label><input type="text" id="vParcela" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+        </div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Taxas contratadas</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group"><label for="taxaAM">Taxa de juros mensal (% a.m.)</label><input type="number" id="taxaAM" placeholder="Ex: 2,50" step="0.0001" min="0" oninput="platAtualizarTaxas('am')"></div>
+          <div class="plat-form-group"><label for="taxaAA">Taxa de juros anual (% a.a.)</label><input type="number" id="taxaAA" placeholder="Ex: 34,49" step="0.0001" min="0" oninput="platAtualizarTaxas('aa')"></div>
+          <div class="plat-form-group"><label for="cetAM">CET mensal (% a.m.) <span class="hint">opcional</span></label><input type="number" id="cetAM" placeholder="Ex: 2,75" step="0.0001" min="0" oninput="platAtualizarTaxas('cetam')"></div>
+          <div class="plat-form-group"><label for="cetAA">CET anual (% a.a.) <span class="hint">opcional</span></label><input type="number" id="cetAA" placeholder="Ex: 38,50" step="0.0001" min="0" oninput="platAtualizarTaxas('cetaa')"></div>
+        </div>
+        <div id="taxasAlertas" class="plat-mt-4"></div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Outros dados</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group"><label for="iof">IOF financiado (R$) <span class="hint">opcional</span></label><input type="text" id="iof" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+          <div class="plat-form-group">
+            <label for="sistemaAmort">Sistema de amortização</label>
+            <select id="sistemaAmort">
+              <option value="price">Tabela Price</option>
+              <option value="sac">SAC</option>
+              <option value="misto">Misto / outro</option>
+              <option value="nao-informado">Não informado</option>
+            </select>
+          </div>
+          <div class="plat-form-group full">
+            <label for="taxaBacenManual">Taxa BACEN da modalidade <span class="hint" id="hintBacen">— preenchimento automático conforme modalidade e data</span></label>
+            <input type="text" id="taxaBacenManual" placeholder="Será preenchido após escolher a modalidade na Etapa 1" disabled>
+            <div id="bacenInfo" class="plat-val-indicator"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="plat-step-nav hidden" data-plat-step-nav="2">
+      <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(1)">← Voltar</button>
+      <span class="plat-step-nav-info">Etapa 2 de 7</span>
+      <button class="plat-btn plat-btn-primary" onclick="platGoToStep(3)">Próximo →</button>
+    </div>
+
+    <!-- STEP 3 -->
+    <section class="plat-card plat-anim hidden" id="platStep3">
+      <div class="plat-card-title"><span class="plat-icon">3</span>Tarifas e encargos acessórios</div>
+      <div class="plat-card-subtitle">Marque cada tarifa efetivamente cobrada e informe o valor. Cada item traz o fundamento de impugnação e o peso jurídico estimado. Padrão do escritório: todas as tarifas serão impugnadas por ausência de prova de aviso prévio e de efetiva prestação do serviço (art. 39, I, CDC; Temas 618, 958 e 1058/STJ).</div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Tarifas mais comuns</div>
+        <div id="tarifasContainer"></div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Outras tarifas (entrada livre)</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group span-2"><label for="tarifasOutras">Nome e descrição</label><input type="text" id="tarifasOutras" placeholder="Ex: Tarifa de assistência 24h"></div>
+          <div class="plat-form-group"><label for="tarifasOutrasValor">Valor (R$)</label><input type="text" id="tarifasOutrasValor" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+        </div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Resumo</div>
+        <div class="plat-stat-grid">
+          <div class="plat-stat-cell"><div class="plat-stat-label">Tarifas marcadas</div><div class="plat-stat-value destaque" id="tarifasCount">0</div><div class="plat-stat-sub">itens com cobrança</div></div>
+          <div class="plat-stat-cell"><div class="plat-stat-label">Soma das tarifas</div><div class="plat-stat-value negativo" id="tarifasTotal">R$ 0,00</div><div class="plat-stat-sub">passíveis de expurgo</div></div>
+          <div class="plat-stat-cell"><div class="plat-stat-label">% sobre o financiado</div><div class="plat-stat-value destaque" id="tarifasPct">0,00%</div><div class="plat-stat-sub">peso relativo</div></div>
+        </div>
+      </div>
+    </section>
+    <div class="plat-step-nav hidden" data-plat-step-nav="3">
+      <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(2)">← Voltar</button>
+      <span class="plat-step-nav-info">Etapa 3 de 7</span>
+      <button class="plat-btn plat-btn-primary" onclick="platGoToStep(4)">Próximo →</button>
+    </div>
+
+    <!-- STEP 4 -->
+    <section class="plat-card plat-anim hidden" id="platStep4">
+      <div class="plat-card-title"><span class="plat-icon">4</span>Seguros e venda casada</div>
+      <div class="plat-card-subtitle">Identificação de seguro prestamista, proteção financeira e produtos vinculados. A jurisprudência (Tema 958/STJ, tese 2.2) considera venda casada quando o seguro é contratado com seguradora do mesmo grupo do banco e sem opção real de escolha de terceira.</div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Seguro prestamista / proteção financeira</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group">
+            <label>Houve cobrança de seguro?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="seguroSimNao" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="seguroSimNao" value="nao" checked>Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="seguroSimNao" value="nao-sei">Não sei</label>
+            </div>
+          </div>
+          <div class="plat-form-group"><label for="seguroValor">Valor do prêmio (R$)</label><input type="text" id="seguroValor" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+          <div class="plat-form-group"><label for="seguroSeguradora">Nome da seguradora</label><input type="text" id="seguroSeguradora" placeholder="Ex: Pine Seguros S.A."></div>
+          <div class="plat-form-group">
+            <label>Seguradora pertence ao mesmo grupo do banco?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="seguroMesmoGrupo" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="seguroMesmoGrupo" value="nao">Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="seguroMesmoGrupo" value="nao-sei" checked>Não sei</label>
+            </div>
+          </div>
+          <div class="plat-form-group full">
+            <label>Cliente teve opção real de escolher seguradora terceira?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="seguroOpcao" value="sim">Sim, com documento</label>
+              <label class="plat-opt-pill"><input type="radio" name="seguroOpcao" value="nao">Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="seguroOpcao" value="nao-sei" checked>Não sei / não há prova</label>
+            </div>
+          </div>
+        </div>
+        <div id="seguroAlerta" class="plat-mt-4"></div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Outros produtos vinculados</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group full"><label for="outrosProd">Descrição <span class="hint">cesta de serviços, capitalização, conta corrente embutida</span></label><input type="text" id="outrosProd" placeholder="Ex: Cesta digital + título de capitalização"></div>
+          <div class="plat-form-group"><label for="outrosProdValor">Valor (R$)</label><input type="text" id="outrosProdValor" placeholder="R$ 0,00" oninput="platFormatarMoedaInput(this)"></div>
+          <div class="plat-form-group">
+            <label>Vinculação foi condição para o crédito?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="outrosProdCondicao" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="outrosProdCondicao" value="nao">Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="outrosProdCondicao" value="nao-sei" checked>Não sei</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="plat-step-nav hidden" data-plat-step-nav="4">
+      <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(3)">← Voltar</button>
+      <span class="plat-step-nav-info">Etapa 4 de 7</span>
+      <button class="plat-btn plat-btn-primary" onclick="platGoToStep(5)">Próximo →</button>
+    </div>
+
+    <!-- STEP 5 -->
+    <section class="plat-card plat-anim hidden" id="platStep5">
+      <div class="plat-card-title"><span class="plat-icon">5</span>Capitalização de juros</div>
+      <div class="plat-card-subtitle">Análise de capitalização declarada, capitalização diária e teste do duodécuplo (Súmula 541/STJ). Para contratos anteriores a 31/03/2000, a capitalização é vedada pela Súmula 121/STF.</div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Pactuação</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group">
+            <label>Capitalização pactuada expressamente no contrato?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="capPactuada" value="sim-mensal">Sim, mensal</label>
+              <label class="plat-opt-pill"><input type="radio" name="capPactuada" value="sim-diaria">Sim, diária</label>
+              <label class="plat-opt-pill"><input type="radio" name="capPactuada" value="ambigua">Ambígua</label>
+              <label class="plat-opt-pill"><input type="radio" name="capPactuada" value="nao">Não há cláusula</label>
+              <label class="plat-opt-pill"><input type="radio" name="capPactuada" value="nao-sei" checked>Não verificado</label>
+            </div>
+          </div>
+          <div class="plat-form-group">
+            <label>Taxa diária está informada no contrato?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="capTaxaDiariaInfo" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="capTaxaDiariaInfo" value="nao">Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="capTaxaDiariaInfo" value="na" checked>N/A</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Teste do duodécuplo (Súmula 541/STJ)</div>
+        <p class="plat-text-small plat-text-muted plat-mb-2">Compara a taxa anual contratada com o cálculo composto a partir da mensal. Se houver divergência relevante, há indício de capitalização não pactuada expressamente.</p>
+        <div id="duodecupTest" class="plat-alert info"><div class="plat-alert-title">Aguardando dados</div>Informe taxa mensal e taxa anual na Etapa 2 para executar o teste.</div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Súmula 121/STF</div>
+        <div id="sumula121Test" class="plat-alert info"><div class="plat-alert-title">Aguardando dados</div>A data de contratação será verificada contra a vedação histórica da capitalização anterior a 31/03/2000.</div>
+      </div>
+    </section>
+    <div class="plat-step-nav hidden" data-plat-step-nav="5">
+      <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(4)">← Voltar</button>
+      <span class="plat-step-nav-info">Etapa 5 de 7</span>
+      <button class="plat-btn plat-btn-primary" onclick="platGoToStep(6)">Próximo →</button>
+    </div>
+
+    <!-- STEP 6 -->
+    <section class="plat-card plat-anim hidden" id="platStep6">
+      <div class="plat-card-title"><span class="plat-icon">6</span>Mora, encargos moratórios e outras questões</div>
+      <div class="plat-card-subtitle">Comissão de permanência (Súmula 472/STJ), encargos moratórios, vencimento antecipado, garantias e situação atual do contrato.</div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Encargos moratórios</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group">
+            <label>Comissão de permanência prevista no contrato?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="comPermanencia" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="comPermanencia" value="nao" checked>Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="comPermanencia" value="nao-sei">Não sei</label>
+            </div>
+          </div>
+          <div class="plat-form-group">
+            <label>Cumulada com juros remuneratórios ou moratórios ou multa?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="comPermCumul" value="sim">Sim, cumulada</label>
+              <label class="plat-opt-pill"><input type="radio" name="comPermCumul" value="nao">Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="comPermCumul" value="na" checked>N/A</label>
+            </div>
+          </div>
+          <div class="plat-form-group"><label for="multaMora">Multa moratória (%) <span class="hint">teto 2% — art. 52, §1º, CDC</span></label><input type="number" id="multaMora" placeholder="Ex: 2,00" step="0.01" min="0" max="100"></div>
+          <div class="plat-form-group"><label for="jurosMora">Juros moratórios (% a.m.)</label><input type="number" id="jurosMora" placeholder="Ex: 1,00" step="0.01" min="0" max="100"></div>
+        </div>
+        <div id="moraAlertas" class="plat-mt-4"></div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Garantia e vencimento</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group">
+            <label for="garantia">Tipo de garantia</label>
+            <select id="garantia">
+              <option value="">— Selecionar —</option>
+              <option value="aliencao-fid">Alienação fiduciária (veículo, imóvel ou outro)</option>
+              <option value="desconto-folha">Desconto em folha (consignado)</option>
+              <option value="aval-fianca">Aval / fiança</option>
+              <option value="hipoteca">Hipoteca</option>
+              <option value="penhor">Penhor</option>
+              <option value="sem-garantia">Sem garantia / pessoal</option>
+              <option value="outra">Outra</option>
+            </select>
+          </div>
+          <div class="plat-form-group">
+            <label>Cláusula de vencimento antecipado?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="vencAntecip" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="vencAntecip" value="nao">Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="vencAntecip" value="nao-sei" checked>Não sei</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Situação atual</div>
+        <div class="plat-form-grid">
+          <div class="plat-form-group"><label for="parcelasPagas">Parcelas já pagas</label><input type="number" id="parcelasPagas" placeholder="Ex: 12" min="0"></div>
+          <div class="plat-form-group">
+            <label>Cliente está em mora?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="emMora" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="emMora" value="nao" checked>Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="emMora" value="parcial">Parcialmente</label>
+            </div>
+          </div>
+          <div class="plat-form-group">
+            <label>Há negativação ou busca e apreensão?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="acaoBanco" value="negat">Negativação</label>
+              <label class="plat-opt-pill"><input type="radio" name="acaoBanco" value="ba">Busca e apreensão</label>
+              <label class="plat-opt-pill"><input type="radio" name="acaoBanco" value="exec">Execução</label>
+              <label class="plat-opt-pill"><input type="radio" name="acaoBanco" value="nao" checked>Nada disso</label>
+            </div>
+          </div>
+          <div class="plat-form-group">
+            <label>Operação é refinanciamento / portabilidade?</label>
+            <div class="plat-opt-group">
+              <label class="plat-opt-pill"><input type="radio" name="refinPortabil" value="sim">Sim</label>
+              <label class="plat-opt-pill"><input type="radio" name="refinPortabil" value="nao" checked>Não</label>
+              <label class="plat-opt-pill"><input type="radio" name="refinPortabil" value="nao-sei">Não sei</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="plat-step-nav hidden" data-plat-step-nav="6">
+      <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(5)">← Voltar</button>
+      <span class="plat-step-nav-info">Etapa 6 de 7</span>
+      <button class="plat-btn plat-btn-gold" onclick="platCalcular()">⚖ Calcular análise</button>
+    </div>
+
+    <!-- STEP 7 -->
+    <section class="plat-card plat-anim hidden" id="platStep7">
+      <div class="plat-card-title"><span class="plat-icon">7</span>Resultado da análise</div>
+      <div class="plat-card-subtitle">Veredito de viabilidade, irregularidades classificadas, comparativo BACEN, estimativa econômica e próximos passos. Cálculos preliminares e estimativos; não substituem perícia contábil.</div>
+      <div id="resultadoConteudo"></div>
+      <div class="plat-card-section">
+        <div class="plat-card-section-title">Ações</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <button class="plat-btn plat-btn-gold" onclick="platAbrirRelatorio()">📄 Gerar relatório completo</button>
+          <button class="plat-btn plat-btn-green" onclick="platAbrirWhatsApp()">💬 Mensagem WhatsApp</button>
+          <button class="plat-btn plat-btn-secondary" onclick="platSaveCase()">💾 Salvar caso (JSON)</button>
+          <button class="plat-btn plat-btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
+          <button class="plat-btn plat-btn-secondary" onclick="platResetCase()">🔄 Nova análise</button>
+        </div>
+      </div>
+    </section>
+    <div class="plat-step-nav hidden" data-plat-step-nav="7">
+      <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(6)">← Voltar</button>
+      <span class="plat-step-nav-info">Etapa 7 de 7 · Resultado</span>
+      <span></span>
+    </div>
+
+    <div class="plat-footer">
+      Plataforma de Análise Revisional Bancária — v1.0 (uso interno)<br>
+      Taxas BACEN embarcadas: séries 20749 (PF veículos), 20742 (PF crédito pessoal não consignado) e 20744 (PF consignado privado).<br>
+      Demais modalidades exigem consulta manual no <a href="https://www3.bcb.gov.br/sgspub/localizarseries/localizarSeries.do?method=prepararTelaLocalizarSeries" target="_blank">SGS/BACEN</a>.<br>
+      Critério da taxa BACEN está sob reanálise no Tema 1.378/STJ. Os cálculos são estimativos e não substituem perícia contábil.
+    </div>
+
+    <input type="file" id="platLoadFileInput" accept="application/json" style="display:none;" onchange="platHandleLoadFile(event)">
+
+    </div><!-- /plat-page-body -->
+
+    <!-- Modais (position:fixed) -->
+    <div class="plat-modal-backdrop hidden" id="platModalRelatorio">
+      <div class="plat-modal-content">
+        <div class="plat-modal-header">
+          <div class="plat-modal-title">Relatório de Análise Revisional</div>
+          <button class="plat-modal-close" onclick="platFecharModal('platModalRelatorio')">✕</button>
+        </div>
+        <div class="plat-modal-body plat-relatorio-content" id="platRelatorioConteudo"></div>
+        <div class="plat-modal-footer">
+          <button class="plat-btn plat-btn-secondary" onclick="platCopiarRelatorio()">Copiar como texto</button>
+          <button class="plat-btn plat-btn-secondary" onclick="window.print()">Imprimir / PDF</button>
+          <button class="plat-btn plat-btn-primary" onclick="platFecharModal('platModalRelatorio')">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="plat-modal-backdrop hidden" id="platModalWhatsApp">
+      <div class="plat-modal-content">
+        <div class="plat-modal-header">
+          <div class="plat-modal-title">Mensagem para Cliente — WhatsApp</div>
+          <button class="plat-modal-close" onclick="platFecharModal('platModalWhatsApp')">✕</button>
+        </div>
+        <div class="plat-modal-body">
+          <p class="plat-text-small plat-text-muted plat-mb-2">Mensagem em tom consultivo e ético, sem promessa de resultado. Revise antes de enviar.</p>
+          <textarea id="platWhatsappTexto" readonly></textarea>
+        </div>
+        <div class="plat-modal-footer">
+          <button class="plat-btn plat-btn-secondary" onclick="platCopiarWhatsApp()" id="platBtnCopiarWpp">Copiar mensagem</button>
+          <button class="plat-btn plat-btn-primary" onclick="platFecharModal('platModalWhatsApp')">Fechar</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</div><!-- /main-content -->
+
+<!-- ══════════════════════════════════════════════
+     BOTTOM NAVIGATION — MOBILE
+══════════════════════════════════════════════ -->
+<nav id="bottom-nav" aria-label="Navegação principal">
+  <div class="bnav-item active" data-page="calcHonorarios">
+    <div class="bnav-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+        <path d="M18.375 2.625a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/>
+      </svg>
+    </div>
+    <span class="bnav-label">Honorários</span>
+  </div>
+  <div class="bnav-item" data-page="distribuicao">
+    <div class="bnav-icon">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 3v9l4.5 4.5"/>
+        <path d="M12 12 7.5 7.5"/>
+      </svg>
+    </div>
+    <span class="bnav-label">Distribuição</span>
+  </div>
+  <div class="bnav-item" data-page="bacen">
+    <div class="bnav-icon">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="10" width="18" height="11" rx="1"/>
+        <path d="M3 10 12 3l9 7"/>
+        <path d="M9 21V14h6v7"/>
+      </svg>
+    </div>
+    <span class="bnav-label">BACEN</span>
+  </div>
+</nav>
+
+<!-- ── Summary Modal ── -->
+<div id="summary-modal">
+  <div class="summary-box" id="summary-box"></div>
+</div>
+
+
+<!-- Lógica do painel -->
+<script src="app.js"></script>
+</body>
+</html>
