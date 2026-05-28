@@ -2,19 +2,33 @@
    NAVEGAÇÃO DO PAINEL
 ══════════════════════════════════════════════════════════════════ */
 const PAGE_META = {
+  home:           'Home',
   calcHonorarios: 'Calculadora de Honorários',
   distribuicao:   'Distribuição de Honorários',
   bacen:          'Análise Revisional - BACEN',
   historico:      'Histórico de Propostas',
+  perfil:         'Meu Perfil',
+  config:         'Configurações',
 };
 
-let currentPage = 'calcHonorarios';
+const topbarSub = {
+  home:           'Painel Windsor & Serrão',
+  calcHonorarios: 'Calculadora de Honorários',
+  distribuicao:   'Rateio interno de honorários',
+  bacen:          'Revisional de contratos',
+  historico:      'Propostas e registros',
+  perfil:         'Dados da conta',
+  config:         'Preferências do sistema',
+};
+
+let currentPage = 'home';
 
 function navigate(pageId) {
   if (!PAGE_META[pageId] || pageId === currentPage) return;
 
   const outgoing = document.querySelector('.page-section.active');
   const incoming = document.getElementById('page-' + pageId);
+  if (!incoming) return;
 
   // Atualiza menu e título imediatamente
   document.querySelectorAll('.nav-item').forEach(el => {
@@ -26,7 +40,13 @@ function navigate(pageId) {
   });
   const label = PAGE_META[pageId];
   document.title = 'W&S — ' + label;
-  document.getElementById('topbar-title').textContent = label;
+  const elPage = document.getElementById('topbar-page');
+  const elSub  = document.getElementById('topbar-sub');
+  if (elPage) elPage.textContent = label;
+  if (elSub)  elSub.textContent  = topbarSub[pageId] || 'Windsor & Serrão';
+  // mantém compatibilidade com mobile topbar
+  const elTitle = document.getElementById('topbar-title');
+  if (elTitle) elTitle.textContent = label;
   currentPage = pageId;
   if (window.innerWidth < 768) closeMobileSidebar();
   if (pageId === 'historico') carregarHistorico();
@@ -2196,6 +2216,30 @@ window._currentUser = null;
     document.getElementById('sidebar-user-email').textContent  = email;
     var ta = document.getElementById('topbar-avatar');
     if (ta) ta.textContent = initials || '?';
+    var taBtn = document.getElementById('topbar-avatar-btn');
+    if (taBtn) taBtn.textContent = initials || '?';
+    var pAvatar = document.getElementById('perfil-avatar');
+    var pNome   = document.getElementById('perfil-nome');
+    var pEmail  = document.getElementById('perfil-email');
+    if (pAvatar) pAvatar.textContent = initials || '?';
+    if (pNome)   pNome.textContent   = nome;
+    if (pEmail)  pEmail.textContent  = email;
+
+    // Saudação dinâmica na home
+    var primeiroNome = nome.split(' ')[0];
+    var hora = new Date().getHours();
+    var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
+    var greetingEl = document.getElementById('hw-greeting');
+    if (greetingEl) greetingEl.textContent = saudacao + ', ' + primeiroNome + ' 👋';
+
+    // Data na home
+    var hwTime = document.getElementById('hw-time');
+    if (hwTime) {
+      var days   = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+      var months = ['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+      var now    = new Date();
+      hwTime.textContent = days[now.getDay()] + ', ' + now.getDate() + ' de ' + months[now.getMonth()] + ' de ' + now.getFullYear();
+    }
   }
 
   async function loginUser(email, senha) {

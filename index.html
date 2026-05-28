@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Windsor &amp; Serrão — Calculadora de Honorários</title>
+  <title>W&amp;S — Home</title>
 
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -207,26 +207,58 @@
 
   <div class="sidebar-nav">
 
+    <div class="sb-section">Principal</div>
+
     <div class="nav-item active"
+         data-page="home"
+         data-tooltip="Home">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+      </span>
+      <span class="nav-label">Home</span>
+    </div>
+
+    <div class="nav-item"
+         data-page="historico"
+         data-tooltip="Histórico de Propostas">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>
+        </svg>
+      </span>
+      <span class="nav-label">Histórico</span>
+    </div>
+
+    <div class="sb-section">Ferramentas</div>
+
+    <div class="nav-item"
          data-page="calcHonorarios"
          data-tooltip="Calculadora de Honorários">
       <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.375 2.625a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10 9 9 9 8 9"/>
         </svg>
       </span>
-      <span class="nav-label">Calc. de Honorários</span>
+      <span class="nav-label">Calc. Honorários</span>
     </div>
 
     <div class="nav-item"
          data-page="distribuicao"
          data-tooltip="Distribuição de Honorários">
       <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 3v9l4.5 4.5"/>
-          <path d="M12 12 7.5 7.5"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
         </svg>
       </span>
       <span class="nav-label">Distribuição</span>
@@ -234,22 +266,41 @@
 
     <div class="nav-item"
          data-page="bacen"
-         data-tooltip="Análise Revisional - BACEN">
+         data-tooltip="Análise Revisional BACEN">
       <span class="nav-icon">
-        <svg viewBox="0 0 24 24">
-          <rect x="3" y="10" width="18" height="11" rx="1"/>
-          <path d="M3 10 12 3l9 7"/>
-          <path d="M9 21V14h6v7"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <path d="M9 22V12h6v10"/>
         </svg>
       </span>
-      <span class="nav-label">Análise Revisional - BACEN</span>
+      <span class="nav-label">Análise BACEN</span>
+      <span class="nav-tag">API</span>
     </div>
 
-    <div class="nav-item" data-page="historico" data-tooltip="Histórico">
+    <div class="sb-section">Sistema</div>
+
+    <div class="nav-item"
+         data-page="perfil"
+         data-tooltip="Meu Perfil">
       <span class="nav-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
       </span>
-      <span class="nav-label">Histórico</span>
+      <span class="nav-label">Meu Perfil</span>
+    </div>
+
+    <div class="nav-item"
+         data-page="config"
+         data-tooltip="Configurações">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </span>
+      <span class="nav-label">Configurações</span>
     </div>
 
   </div>
@@ -290,7 +341,7 @@
     </div>
     <div class="topbar-title-wrap">
       <div class="topbar-brand-name">Windsor &amp; Serrão</div>
-      <div class="topbar-page-name" id="topbar-title">Calculadora de Honorários</div>
+      <div class="topbar-page-name" id="topbar-title">Home</div>
     </div>
   </div>
   <!-- Actions -->
@@ -311,8 +362,205 @@
 ══════════════════════════════════════════════ -->
 <div id="main-content">
 
+  <!-- ── TOPBAR DESKTOP ── -->
+  <div id="desktop-topbar">
+    <div class="topbar-breadcrumb">
+      <span class="topbar-page" id="topbar-page">Home</span>
+      <div class="topbar-divider"></div>
+      <span class="topbar-sub" id="topbar-sub">Painel Windsor &amp; Serrão</span>
+    </div>
+    <div class="topbar-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Buscar ferramenta, cliente...">
+    </div>
+    <div class="topbar-action" title="Notificações">
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="topbar-notif-dot"></div>
+    </div>
+    <div class="topbar-avatar-btn" id="topbar-avatar-btn">FW</div>
+  </div>
+
+  <!-- ── PÁGINA HOME ── -->
+  <section id="page-home" class="page-section active">
+
+    <!-- Welcome banner -->
+    <div class="home-welcome glass">
+      <div class="hw-left">
+        <div class="hw-time" id="hw-time"></div>
+        <div class="hw-greeting" id="hw-greeting">Bom dia 👋</div>
+        <div class="hw-sub">Acesse suas ferramentas abaixo.</div>
+      </div>
+      <div class="hw-right">
+        <button class="hw-btn-ghost" onclick="navigate('historico')">Ver histórico</button>
+        <button class="hw-btn" onclick="navigate('calcHonorarios')">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+          Nova proposta
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick pills -->
+    <div class="quick-pills">
+      <div class="q-pill" onclick="navigate('calcHonorarios')">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Calc. Honorários
+      </div>
+      <div class="q-pill" onclick="navigate('distribuicao')">
+        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Distribuição
+      </div>
+      <div class="q-pill" onclick="navigate('bacen')">
+        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        Análise BACEN
+      </div>
+      <div class="q-pill" onclick="navigate('historico')">
+        <svg viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+        Histórico
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card glass">
+        <div class="stat-top">
+          <div class="stat-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <div class="stat-badge badge-up">↑ 12%</div>
+        </div>
+        <div><div class="stat-value" id="home-stat-propostas">—</div><div class="stat-label">Propostas este mês</div></div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-top">
+          <div class="stat-icon-wrap">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="stat-badge badge-up">↑ 8%</div>
+        </div>
+        <div><div class="stat-value" id="home-stat-honorarios">—</div><div class="stat-label">Honorários calculados</div></div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-top">
+          <div class="stat-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+          </div>
+          <div class="stat-badge badge-warn">Este mês</div>
+        </div>
+        <div><div class="stat-value" id="home-stat-bacen">—</div><div class="stat-label">Análises BACEN</div></div>
+      </div>
+      <div class="stat-card glass">
+        <div class="stat-top">
+          <div class="stat-icon-wrap">
+            <svg viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+          </div>
+          <div class="stat-badge badge-neutral">—</div>
+        </div>
+        <div><div class="stat-value" id="home-stat-total">—</div><div class="stat-label">Total de registros</div></div>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="home-grid">
+      <div class="home-col">
+
+        <!-- Ferramentas -->
+        <div>
+          <div class="sec-hd">
+            <div class="sec-title">Ferramentas disponíveis</div>
+          </div>
+          <div class="tools-grid">
+
+            <div class="tool-card glass" onclick="navigate('calcHonorarios')">
+              <div class="tool-icon-box">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              </div>
+              <div class="tool-name">Calculadora de Honorários</div>
+              <div class="tool-desc">Proposta advocatícia com parâmetros OAB/SC — honorários mínimos, justos e ideais.</div>
+              <div class="tool-footer">
+                <div class="tool-uses">Honorários advocatícios</div>
+                <div class="tool-go"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+              </div>
+            </div>
+
+            <div class="tool-card glass" onclick="navigate('distribuicao')">
+              <div class="tool-icon-box">
+                <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </div>
+              <div class="tool-name">Distribuição de Honorários</div>
+              <div class="tool-desc">Rateio interno — impostos, escritório, pró-labore e reserva de emergência.</div>
+              <div class="tool-footer">
+                <div class="tool-uses">Rateio interno</div>
+                <div class="tool-go"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+              </div>
+            </div>
+
+            <div class="tool-card glass" onclick="navigate('bacen')">
+              <div class="tool-icon-box">
+                <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+              </div>
+              <div class="tool-name">Análise Revisional BACEN</div>
+              <div class="tool-desc">Triagem técnica e financeira de contratos com checklist de irregularidades.</div>
+              <div class="tool-footer">
+                <div class="tool-uses">Revisão de contratos</div>
+                <div class="tool-go"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Mini chart -->
+        <div class="chart-card glass">
+          <div class="sec-hd" style="margin-bottom:0">
+            <div class="sec-title">Atividade — últimas 8 semanas</div>
+            <div style="display:flex;gap:14px;font-size:10.5px;color:var(--t3);">
+              <span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:8px;height:8px;background:var(--a1);border-radius:2px;"></span>Calc.</span>
+              <span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:8px;height:8px;background:var(--a2);border-radius:2px;"></span>BACEN</span>
+            </div>
+          </div>
+          <div class="mini-chart-wrap">
+            <div class="mc-bar" style="height:38%"></div>
+            <div class="mc-bar" style="height:52%"></div>
+            <div class="mc-bar" style="height:44%"></div>
+            <div class="mc-bar" style="height:70%"></div>
+            <div class="mc-bar" style="height:58%"></div>
+            <div class="mc-bar" style="height:82%"></div>
+            <div class="mc-bar" style="height:66%"></div>
+            <div class="mc-bar cur" style="height:100%"></div>
+          </div>
+          <div class="chart-xlabels">
+            <div class="chart-xlabel">S1</div><div class="chart-xlabel">S2</div>
+            <div class="chart-xlabel">S3</div><div class="chart-xlabel">S4</div>
+            <div class="chart-xlabel">S5</div><div class="chart-xlabel">S6</div>
+            <div class="chart-xlabel">S7</div><div class="chart-xlabel">S8</div>
+          </div>
+        </div>
+
+      </div><!-- /left col -->
+
+      <!-- RIGHT col -->
+      <div class="home-col">
+
+        <div class="activity-card glass">
+          <div class="sec-hd" style="margin-bottom:0">
+            <div class="sec-title">Atividade recente</div>
+            <div class="sec-link" onclick="navigate('historico')">Ver tudo</div>
+          </div>
+          <div class="act-list" id="home-act-list">
+            <div class="act-item">
+              <div class="act-dot-wrap"><div class="act-dot" style="background:var(--t3)"></div></div>
+              <div><div class="act-title" style="color:var(--t3);font-size:11.5px;">Nenhum registro ainda</div></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right col -->
+    </div><!-- /home-grid -->
+
+  </section>
+
   <!-- ── PÁGINA 1: Calculadora de Honorários ── -->
-  <section id="page-calcHonorarios" class="page-section active">
+  <section id="page-calcHonorarios" class="page-section">
 
     <header class="page-header">
       <div class="page-header-icon">⚖️</div>
@@ -941,13 +1189,39 @@
     </div>
   </section>
 
+  <!-- ── PERFIL ── -->
+  <section id="page-perfil" class="page-section" style="padding:28px 24px 64px;">
+    <div class="page-header">
+      <div class="page-eyebrow">Sistema</div>
+      <div class="page-title">Meu Perfil</div>
+      <div class="page-sub">Informações da sua conta Windsor &amp; Serrão.</div>
+    </div>
+    <div style="max-width:560px;margin:24px auto 0;padding:32px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--r16);text-align:center;">
+      <div style="width:64px;height:64px;border-radius:50%;background:var(--ag);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#fff;" id="perfil-avatar">?</div>
+      <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--t1);" id="perfil-nome">—</div>
+      <div style="font-size:13px;color:var(--t3);margin-top:4px;" id="perfil-email">—</div>
+    </div>
+  </section>
+
+  <!-- ── CONFIGURAÇÕES ── -->
+  <section id="page-config" class="page-section" style="padding:28px 24px 64px;">
+    <div class="page-header">
+      <div class="page-eyebrow">Sistema</div>
+      <div class="page-title">Configurações</div>
+      <div class="page-sub">Preferências do painel.</div>
+    </div>
+    <div style="max-width:560px;margin:24px auto 0;padding:32px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--r16);text-align:center;color:var(--t3);font-size:13px;">
+      Em breve.
+    </div>
+  </section>
+
 </div><!-- /main-content -->
 
 <!-- ══════════════════════════════════════════════
      BOTTOM NAVIGATION — MOBILE
 ══════════════════════════════════════════════ -->
 <nav id="bottom-nav" aria-label="Navegação principal">
-  <div class="bnav-item active" data-page="calcHonorarios">
+  <div class="bnav-item" data-page="calcHonorarios">
     <div class="bnav-icon">
       <svg viewBox="0 0 24 24">
         <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
