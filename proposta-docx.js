@@ -490,3 +490,87 @@ async function gerarPropostaDocx(cfg) {
     alert('Erro ao gerar a proposta: ' + e.message);
   }
 }
+
+// ─── Helpers de UI ─────────────────────────────────────────────
+
+function buildPropostaCfg(extras) {
+  const s = state;
+  const c = s.calc;
+
+  let modalidade;
+  if (!s.honorariosExito) {
+    modalidade = 'Honorários Fixos';
+  } else if (s.modalidadeCausa === 'fixo_exito') {
+    modalidade = 'Honorários Fixos + Êxito';
+  } else if (s.modalidadeCausa === 'apenas_exito') {
+    modalidade = 'Apenas Êxito';
+  } else {
+    modalidade = 'Fixos OU Êxito (o que for maior)';
+  }
+
+  return {
+    cliente:                 s.nomeCliente,
+    tipo_servico:            s.tipoServico.map(function(i) { return SERVICOS[i].title; }).join(', ') || 'Contencioso Judicial',
+    tutela_liminar:          s.tutelaLiminar,
+    modalidade:              modalidade,
+    urgencia_nivel:          'Nível ' + s.urgencia + '/5',
+    urgencia_desc:           LEVEL_LABELS[s.urgencia],
+    urgencia_pct:            PCT_URGENCIA[s.urgencia],
+    especificidade_nivel:    'Nível ' + s.especificidade + '/5',
+    especificidade_desc:     LEVEL_LABELS[s.especificidade],
+    especificidade_pct:      PCT_ESPECIFIC[s.especificidade],
+    complexidade_nivel:      'Nível ' + s.complexidade + '/5',
+    complexidade_desc:       LEVEL_LABELS[s.complexidade],
+    complexidade_pct:        PCT_COMPLEXIDADE[s.complexidade],
+    valor_base:              s.valorBase,
+    taxa_horaria:            c.taxaHoraria,
+    horas_analise:           s.horasAnalise,
+    iss_pct:                 CFG.iss,
+    desconto_avista_pct:     CFG.avista,
+    entrada_pct:             CFG.entrada,
+    num_parcelas_boleto:     c.nParcelas,
+    juros_cartao_pct:        CFG.cartao,
+    num_parcelas_cartao_max: Math.max.apply(null, c.ccOptions.map(function(o) { return o.n; })),
+    descricao_caso:          extras.descricaoCaso,
+    objetivos:               extras.objetivos,
+    honorarios_exito:        s.honorariosExito
+      ? { pct: s.percentualExito, descricao: s.percentualExito + '% sobre valores recuperados' }
+      : null,
+  };
+}
+
+function abrirPropostaForm() {
+  document.getElementById('proposta-descricao').value = '';
+  document.getElementById('proposta-objetivos').value = '';
+  document.getElementById('propostaFormModal').classList.remove('hidden');
+}
+
+function fecharPropostaForm() {
+  document.getElementById('propostaFormModal').classList.add('hidden');
+}
+
+async function confirmarGerarProposta() {
+  const descricao  = document.getElementById('proposta-descricao').value.trim();
+  const objetivos  = document.getElementById('proposta-objetivos').value
+    .split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+
+  if (!descricao) { alert('Informe a descrição do caso.'); return; }
+  if (objetivos.length < 2) { alert('Informe pelo menos 2 objetivos.'); return; }
+
+  fecharPropostaForm();
+
+  const btn = document.getElementById('btn-gerar-docx');
+  if (btn) { btn.textContent = '⏳ Gerando...'; btn.disabled = true; }
+
+  try {
+    await gerarPropostaDocx(buildPropostaCfg({ descricaoCaso: descricao, objetivos: objetivos }));
+    const btnCopy = document.getElementById('btn-copy-text');
+    if (btnCopy) {
+      const orig = btnCopy.textContent;
+      btnCopy.textContent = '✓ Proposta gerada!';
+      setTimeout(function() { if (btnCopy) btnCopy.textContent = orig; }, 3000);
+    }
+  } finally {
+    if (btn) { btn.textContent = '📄 Gerar documento'; btn.disabled = false; }
+  }
+}
