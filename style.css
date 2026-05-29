@@ -2259,3 +2259,154 @@
     @media (max-width: 480px) {
       .auth-card { padding: 28px 20px 24px; }
     }
+
+    /* ══════════════════════════════════════════════
+       CONFIGURAÇÕES
+    ══════════════════════════════════════════════ */
+    .cfg-block {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r16);
+      padding: 22px 22px 20px;
+    }
+    .cfg-block-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .cfg-block-icon {
+      font-size: 22px;
+      line-height: 1;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+    .cfg-block-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--t1);
+      margin-bottom: 3px;
+    }
+    .cfg-block-sub {
+      font-size: 12px;
+      color: var(--t3);
+      line-height: 1.55;
+    }
+
+    /* Tabela de acréscimos */
+    .cfg-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .cfg-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 480px;
+    }
+    .cfg-table th {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--t3);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      padding: 0 8px 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--glass-border);
+    }
+    .cfg-table th:first-child { text-align: left; padding-left: 0; }
+    .cfg-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      text-align: center;
+      vertical-align: middle;
+    }
+    .cfg-table tr:last-child td { border-bottom: none; }
+    .cfg-row-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--t2);
+      text-align: left !important;
+      padding-left: 0 !important;
+      white-space: nowrap;
+    }
+
+    /* Grid de campos simples */
+    .cfg-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .cfg-field { display: flex; flex-direction: column; gap: 5px; }
+    .cfg-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--t2);
+      text-transform: uppercase;
+      letter-spacing: .4px;
+    }
+    .cfg-hint { font-size: 11px; color: var(--t3); line-height: 1.45; }
+
+    /* Input com unidade */
+    .cfg-input-wrap {
+      display: flex;
+      align-items: center;
+      background: var(--s3);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r8);
+      overflow: hidden;
+      transition: border-color .18s;
+    }
+    .cfg-input-wrap:focus-within {
+      border-color: var(--a1);
+      box-shadow: 0 0 0 2px var(--adim);
+    }
+    .cfg-input {
+      flex: 1;
+      min-width: 0;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--t1);
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 9px 10px;
+      -moz-appearance: textfield;
+    }
+    .cfg-input::-webkit-outer-spin-button,
+    .cfg-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .cfg-unit {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--t3);
+      padding: 0 10px 0 4px;
+      white-space: nowrap;
+    }
+
+    /* Preview distribuição */
+    .cfg-preview-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--t2);
+      font-weight: 500;
+    }
+    .cfg-preview-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* Banner de feedback */
+    #cfg-banner.ok  { background: var(--ok-d);  color: var(--ok);  border: 1px solid rgba(52,211,153,.2); }
+    #cfg-banner.err { background: var(--err-d); color: var(--err); border: 1px solid rgba(240,96,96,.2);  }
+
+    @media (max-width: 600px) {
+      .cfg-block { padding: 18px 14px 16px; }
+      .cfg-fields-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 400px) {
+      .cfg-fields-grid { grid-template-columns: 1fr; }
+    }

@@ -117,6 +117,223 @@ overlayEl.addEventListener('click', closeMobileSidebar);
 
 
 /* ══════════════════════════════════════════════════════════════════
+   CONFIGURAÇÕES — Parâmetros editáveis pelo usuário
+══════════════════════════════════════════════════════════════════ */
+
+// Valores padrão (usados quando o usuário não configurou nada)
+const CFG_DEFAULTS = {
+  // Urgência: níveis 1-5 (nível 1 é sempre 0)
+  urg: [0, 0, 5, 10, 15, 20],
+  // Especificidade
+  esp: [0, 0, 7.5, 15, 22.5, 30],
+  // Complexidade
+  cmp: [0, 0, 10, 20, 30, 40],
+  // Outros (honorários)
+  tutela:   25,
+  iss:      4.5,
+  avista:   8,
+  entrada:  30,
+  cartao:   2.5,
+  horasMes: 160,
+  // Distribuição
+  distImposto:   4.5,
+  distInvest:    15,
+  distEscritorio:10,
+  distProlabore: 75, // % do restante
+};
+
+// Objeto ativo — começa com os defaults, sobrescrito ao carregar do Supabase
+let CFG = JSON.parse(JSON.stringify(CFG_DEFAULTS));
+
+// ── Carrega configurações do Supabase para o usuário logado ──
+async function cfgCarregar() {
+  if (!window._sb || !window._currentUser) return;
+  try {
+    const { data } = await window._sb
+      .from('configuracoes')
+      .select('dados')
+      .eq('user_id', window._currentUser.id)
+      .single();
+    if (data && data.dados) {
+      CFG = Object.assign(JSON.parse(JSON.stringify(CFG_DEFAULTS)), data.dados);
+    }
+  } catch (_) { /* tabela pode não existir ainda — usa defaults */ }
+  cfgAplicarNasCalculadoras();
+  cfgPreencherFormulario();
+}
+
+// ── Aplica CFG nas constantes usadas pelas calculadoras ──
+function cfgAplicarNasCalculadoras() {
+  // Honorários
+  PCT_URGENCIA[1]     = 0;
+  PCT_URGENCIA[2]     = CFG.urg[2];
+  PCT_URGENCIA[3]     = CFG.urg[3];
+  PCT_URGENCIA[4]     = CFG.urg[4];
+  PCT_URGENCIA[5]     = CFG.urg[5];
+
+  PCT_ESPECIFIC[1]    = 0;
+  PCT_ESPECIFIC[2]    = CFG.esp[2];
+  PCT_ESPECIFIC[3]    = CFG.esp[3];
+  PCT_ESPECIFIC[4]    = CFG.esp[4];
+  PCT_ESPECIFIC[5]    = CFG.esp[5];
+
+  PCT_COMPLEXIDADE[1] = 0;
+  PCT_COMPLEXIDADE[2] = CFG.cmp[2];
+  PCT_COMPLEXIDADE[3] = CFG.cmp[3];
+  PCT_COMPLEXIDADE[4] = CFG.cmp[4];
+  PCT_COMPLEXIDADE[5] = CFG.cmp[5];
+}
+
+// ── Preenche os inputs do formulário com os valores de CFG ──
+function cfgPreencherFormulario() {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
+  set('cfg-urg-2', CFG.urg[2]);  set('cfg-urg-3', CFG.urg[3]);
+  set('cfg-urg-4', CFG.urg[4]);  set('cfg-urg-5', CFG.urg[5]);
+  set('cfg-esp-2', CFG.esp[2]);  set('cfg-esp-3', CFG.esp[3]);
+  set('cfg-esp-4', CFG.esp[4]);  set('cfg-esp-5', CFG.esp[5]);
+  set('cfg-cmp-2', CFG.cmp[2]);  set('cfg-cmp-3', CFG.cmp[3]);
+  set('cfg-cmp-4', CFG.cmp[4]);  set('cfg-cmp-5', CFG.cmp[5]);
+  set('cfg-tutela',   CFG.tutela);
+  set('cfg-iss',      CFG.iss);
+  set('cfg-avista',   CFG.avista);
+  set('cfg-entrada',  CFG.entrada);
+  set('cfg-cartao',   CFG.cartao);
+  set('cfg-horas-mes',CFG.horasMes);
+  set('cfg-dist-imposto',    CFG.distImposto);
+  set('cfg-dist-invest',     CFG.distInvest);
+  set('cfg-dist-escritorio', CFG.distEscritorio);
+  set('cfg-dist-prolabore',  CFG.distProlabore);
+  cfgAtualizarPreview();
+}
+
+// ── Lê os inputs e monta um objeto CFG ──
+function cfgLerFormulario() {
+  const num = (id, def) => { const v = parseFloat(document.getElementById(id)?.value); return isNaN(v) ? def : v; };
+  return {
+    urg: [0, 0, num('cfg-urg-2',5),  num('cfg-urg-3',10), num('cfg-urg-4',15), num('cfg-urg-5',20)],
+    esp: [0, 0, num('cfg-esp-2',7.5),num('cfg-esp-3',15), num('cfg-esp-4',22.5),num('cfg-esp-5',30)],
+    cmp: [0, 0, num('cfg-cmp-2',10), num('cfg-cmp-3',20), num('cfg-cmp-4',30), num('cfg-cmp-5',40)],
+    tutela:        num('cfg-tutela',    25),
+    iss:           num('cfg-iss',       4.5),
+    avista:        num('cfg-avista',    8),
+    entrada:       num('cfg-entrada',   30),
+    cartao:        num('cfg-cartao',    2.5),
+    horasMes:      num('cfg-horas-mes', 160),
+    distImposto:   num('cfg-dist-imposto',    4.5),
+    distInvest:    num('cfg-dist-invest',     15),
+    distEscritorio:num('cfg-dist-escritorio', 10),
+    distProlabore: num('cfg-dist-prolabore',  75),
+  };
+}
+
+// ── Atualiza o preview de distribuição em tempo real ──
+function cfgAtualizarPreview() {
+  const imp  = parseFloat(document.getElementById('cfg-dist-imposto')?.value) || CFG.distImposto;
+  const inv  = parseFloat(document.getElementById('cfg-dist-invest')?.value) || CFG.distInvest;
+  const esc  = parseFloat(document.getElementById('cfg-dist-escritorio')?.value) || CFG.distEscritorio;
+  const plPct= parseFloat(document.getElementById('cfg-dist-prolabore')?.value) || CFG.distProlabore;
+
+  const base = imp + inv + esc;
+  const rest = Math.max(0, 100 - base);
+  const pl   = rest * (plPct / 100);
+  const res  = rest - pl;
+
+  const fmtP = v => v.toLocaleString('pt-BR', {minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
+  const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+
+  setText('cfg-prev-imposto',   'Simples: '      + fmtP(imp));
+  setText('cfg-prev-invest',    'Investimento: ' + fmtP(inv));
+  setText('cfg-prev-escritorio','Escritório: '   + fmtP(esc));
+  setText('cfg-prev-prolabore', 'Pró-labore: '   + fmtP(pl));
+  setText('cfg-prev-reserva',   'Reserva: '      + fmtP(res));
+
+  const alerta = document.getElementById('cfg-prev-alerta');
+  if (alerta) alerta.style.display = base > 100 ? 'block' : 'none';
+}
+
+// ── Ouve mudanças nos inputs de distribuição para atualizar o preview ──
+['cfg-dist-imposto','cfg-dist-invest','cfg-dist-escritorio','cfg-dist-prolabore'].forEach(id => {
+  document.addEventListener('input', e => {
+    if (e.target && e.target.id === id) cfgAtualizarPreview();
+  });
+});
+
+// ── Salva no Supabase ──
+async function cfgSalvar() {
+  const btn = document.getElementById('cfg-btn-salvar');
+  const banner = document.getElementById('cfg-banner');
+
+  if (!window._sb || !window._currentUser) {
+    if (banner) {
+      banner.textContent = '⚠ Faça login para salvar as configurações.';
+      banner.className = 'err'; banner.style.display = 'block';
+      setTimeout(() => { banner.style.display='none'; }, 3500);
+    }
+    return;
+  }
+
+  const novaCfg = cfgLerFormulario();
+
+  // Validação: soma base da distribuição
+  const base = novaCfg.distImposto + novaCfg.distInvest + novaCfg.distEscritorio;
+  if (base > 100) {
+    if (banner) {
+      banner.textContent = '❌ A soma de Simples + Investimento + Escritório não pode ultrapassar 100%.';
+      banner.className = 'err'; banner.style.display = 'block';
+      setTimeout(() => { banner.style.display='none'; }, 4000);
+    }
+    return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Salvando…'; }
+
+  try {
+    // Tenta upsert (insert ou update)
+    const { error } = await window._sb.from('configuracoes').upsert({
+      user_id: window._currentUser.id,
+      dados:   novaCfg,
+      atualizado_em: new Date().toISOString(),
+    }, { onConflict: 'user_id' });
+
+    if (error) throw error;
+
+    CFG = novaCfg;
+    cfgAplicarNasCalculadoras();
+    // Atualiza a distribuição de honorários com os novos parâmetros
+    if (typeof window._renderDist === 'function') window._renderDist();
+
+    if (banner) {
+      banner.textContent = '✓ Configurações salvas com sucesso! As calculadoras já usam os novos valores.';
+      banner.className = 'ok'; banner.style.display = 'block';
+      setTimeout(() => { banner.style.display='none'; }, 4000);
+    }
+  } catch (err) {
+    if (banner) {
+      banner.textContent = '❌ Erro ao salvar. Verifique a conexão e tente novamente.';
+      banner.className = 'err'; banner.style.display = 'block';
+      setTimeout(() => { banner.style.display='none'; }, 4000);
+    }
+    console.error('cfgSalvar error:', err);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '💾 Salvar Configurações'; }
+  }
+}
+
+// ── Restaura os defaults ──
+function cfgRestaurarPadroes() {
+  if (!confirm('Restaurar todos os parâmetros para os valores padrão do sistema?')) return;
+  CFG = JSON.parse(JSON.stringify(CFG_DEFAULTS));
+  cfgPreencherFormulario();
+  cfgAplicarNasCalculadoras();
+  const banner = document.getElementById('cfg-banner');
+  if (banner) {
+    banner.textContent = '↩ Valores padrão restaurados. Clique em "Salvar" para confirmar.';
+    banner.className = 'ok'; banner.style.display = 'block';
+    setTimeout(() => { banner.style.display='none'; }, 4000);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
    CALCULADORA DE HONORÁRIOS
 ══════════════════════════════════════════════════════════════════ */
 const SERVICOS = [
@@ -154,14 +371,14 @@ function calculate() {
   c.pctUrgencia     = PCT_URGENCIA[s.urgencia];
   c.pctEspecific    = PCT_ESPECIFIC[s.especificidade];
   c.pctComplexidade = PCT_COMPLEXIDADE[s.complexidade];
-  c.pctTutela       = s.tutelaLiminar ? 25 : 0;
+  c.pctTutela       = s.tutelaLiminar ? CFG.tutela : 0;
   c.pctTotal        = c.pctUrgencia + c.pctEspecific + c.pctComplexidade + c.pctTutela;
 
   c.valorAjustado  = s.valorBase * (1 + c.pctTotal / 100);
-  c.taxaHoraria    = c.valorAjustado / 160;
+  c.taxaHoraria    = c.valorAjustado / CFG.horasMes;
   c.adicionalHoras = c.taxaHoraria * (s.horasAnalise || 0);
   c.subtotal       = c.valorAjustado + c.adicionalHoras;
-  c.iss            = c.subtotal * 0.045;
+  c.iss            = c.subtotal * (CFG.iss / 100);
   c.totalFixo      = c.subtotal + c.iss;
 
   c.valorExito = (s.honorariosExito && s.valorCausa > 0)
@@ -171,15 +388,19 @@ function calculate() {
                : c.totalFixo + c.valorExito;
 
   const V = c.totalFixo;
-  c.avista = V * 0.92; c.avistaEconomia = V * 0.08;
-  c.entrada = V * 0.30; c.saldo = V * 0.70;
+  const descAvista = CFG.avista / 100;
+  const pctEntrada = CFG.entrada / 100;
+  const taxaCartao = CFG.cartao / 100;
+
+  c.avista = V * (1 - descAvista); c.avistaEconomia = V * descAvista;
+  c.entrada = V * pctEntrada; c.saldo = V * (1 - pctEntrada);
   let np = Math.max(1, Math.ceil(c.saldo / 790)), pv = c.saldo / np;
   while (pv > 880 && np < 36) { np++; pv = c.saldo / np; }
   while (pv < 700 && np > 1)  { np--; pv = c.saldo / np; }
   c.nParcelas = np; c.valorParcela = pv;
 
   c.ccOptions = CC_PLANS.map(n => {
-    const total = V * Math.pow(1.025, n);
+    const total = V * Math.pow(1 + taxaCartao, n);
     return { n, parcel: total / n, total, juros: total - V };
   });
   state.calc = c; return c;
@@ -278,7 +499,7 @@ function buildStep1() {
       <label class="field-label">Tutela / Liminar</label>
       <div class="toggle-group">
         <div class="toggle-btn ${!s.tutelaLiminar?'sel-ok':''}" data-action="set-tutela" data-val="false">Não</div>
-        <div class="toggle-btn ${s.tutelaLiminar?'sel':''}" data-action="set-tutela" data-val="true">Sim — tutela/liminar (+25%)</div>
+        <div class="toggle-btn ${s.tutelaLiminar?'sel':''}" data-action="set-tutela" data-val="true">Sim — tutela/liminar (+${fmt.pct(CFG.tutela)})</div>
       </div>
     </div>
 
@@ -334,7 +555,7 @@ function buildStep2() {
       <div class="calc-row"><span class="lbl">Urgência — Nível ${s.urgencia} (${LEVEL_LABELS[s.urgencia]})</span>${badge(c.pctUrgencia)}</div>
       <div class="calc-row"><span class="lbl">Especificidade — Nível ${s.especificidade} (${LEVEL_LABELS[s.especificidade]})</span>${badge(c.pctEspecific)}</div>
       <div class="calc-row"><span class="lbl">Complexidade — Nível ${s.complexidade} (${LEVEL_LABELS[s.complexidade]})</span>${badge(c.pctComplexidade)}</div>
-      ${s.tutelaLiminar ? `<div class="calc-row"><span class="lbl">Tutela / Liminar</span><span class="badge">+25,0%</span></div>` : ''}
+      ${s.tutelaLiminar ? `<div class="calc-row"><span class="lbl">Tutela / Liminar</span><span class="badge">+${fmt.pct(CFG.tutela)}</span></div>` : ''}
       <hr class="calc-divider">
       <div class="calc-row">
         <span class="lbl" style="font-weight:700;color:var(--t1)">Total de Ajustes</span>
@@ -345,11 +566,11 @@ function buildStep2() {
     <div class="calc-block">
       <div class="calc-block-title">Composição dos Honorários Fixos</div>
       <div class="calc-row"><span class="lbl">Valor Ajustado (base × ${(1 + c.pctTotal/100).toLocaleString('pt-BR',{minimumFractionDigits:3,maximumFractionDigits:3})})</span><span class="val">${fmt.brl(c.valorAjustado)}</span></div>
-      <div class="calc-row"><span class="lbl">Taxa Horária (÷ 160h mensais)</span><span class="val">${fmt.brl(c.taxaHoraria)}/h</span></div>
+      <div class="calc-row"><span class="lbl">Taxa Horária (÷ ${CFG.horasMes}h mensais)</span><span class="val">${fmt.brl(c.taxaHoraria)}/h</span></div>
       <div class="calc-row"><span class="lbl">Adicional de Análise (${s.horasAnalise}h)</span><span class="val">${fmt.brl(c.adicionalHoras)}</span></div>
       <hr class="calc-divider">
       <div class="calc-row"><span class="lbl">Subtotal</span><span class="val">${fmt.brl(c.subtotal)}</span></div>
-      <div class="calc-row"><span class="lbl">Imposto 4,5%</span><span class="val">${fmt.brl(c.iss)}</span></div>
+      <div class="calc-row"><span class="lbl">Imposto ${fmt.pct(CFG.iss)}</span><span class="val">${fmt.brl(c.iss)}</span></div>
     </div>
 
     <div class="calc-total-box">
@@ -397,7 +618,7 @@ function buildStep3() {
         <div class="pay-badge pb-green">Recomendado</div>
       </div>
       <div class="pay-row"><span class="lbl">Valor original</span><span class="val">${fmt.brl(c.totalFixo)}</span></div>
-      <div class="pay-row"><span class="lbl">Desconto de 8%</span><span class="val" style="color:var(--ok)">− ${fmt.brl(c.avistaEconomia)}</span></div>
+      <div class="pay-row"><span class="lbl">Desconto de ${fmt.pct(CFG.avista)}</span><span class="val" style="color:var(--ok)">− ${fmt.brl(c.avistaEconomia)}</span></div>
       <div class="pay-row" style="font-size:16px;font-weight:800;padding-top:8px">
         <span>Valor Final à Vista</span><span style="color:var(--ok)">${fmt.brl(c.avista)}</span>
       </div>
@@ -410,8 +631,8 @@ function buildStep3() {
         <div class="pay-title">📄 Opção 2 — Parcelado</div>
         <div class="pay-badge pb-blue">Sem Juros</div>
       </div>
-      <div class="pay-row"><span class="lbl">Entrada (30%)</span><span class="val">${fmt.brl(c.entrada)}</span></div>
-      <div class="pay-row"><span class="lbl">Saldo restante (70%)</span><span class="val">${fmt.brl(c.saldo)}</span></div>
+      <div class="pay-row"><span class="lbl">Entrada (${fmt.pct(CFG.entrada)})</span><span class="val">${fmt.brl(c.entrada)}</span></div>
+      <div class="pay-row"><span class="lbl">Saldo restante (${fmt.pct(100-CFG.entrada)})</span><span class="val">${fmt.brl(c.saldo)}</span></div>
       <div class="pay-row"><span class="lbl">Parcelamento do saldo</span><span class="val">${c.nParcelas}x de ${fmt.brl(c.valorParcela)}</span></div>
       <div class="pay-row" style="font-weight:800;font-size:14px;padding-top:8px">
         <span>Total</span><span>${fmt.brl(c.totalFixo)}</span>
@@ -426,7 +647,7 @@ function buildStep3() {
     <div class="pay-card">
       <div class="pay-header">
         <div class="pay-title">💳 Opção 3 — Cartão de Crédito</div>
-        <div class="pay-badge pb-red">Juros compostos 2,5% a.m.</div>
+        <div class="pay-badge pb-red">Juros compostos ${fmt.pct(CFG.cartao)} a.m.</div>
       </div>
       <table class="cc-table">
         <thead>
@@ -544,7 +765,7 @@ function showSummary() {
       <div class="sum-row"><span class="lbl">Tipo de Serviço</span><span class="val">${svNames}</span></div>
       <div class="sum-row"><span class="lbl">Valor Base OAB/SC</span><span class="val">${fmt.brl(s.valorBase)}</span></div>
       <div class="sum-row"><span class="lbl">Horas de Análise</span><span class="val">${s.horasAnalise}h</span></div>
-      ${s.tutelaLiminar?'<div class="sum-row"><span class="lbl">Tutela / Liminar</span><span class="val">Sim (+25%)</span></div>':''}
+      ${s.tutelaLiminar?`<div class="sum-row"><span class="lbl">Tutela / Liminar</span><span class="val">Sim (+${fmt.pct(CFG.tutela)})</span></div>`:''}
     </div>
 
     <div class="sum-section">
@@ -552,7 +773,7 @@ function showSummary() {
       <div class="sum-row"><span class="lbl">Urgência (Nível ${s.urgencia} — ${LEVEL_LABELS[s.urgencia]})</span><span class="val">+${fmt.pct(c.pctUrgencia)}</span></div>
       <div class="sum-row"><span class="lbl">Especificidade (Nível ${s.especificidade} — ${LEVEL_LABELS[s.especificidade]})</span><span class="val">+${fmt.pct(c.pctEspecific)}</span></div>
       <div class="sum-row"><span class="lbl">Complexidade (Nível ${s.complexidade} — ${LEVEL_LABELS[s.complexidade]})</span><span class="val">+${fmt.pct(c.pctComplexidade)}</span></div>
-      ${s.tutelaLiminar?'<div class="sum-row"><span class="lbl">Tutela / Liminar</span><span class="val">+25,0%</span></div>':''}
+      ${s.tutelaLiminar?`<div class="sum-row"><span class="lbl">Tutela / Liminar</span><span class="val">+${fmt.pct(CFG.tutela)}</span></div>`:''}
       <div class="sum-row" style="font-weight:700"><span class="lbl" style="color:var(--t2)">Total de Ajustes</span><span class="val">+${fmt.pct(c.pctTotal)}</span></div>
     </div>
 
@@ -561,7 +782,7 @@ function showSummary() {
       <div class="sum-row"><span class="lbl">Valor Ajustado</span><span class="val">${fmt.brl(c.valorAjustado)}</span></div>
       <div class="sum-row"><span class="lbl">Adicional de Análise</span><span class="val">${fmt.brl(c.adicionalHoras)}</span></div>
       <div class="sum-row"><span class="lbl">Subtotal</span><span class="val">${fmt.brl(c.subtotal)}</span></div>
-      <div class="sum-row"><span class="lbl">Imposto 4,5%</span><span class="val">${fmt.brl(c.iss)}</span></div>
+      <div class="sum-row"><span class="lbl">Imposto ${fmt.pct(CFG.iss)}</span><span class="val">${fmt.brl(c.iss)}</span></div>
       <div class="sum-row" style="font-weight:800;font-size:14px;padding-top:6px">
         <span style="color:var(--t1)">TOTAL HONORÁRIOS FIXOS</span>
         <span style="color:var(--a1)">${fmt.brl(c.totalFixo)}</span>
@@ -583,7 +804,7 @@ function showSummary() {
 
     <div class="sum-section">
       <div class="sum-section-title">Opções de Pagamento</div>
-      <div class="sum-row"><span class="lbl">À Vista (8% desc.)</span><span class="val" style="color:var(--ok)">${fmt.brl(c.avista)} <span style="color:var(--t3);font-weight:400">(ec. ${fmt.brl(c.avistaEconomia)})</span></span></div>
+      <div class="sum-row"><span class="lbl">À Vista (${fmt.pct(CFG.avista)} desc.)</span><span class="val" style="color:var(--ok)">${fmt.brl(c.avista)} <span style="color:var(--t3);font-weight:400">(ec. ${fmt.brl(c.avistaEconomia)})</span></span></div>
       <div class="sum-row"><span class="lbl">Parcelado (Boleto/Pix)</span><span class="val">Entrada ${fmt.brl(c.entrada)} + ${c.nParcelas}x de ${fmt.brl(c.valorParcela)}</span></div>
       ${ccSumRows}
     </div>
@@ -727,15 +948,17 @@ updateProgress(1);
 ══════════════════════════════════════════════════════════════════ */
 (function() {
 
-  // ── Parâmetros ──
-  const PARAMS = {
-    imposto:    0.045,
-    invest:     0.150,
-    escritorio: 0.100,
-    // Restante = 1 - 0.045 - 0.15 - 0.10 = 0.705
-    // Pró-labore = restante * 0.75 = 0.52875
-    // Reserva    = restante * 0.25 = 0.17625
-  };
+  // ── Parâmetros — lidos do CFG global ──
+  function getDistParams() {
+    const imp  = CFG.distImposto   / 100;
+    const inv  = CFG.distInvest    / 100;
+    const esc  = CFG.distEscritorio/ 100;
+    const plFrac = CFG.distProlabore / 100;
+    const rest = Math.max(0, 1 - imp - inv - esc);
+    const pl   = rest * plFrac;
+    const res  = rest - pl;
+    return { imp, inv, esc, rest, pl, res };
+  }
 
   // ── Formatação ──
   function fmtBRL(v) {
@@ -770,67 +993,23 @@ updateProgress(1);
     renderDist();
   });
 
-  // ── Linhas da tabela ──
-  const ROWS = [
-    {
-      id: 'imposto',
-      label: 'Simples Nacional',
-      dotClass: 'color-imposto',
-      pct: 4.5,
-      calcFn: v => v * PARAMS.imposto,
-      sub: false,
-      restante: false,
-    },
-    {
-      id: 'invest',
-      label: 'Investimento',
-      dotClass: 'color-invest',
-      pct: 15,
-      calcFn: v => v * PARAMS.invest,
-      sub: false,
-      restante: false,
-    },
-    {
-      id: 'escritorio',
-      label: 'Escritório',
-      dotClass: 'color-escritorio',
-      pct: 10,
-      calcFn: v => v * PARAMS.escritorio,
-      sub: false,
-      restante: false,
-    },
-    {
-      id: 'restante',
-      label: 'Restante',
-      dotClass: 'color-restante',
-      pct: 70.5,
-      calcFn: v => v * 0.705,
-      sub: false,
-      restante: true,
-    },
-    {
-      id: 'prolabore',
-      label: 'Pró-labore',
-      dotClass: 'color-prolabore',
-      pct: 52.875,
-      calcFn: v => v * 0.52875,
-      sub: true,
-      restante: false,
-    },
-    {
-      id: 'reserva',
-      label: 'Reserva de emergência',
-      dotClass: 'color-reserva',
-      pct: 17.625,
-      calcFn: v => v * 0.17625,
-      sub: true,
-      restante: false,
-    },
-  ];
+  // ── Linhas da tabela — geradas dinamicamente a partir de CFG ──
+  function getRows() {
+    const p = getDistParams();
+    return [
+      { id:'imposto',   label:'Simples Nacional',      dotClass:'color-imposto',   pctVal: p.imp,  calcFn: v => v * p.imp,  sub:false, restante:false },
+      { id:'invest',    label:'Investimento',           dotClass:'color-invest',    pctVal: p.inv,  calcFn: v => v * p.inv,  sub:false, restante:false },
+      { id:'escritorio',label:'Escritório',             dotClass:'color-escritorio',pctVal: p.esc,  calcFn: v => v * p.esc,  sub:false, restante:false },
+      { id:'restante',  label:'Restante',               dotClass:'color-restante',  pctVal: p.rest, calcFn: v => v * p.rest, sub:false, restante:true  },
+      { id:'prolabore', label:'Pró-labore',             dotClass:'color-prolabore', pctVal: p.pl,   calcFn: v => v * p.pl,   sub:true,  restante:false },
+      { id:'reserva',   label:'Reserva de emergência',  dotClass:'color-reserva',   pctVal: p.res,  calcFn: v => v * p.res,  sub:true,  restante:false },
+    ];
+  }
 
   // ── Renderiza tabela ──
   function renderDist() {
     const V = getInputValue();
+    const ROWS = getRows();
 
     // Atualiza total
     document.getElementById('dist-total-val').textContent = fmtBRL(V);
@@ -838,7 +1017,6 @@ updateProgress(1);
     const tbody = document.getElementById('dist-tbody');
 
     // Calcula valores para escalar barras (máx = valor do bruto)
-    const valores = ROWS.map(r => ({ id: r.id, val: r.calcFn(V) }));
     const maxVal = V > 0 ? V : 1;
 
     tbody.innerHTML = ROWS.map(row => {
@@ -869,18 +1047,19 @@ updateProgress(1);
               <div class="dist-bar-fill" style="width:${barPct.toFixed(1)}%;background:${barColor};opacity:${row.sub ? '0.7' : '1'}"></div>
             </div>
           </td>
-          <td class="col-pct">${fmtPctDisplay(row.pct)}</td>
+          <td class="col-pct">${fmtPctDisplay(row.pctVal * 100)}</td>
           <td class="${valClass}">${fmtBRL(val)}</td>
         </tr>`;
     }).join('');
 
     // Atualiza valores nos cards de parâmetro (coluna direita)
+    const p = getDistParams();
     const paramMap = {
-      imposto:    v => v * PARAMS.imposto,
-      invest:     v => v * PARAMS.invest,
-      escritorio: v => v * PARAMS.escritorio,
-      prolabore:  v => v * 0.52875,
-      reserva:    v => v * 0.17625,
+      imposto:    v => v * p.imp,
+      invest:     v => v * p.inv,
+      escritorio: v => v * p.esc,
+      prolabore:  v => v * p.pl,
+      reserva:    v => v * p.res,
     };
     Object.entries(paramMap).forEach(([id, fn]) => {
       const el = document.getElementById('dpc-val-' + id);
@@ -894,6 +1073,9 @@ updateProgress(1);
       }
     });
   }
+
+  // Expõe renderDist globalmente para ser chamado ao salvar configurações
+  window._renderDist = renderDist;
 
   // Render inicial (zerado)
   renderDist();
@@ -2231,6 +2413,9 @@ window._currentUser = null;
     var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
     var greetingEl = document.getElementById('hw-greeting');
     if (greetingEl) greetingEl.textContent = saudacao + ', ' + primeiroNome + ' 👋';
+
+    // Carrega configurações personalizadas do usuário
+    cfgCarregar();
 
     // Data na home
     var hwTime = document.getElementById('hw-time');
