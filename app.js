@@ -838,9 +838,10 @@ function showSummary() {
     </div>`:''}
 
     <div class="sum-actions">
-      <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimir</button>
       <button class="btn btn-outline" id="btn-copy-text">📋 Copiar Texto</button>
-      <button class="btn btn-outline" onclick="novaProposta()">✦ Nova Proposta</button>
+      <button class="btn btn-outline" onclick="abrirPropostaForm()">📄 Gerar Proposta (Word)</button>
+      <div style="flex-basis:100%;height:0;border-top:1px solid var(--div);margin:4px 0"></div>
+      <button class="btn btn-ghost" onclick="novaProposta()">✦ Nova Proposta</button>
       <button class="btn btn-ghost" onclick="closeSummary()">Fechar</button>
     </div>`;
 

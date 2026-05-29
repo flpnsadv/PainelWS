@@ -13,6 +13,10 @@
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Gerador de .docx -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
   <!-- Estilos do painel -->
   <link rel="stylesheet" href="style.css">
 </head>
@@ -1548,7 +1552,33 @@
 </div>
 
 
+<!-- Modal mini-form: Gerar Proposta em .docx -->
+<div class="plat-modal-backdrop hidden" id="propostaFormModal">
+  <div class="plat-modal-content" style="max-width:520px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title">Gerar Proposta em Word</div>
+      <button class="plat-modal-close" onclick="fecharPropostaForm()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div style="margin-bottom:16px">
+        <label class="field-label" style="display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--t2)">Descrição do caso</label>
+        <textarea id="proposta-descricao" rows="4" placeholder="Parágrafo descrevendo a situação do cliente e o serviço a ser prestado" style="width:100%;box-sizing:border-box"></textarea>
+      </div>
+      <div>
+        <label class="field-label" style="display:block;margin-bottom:6px;font-size:13px;font-weight:600;color:var(--t2)">Objetivos</label>
+        <textarea id="proposta-objetivos" rows="4" placeholder="Um objetivo por linha — mínimo 2" style="width:100%;box-sizing:border-box"></textarea>
+        <div style="font-size:11px;color:var(--t3);margin-top:4px">Um objetivo por linha. Mínimo 2 objetivos.</div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="btn btn-ghost" onclick="fecharPropostaForm()">Cancelar</button>
+      <button class="btn btn-outline" id="btn-gerar-docx" onclick="confirmarGerarProposta()">📄 Gerar documento</button>
+    </div>
+  </div>
+</div>
+
 <!-- Lógica do painel -->
 <script src="app.js"></script>
+<script src="proposta-docx.js"></script>
 </body>
 </html>
