@@ -569,6 +569,12 @@
         <div class="page-header-title">Calculadora de Honorários</div>
         <div class="page-header-sub">Proposta advocatícia com parâmetros OAB/SC — cálculo de honorários mínimos, justos e ideais</div>
       </div>
+      <div class="page-header-right">
+        <button class="tool-cfg-btn" onclick="navigate('config')" title="Configurar parâmetros da calculadora">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Configurar
+        </button>
+      </div>
     </header>
 
     <div class="wizard-card">
@@ -616,6 +622,12 @@
         <div class="page-header-eyebrow">Windsor &amp; Serrão</div>
         <div class="page-header-title">Distribuição de Honorários</div>
         <div class="page-header-sub">Rateio interno — impostos, escritório, pró-labore e reserva de emergência</div>
+      </div>
+      <div class="page-header-right">
+        <button class="tool-cfg-btn" onclick="navigate('config'); cfgSwitchTab('distribuicao')" title="Configurar percentuais de distribuição">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+          Configurar
+        </button>
       </div>
     </header>
 
@@ -1204,165 +1216,289 @@
   </section>
 
   <!-- ── CONFIGURAÇÕES ── -->
-  <section id="page-config" class="page-section" style="padding:28px 24px 64px;">
-    <div style="max-width:720px;margin:0 auto;">
+  <section id="page-config" class="page-section cfg-page">
 
-      <div class="page-header">
-        <div class="page-eyebrow">Sistema</div>
-        <div class="page-title">Configurações</div>
-        <div class="page-sub">Personalize os parâmetros das calculadoras. As alterações são salvas automaticamente e aplicadas em todos os cálculos.</div>
+    <header class="page-header">
+      <div class="page-header-icon">⚙️</div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">Sistema</div>
+        <div class="page-header-title">Configurações</div>
+        <div class="page-header-sub">Personalize os parâmetros das calculadoras. Alterações são salvas no Supabase e aplicadas imediatamente em todos os cálculos.</div>
       </div>
-
-      <!-- Banner de status -->
-      <div id="cfg-banner" style="display:none;margin:16px 0 0;padding:11px 16px;border-radius:var(--r10);font-size:13px;font-weight:600;"></div>
-
-      <!-- ── BLOCO 1: Honorários — Acréscimos por nível ── -->
-      <div class="cfg-block" style="margin-top:28px;">
-        <div class="cfg-block-header">
-          <div class="cfg-block-icon">⚖️</div>
-          <div>
-            <div class="cfg-block-title">Calculadora de Honorários — Acréscimos</div>
-            <div class="cfg-block-sub">Percentual adicionado ao valor base em cada nível (1 = Mínimo … 5 = Máximo). Nível 1 é sempre 0%.</div>
-          </div>
-        </div>
-
-        <div class="cfg-table-wrap">
-          <table class="cfg-table">
-            <thead>
-              <tr>
-                <th>Critério</th>
-                <th>Nível 2 — Baixo</th>
-                <th>Nível 3 — Médio</th>
-                <th>Nível 4 — Alto</th>
-                <th>Nível 5 — Máximo</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="cfg-row-label">🔴 Urgência</td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-2" min="0" max="200" step="0.5" placeholder="5"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-3" min="0" max="200" step="0.5" placeholder="10"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-4" min="0" max="200" step="0.5" placeholder="15"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-5" min="0" max="200" step="0.5" placeholder="20"><span class="cfg-unit">%</span></div></td>
-              </tr>
-              <tr>
-                <td class="cfg-row-label">🔵 Especificidade</td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-2" min="0" max="200" step="0.5" placeholder="7.5"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-3" min="0" max="200" step="0.5" placeholder="15"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-4" min="0" max="200" step="0.5" placeholder="22.5"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-5" min="0" max="200" step="0.5" placeholder="30"><span class="cfg-unit">%</span></div></td>
-              </tr>
-              <tr>
-                <td class="cfg-row-label">🟣 Complexidade</td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-2" min="0" max="200" step="0.5" placeholder="10"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-3" min="0" max="200" step="0.5" placeholder="20"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-4" min="0" max="200" step="0.5" placeholder="30"><span class="cfg-unit">%</span></div></td>
-                <td><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-5" min="0" max="200" step="0.5" placeholder="40"><span class="cfg-unit">%</span></div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="page-header-right">
+        <span id="cfg-saved-badge" class="cfg-saved-badge" style="display:none;">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Salvo
+        </span>
       </div>
+    </header>
 
-      <!-- ── BLOCO 2: Outros parâmetros da calc. de honorários ── -->
-      <div class="cfg-block" style="margin-top:20px;">
-        <div class="cfg-block-header">
-          <div class="cfg-block-icon">📋</div>
-          <div>
-            <div class="cfg-block-title">Honorários — Demais Parâmetros</div>
-            <div class="cfg-block-sub">Tutela/liminar, imposto e condições de pagamento.</div>
-          </div>
-        </div>
+    <!-- Banner de status -->
+    <div id="cfg-banner" style="display:none;margin:0 24px 0;padding:11px 16px;border-radius:var(--r10);font-size:13px;font-weight:600;"></div>
 
-        <div class="cfg-fields-grid">
-          <div class="cfg-field">
-            <label class="cfg-label">Tutela / Liminar</label>
-            <div class="cfg-hint">Acréscimo quando há pedido de tutela ou liminar</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-tutela" min="0" max="100" step="0.5" placeholder="25"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Alíquota ISS / Simples</label>
-            <div class="cfg-hint">Imposto aplicado sobre o subtotal dos honorários</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-iss" min="0" max="20" step="0.1" placeholder="4.5"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Desconto à Vista</label>
-            <div class="cfg-hint">Desconto oferecido no pagamento à vista</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-avista" min="0" max="50" step="0.5" placeholder="8"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Entrada (Parcelado)</label>
-            <div class="cfg-hint">Percentual de entrada no pagamento parcelado</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-entrada" min="0" max="80" step="5" placeholder="30"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Taxa Cartão de Crédito</label>
-            <div class="cfg-hint">Juros compostos ao mês cobrados no cartão</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cartao" min="0" max="15" step="0.1" placeholder="2.5"><span class="cfg-unit">% a.m.</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Horas/Mês (Taxa Horária)</label>
-            <div class="cfg-hint">Base de horas mensais usada para calcular taxa horária</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-horas-mes" min="40" max="300" step="4" placeholder="160"><span class="cfg-unit">h</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── BLOCO 3: Distribuição de honorários ── -->
-      <div class="cfg-block" style="margin-top:20px;">
-        <div class="cfg-block-header">
-          <div class="cfg-block-icon">📊</div>
-          <div>
-            <div class="cfg-block-title">Distribuição de Honorários</div>
-            <div class="cfg-block-sub">Percentuais de rateio do valor recebido. Do restante (após imposto + investimento + escritório), o pró-labore e a reserva dividem proporcionalmente.</div>
-          </div>
-        </div>
-
-        <div class="cfg-fields-grid">
-          <div class="cfg-field">
-            <label class="cfg-label">Simples Nacional</label>
-            <div class="cfg-hint">Imposto deduzido primeiro</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-imposto" min="0" max="30" step="0.1" placeholder="4.5"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Investimento</label>
-            <div class="cfg-hint">Reserva para reinvestimento no negócio</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-invest" min="0" max="50" step="1" placeholder="15"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Escritório</label>
-            <div class="cfg-hint">Custeio operacional do escritório</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-escritorio" min="0" max="50" step="1" placeholder="10"><span class="cfg-unit">%</span></div>
-          </div>
-          <div class="cfg-field">
-            <label class="cfg-label">Pró-labore (% do restante)</label>
-            <div class="cfg-hint">Fatia do restante destinada ao pró-labore</div>
-            <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-prolabore" min="0" max="100" step="1" placeholder="75"><span class="cfg-unit">%</span></div>
-          </div>
-        </div>
-
-        <!-- Preview da distribuição -->
-        <div id="cfg-dist-preview" style="margin-top:16px;padding:14px 16px;background:var(--s2);border-radius:var(--r10);display:flex;flex-wrap:wrap;gap:12px 24px;">
-          <div class="cfg-preview-item"><span class="cfg-preview-dot" style="background:#f06060"></span><span id="cfg-prev-imposto">Simples: 4,5%</span></div>
-          <div class="cfg-preview-item"><span class="cfg-preview-dot" style="background:#5b8ef5"></span><span id="cfg-prev-invest">Investimento: 15,0%</span></div>
-          <div class="cfg-preview-item"><span class="cfg-preview-dot" style="background:#a78bfa"></span><span id="cfg-prev-escritorio">Escritório: 10,0%</span></div>
-          <div class="cfg-preview-item"><span class="cfg-preview-dot" style="background:#34d399"></span><span id="cfg-prev-prolabore">Pró-labore: 52,9%</span></div>
-          <div class="cfg-preview-item"><span class="cfg-preview-dot" style="background:#fbbf24"></span><span id="cfg-prev-reserva">Reserva: 17,6%</span></div>
-          <div id="cfg-prev-alerta" style="width:100%;font-size:11px;color:var(--err);display:none;">⚠ A soma imposto + investimento + escritório ultrapassa 100%. Revise os valores.</div>
-        </div>
-      </div>
-
-      <!-- ── Botões de ação ── -->
-      <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
-        <button class="btn btn-primary" id="cfg-btn-salvar" onclick="cfgSalvar()">
-          💾 Salvar Configurações
-        </button>
-        <button class="btn btn-outline" onclick="cfgRestaurarPadroes()">
-          ↩ Restaurar Padrões
-        </button>
-      </div>
-
+    <!-- Tab Navigation -->
+    <div class="cfg-tabs">
+      <button class="cfg-tab active" data-cfg-tab="honorarios" onclick="cfgSwitchTab('honorarios')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Calc. Honorários
+      </button>
+      <button class="cfg-tab" data-cfg-tab="distribuicao" onclick="cfgSwitchTab('distribuicao')">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Distribuição
+      </button>
     </div>
+
+    <!-- PANEL 1: Calculadora de Honorários -->
+    <div id="cfg-panel-honorarios" class="cfg-panel active">
+      <div class="cfg-panel-inner">
+
+        <!-- Acréscimos por Nível -->
+        <div class="cfg-section">
+          <div class="cfg-section-hd">
+            <div class="cfg-section-title">Acréscimos por Nível</div>
+            <div class="cfg-section-sub">Percentual adicionado ao valor base em cada nível (1 = Mínimo … 5 = Máximo). O nível 1 é sempre 0%.</div>
+          </div>
+
+          <div class="cfg-levels-card">
+            <div class="cfg-levels-header">
+              <div class="cfg-levels-criterion-col"></div>
+              <div class="cfg-levels-col">
+                <div class="cfg-level-badge cfg-level-2">Nível 2</div>
+                <div class="cfg-level-sub">Baixo</div>
+              </div>
+              <div class="cfg-levels-col">
+                <div class="cfg-level-badge cfg-level-3">Nível 3</div>
+                <div class="cfg-level-sub">Médio</div>
+              </div>
+              <div class="cfg-levels-col">
+                <div class="cfg-level-badge cfg-level-4">Nível 4</div>
+                <div class="cfg-level-sub">Alto</div>
+              </div>
+              <div class="cfg-levels-col">
+                <div class="cfg-level-badge cfg-level-5">Nível 5</div>
+                <div class="cfg-level-sub">Máximo</div>
+              </div>
+            </div>
+
+            <div class="cfg-level-row">
+              <div class="cfg-level-criterion">
+                <span class="cfg-crit-dot" style="background:#f06060"></span>
+                <span class="cfg-crit-name">Urgência</span>
+              </div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-2" min="0" max="200" step="0.5" placeholder="5"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-3" min="0" max="200" step="0.5" placeholder="10"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-4" min="0" max="200" step="0.5" placeholder="15"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-urg-5" min="0" max="200" step="0.5" placeholder="20"><span class="cfg-unit">%</span></div></div>
+            </div>
+
+            <div class="cfg-level-row">
+              <div class="cfg-level-criterion">
+                <span class="cfg-crit-dot" style="background:#5b8ef5"></span>
+                <span class="cfg-crit-name">Especificidade</span>
+              </div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-2" min="0" max="200" step="0.5" placeholder="7.5"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-3" min="0" max="200" step="0.5" placeholder="15"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-4" min="0" max="200" step="0.5" placeholder="22.5"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-esp-5" min="0" max="200" step="0.5" placeholder="30"><span class="cfg-unit">%</span></div></div>
+            </div>
+
+            <div class="cfg-level-row">
+              <div class="cfg-level-criterion">
+                <span class="cfg-crit-dot" style="background:#a78bfa"></span>
+                <span class="cfg-crit-name">Complexidade</span>
+              </div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-2" min="0" max="200" step="0.5" placeholder="10"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-3" min="0" max="200" step="0.5" placeholder="20"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-4" min="0" max="200" step="0.5" placeholder="30"><span class="cfg-unit">%</span></div></div>
+              <div class="cfg-levels-col"><div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cmp-5" min="0" max="200" step="0.5" placeholder="40"><span class="cfg-unit">%</span></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Parâmetros de Pagamento -->
+        <div class="cfg-section">
+          <div class="cfg-section-hd">
+            <div class="cfg-section-title">Parâmetros de Pagamento</div>
+            <div class="cfg-section-sub">Condições de pagamento, impostos e ajustes aplicados nos cálculos.</div>
+          </div>
+
+          <div class="cfg-params-grid">
+
+            <div class="cfg-param-card">
+              <div class="cfg-param-top">
+                <div class="cfg-param-icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                </div>
+                <span class="cfg-param-name">Tutela / Liminar</span>
+              </div>
+              <div class="cfg-param-hint">Acréscimo quando há pedido de tutela ou liminar</div>
+              <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-tutela" min="0" max="100" step="0.5" placeholder="25"><span class="cfg-unit">%</span></div>
+            </div>
+
+            <div class="cfg-param-card">
+              <div class="cfg-param-top">
+                <div class="cfg-param-icon" style="background:rgba(240,96,96,0.12);color:#f06060;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
+                </div>
+                <span class="cfg-param-name">Alíquota ISS / Simples</span>
+              </div>
+              <div class="cfg-param-hint">Imposto aplicado sobre o subtotal dos honorários</div>
+              <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-iss" min="0" max="20" step="0.1" placeholder="4.5"><span class="cfg-unit">%</span></div>
+            </div>
+
+            <div class="cfg-param-card">
+              <div class="cfg-param-top">
+                <div class="cfg-param-icon" style="background:rgba(52,211,153,0.12);color:#34d399;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <span class="cfg-param-name">Desconto à Vista</span>
+              </div>
+              <div class="cfg-param-hint">Desconto oferecido no pagamento à vista</div>
+              <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-avista" min="0" max="50" step="0.5" placeholder="8"><span class="cfg-unit">%</span></div>
+            </div>
+
+            <div class="cfg-param-card">
+              <div class="cfg-param-top">
+                <div class="cfg-param-icon" style="background:rgba(91,138,245,0.12);color:#5b8ef5;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </div>
+                <span class="cfg-param-name">Entrada (Parcelado)</span>
+              </div>
+              <div class="cfg-param-hint">Percentual de entrada no pagamento parcelado</div>
+              <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-entrada" min="0" max="80" step="5" placeholder="30"><span class="cfg-unit">%</span></div>
+            </div>
+
+            <div class="cfg-param-card">
+              <div class="cfg-param-top">
+                <div class="cfg-param-icon" style="background:rgba(167,139,250,0.12);color:#a78bfa;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+                </div>
+                <span class="cfg-param-name">Taxa Cartão de Crédito</span>
+              </div>
+              <div class="cfg-param-hint">Juros compostos ao mês cobrados no cartão</div>
+              <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-cartao" min="0" max="15" step="0.1" placeholder="2.5"><span class="cfg-unit">% a.m.</span></div>
+            </div>
+
+            <div class="cfg-param-card">
+              <div class="cfg-param-top">
+                <div class="cfg-param-icon" style="background:rgba(251,191,36,0.12);color:#fbbf24;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <span class="cfg-param-name">Horas / Mês</span>
+              </div>
+              <div class="cfg-param-hint">Base de horas mensais para calcular a taxa horária</div>
+              <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-horas-mes" min="40" max="300" step="4" placeholder="160"><span class="cfg-unit">h</span></div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PANEL 2: Distribuição de Honorários -->
+    <div id="cfg-panel-distribuicao" class="cfg-panel">
+      <div class="cfg-panel-inner">
+
+        <div class="cfg-section">
+          <div class="cfg-section-hd">
+            <div class="cfg-section-title">Percentuais de Distribuição</div>
+            <div class="cfg-section-sub">Do restante (após Simples + Investimento + Escritório), o pró-labore e a reserva dividem proporcionalmente.</div>
+          </div>
+
+          <div class="cfg-dist-layout">
+
+            <div class="cfg-dist-inputs">
+              <div class="cfg-dist-field">
+                <div class="cfg-dist-field-stripe" style="background:#f06060"></div>
+                <div class="cfg-dist-field-body">
+                  <label class="cfg-label">Simples Nacional</label>
+                  <div class="cfg-hint">Imposto deduzido primeiro</div>
+                  <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-imposto" min="0" max="30" step="0.1" placeholder="4.5"><span class="cfg-unit">%</span></div>
+                </div>
+              </div>
+              <div class="cfg-dist-field">
+                <div class="cfg-dist-field-stripe" style="background:#5b8ef5"></div>
+                <div class="cfg-dist-field-body">
+                  <label class="cfg-label">Investimento</label>
+                  <div class="cfg-hint">Reserva para reinvestimento no negócio</div>
+                  <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-invest" min="0" max="50" step="1" placeholder="15"><span class="cfg-unit">%</span></div>
+                </div>
+              </div>
+              <div class="cfg-dist-field">
+                <div class="cfg-dist-field-stripe" style="background:#a78bfa"></div>
+                <div class="cfg-dist-field-body">
+                  <label class="cfg-label">Escritório</label>
+                  <div class="cfg-hint">Custeio operacional do escritório</div>
+                  <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-escritorio" min="0" max="50" step="1" placeholder="10"><span class="cfg-unit">%</span></div>
+                </div>
+              </div>
+              <div class="cfg-dist-field">
+                <div class="cfg-dist-field-stripe" style="background:#34d399"></div>
+                <div class="cfg-dist-field-body">
+                  <label class="cfg-label">Pró-labore (% do restante)</label>
+                  <div class="cfg-hint">Fatia do restante destinada ao pró-labore</div>
+                  <div class="cfg-input-wrap"><input type="number" class="cfg-input" id="cfg-dist-prolabore" min="0" max="100" step="1" placeholder="75"><span class="cfg-unit">%</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cfg-dist-preview-panel">
+              <div class="cfg-dist-preview-title">Visualização em tempo real</div>
+              <div class="cfg-dist-bars">
+                <div class="cfg-dist-bar-row">
+                  <div class="cfg-dist-bar-label"><span class="cfg-preview-dot" style="background:#f06060"></span><span id="cfg-prev-imposto">Simples: 4,5%</span></div>
+                  <div class="cfg-dist-bar-track"><div class="cfg-dist-bar-fill" id="cfg-bar-imposto" style="background:#f06060;width:4.5%"></div></div>
+                </div>
+                <div class="cfg-dist-bar-row">
+                  <div class="cfg-dist-bar-label"><span class="cfg-preview-dot" style="background:#5b8ef5"></span><span id="cfg-prev-invest">Investimento: 15,0%</span></div>
+                  <div class="cfg-dist-bar-track"><div class="cfg-dist-bar-fill" id="cfg-bar-invest" style="background:#5b8ef5;width:15%"></div></div>
+                </div>
+                <div class="cfg-dist-bar-row">
+                  <div class="cfg-dist-bar-label"><span class="cfg-preview-dot" style="background:#a78bfa"></span><span id="cfg-prev-escritorio">Escritório: 10,0%</span></div>
+                  <div class="cfg-dist-bar-track"><div class="cfg-dist-bar-fill" id="cfg-bar-escritorio" style="background:#a78bfa;width:10%"></div></div>
+                </div>
+                <div class="cfg-dist-bar-row">
+                  <div class="cfg-dist-bar-label"><span class="cfg-preview-dot" style="background:#34d399"></span><span id="cfg-prev-prolabore">Pró-labore: 52,9%</span></div>
+                  <div class="cfg-dist-bar-track"><div class="cfg-dist-bar-fill" id="cfg-bar-prolabore" style="background:#34d399;width:52.9%"></div></div>
+                </div>
+                <div class="cfg-dist-bar-row">
+                  <div class="cfg-dist-bar-label"><span class="cfg-preview-dot" style="background:#fbbf24"></span><span id="cfg-prev-reserva">Reserva: 17,6%</span></div>
+                  <div class="cfg-dist-bar-track"><div class="cfg-dist-bar-fill" id="cfg-bar-reserva" style="background:#fbbf24;width:17.6%"></div></div>
+                </div>
+                <div id="cfg-prev-alerta" style="display:none;margin-top:10px;font-size:11.5px;color:var(--err);display:none;align-items:center;gap:6px;">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                  A soma Simples + Investimento + Escritório ultrapassa 100%. Revise os valores.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="cfg-action-bar">
+      <div class="cfg-action-inner">
+        <div class="cfg-action-info">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          As alterações são aplicadas em todos os cálculos após salvar
+        </div>
+        <div class="cfg-action-btns">
+          <button class="btn btn-outline" onclick="cfgRestaurarPadroes()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Restaurar Padrões
+          </button>
+          <button class="btn btn-primary" id="cfg-btn-salvar" onclick="cfgSalvar()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Salvar Configurações
+          </button>
+        </div>
+      </div>
+    </div>
+
   </section>
 
 </div><!-- /main-content -->

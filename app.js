@@ -226,6 +226,16 @@ function cfgLerFormulario() {
   };
 }
 
+// ── Troca a aba ativa na página de configurações ──
+function cfgSwitchTab(tabId) {
+  document.querySelectorAll('.cfg-tab').forEach(t =>
+    t.classList.toggle('active', t.dataset.cfgTab === tabId)
+  );
+  document.querySelectorAll('.cfg-panel').forEach(p =>
+    p.classList.toggle('active', p.id === 'cfg-panel-' + tabId)
+  );
+}
+
 // ── Atualiza o preview de distribuição em tempo real ──
 function cfgAtualizarPreview() {
   const imp  = parseFloat(document.getElementById('cfg-dist-imposto')?.value) || CFG.distImposto;
@@ -240,6 +250,7 @@ function cfgAtualizarPreview() {
 
   const fmtP = v => v.toLocaleString('pt-BR', {minimumFractionDigits:1,maximumFractionDigits:1}) + '%';
   const setText = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  const setBar  = (id, pct) => { const el = document.getElementById(id); if (el) el.style.width = Math.min(100, Math.max(0, pct)) + '%'; };
 
   setText('cfg-prev-imposto',   'Simples: '      + fmtP(imp));
   setText('cfg-prev-invest',    'Investimento: ' + fmtP(inv));
@@ -247,8 +258,14 @@ function cfgAtualizarPreview() {
   setText('cfg-prev-prolabore', 'Pró-labore: '   + fmtP(pl));
   setText('cfg-prev-reserva',   'Reserva: '      + fmtP(res));
 
+  setBar('cfg-bar-imposto',    imp);
+  setBar('cfg-bar-invest',     inv);
+  setBar('cfg-bar-escritorio', esc);
+  setBar('cfg-bar-prolabore',  pl);
+  setBar('cfg-bar-reserva',    res);
+
   const alerta = document.getElementById('cfg-prev-alerta');
-  if (alerta) alerta.style.display = base > 100 ? 'block' : 'none';
+  if (alerta) alerta.style.display = base > 100 ? 'flex' : 'none';
 }
 
 // ── Ouve mudanças nos inputs de distribuição para atualizar o preview ──
@@ -306,6 +323,11 @@ async function cfgSalvar() {
       banner.textContent = '✓ Configurações salvas com sucesso! As calculadoras já usam os novos valores.';
       banner.className = 'ok'; banner.style.display = 'block';
       setTimeout(() => { banner.style.display='none'; }, 4000);
+    }
+    const badge = document.getElementById('cfg-saved-badge');
+    if (badge) {
+      badge.style.display = 'inline-flex';
+      setTimeout(() => { badge.style.display='none'; }, 4000);
     }
   } catch (err) {
     if (banner) {

@@ -2261,92 +2261,325 @@
     }
 
     /* ══════════════════════════════════════════════
-       CONFIGURAÇÕES
+       CONFIGURAÇÕES — redesign
     ══════════════════════════════════════════════ */
-    .cfg-block {
+
+    /* Botão de config nas ferramentas */
+    .tool-cfg-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: transparent;
+      border: 1px solid var(--gb);
+      border-radius: var(--r8);
+      color: var(--t2);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .16s, border-color .16s, color .16s;
+      white-space: nowrap;
+    }
+    .tool-cfg-btn:hover {
+      background: var(--adim);
+      border-color: rgba(91,138,245,.4);
+      color: var(--a1);
+    }
+
+    /* Badge salvo */
+    .cfg-saved-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 10px;
+      background: var(--ok-d);
+      border: 1px solid rgba(52,211,153,.2);
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ok);
+    }
+
+    /* Tab navigation */
+    .cfg-tabs {
+      display: flex;
+      gap: 2px;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--div);
+      margin-top: 4px;
+    }
+    .cfg-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 13px 16px;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--t3);
+      cursor: pointer;
+      transition: color .16s, border-color .16s;
+      white-space: nowrap;
+    }
+    .cfg-tab:hover:not(.active) { color: var(--t2); }
+    .cfg-tab.active {
+      color: var(--a1);
+      border-bottom-color: var(--a1);
+    }
+    .cfg-tab svg { flex-shrink: 0; }
+
+    /* Panels */
+    .cfg-panel { display: none; }
+    .cfg-panel.active { display: block; }
+    .cfg-panel-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 28px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Section inside panel */
+    .cfg-section {
       background: var(--glass-bg);
       border: 1px solid var(--glass-border);
       border-radius: var(--r16);
       padding: 22px 22px 20px;
     }
-    .cfg-block-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .cfg-block-icon {
-      font-size: 22px;
-      line-height: 1;
-      margin-top: 2px;
-      flex-shrink: 0;
-    }
-    .cfg-block-title {
+    .cfg-section-hd { margin-bottom: 20px; }
+    .cfg-section-title {
       font-family: 'Sora', sans-serif;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
       color: var(--t1);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
     }
-    .cfg-block-sub {
+    .cfg-section-sub {
       font-size: 12px;
       color: var(--t3);
       line-height: 1.55;
     }
 
-    /* Tabela de acréscimos */
-    .cfg-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-    .cfg-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 480px;
+    /* Acréscimos por nível — card grid */
+    .cfg-levels-card {
+      border: 1px solid var(--div);
+      border-radius: var(--r12);
+      overflow: hidden;
     }
-    .cfg-table th {
+    .cfg-levels-header,
+    .cfg-level-row {
+      display: grid;
+      grid-template-columns: 140px repeat(4, 1fr);
+      gap: 0;
+    }
+    .cfg-levels-header {
+      background: var(--s2);
+      border-bottom: 1px solid var(--div);
+    }
+    .cfg-level-row {
+      border-bottom: 1px solid var(--div);
+    }
+    .cfg-level-row:last-child { border-bottom: none; }
+    .cfg-level-row:hover { background: rgba(255,255,255,.015); }
+
+    .cfg-levels-criterion-col,
+    .cfg-levels-col {
+      padding: 12px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+    }
+    .cfg-levels-criterion-col { align-items: flex-start; }
+
+    .cfg-level-badge {
       font-family: 'Sora', sans-serif;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+    .cfg-level-2 { background: var(--s4); color: var(--t3); }
+    .cfg-level-3 { background: rgba(91,138,245,0.13); color: var(--a1); }
+    .cfg-level-4 { background: rgba(123,94,247,0.13); color: var(--a2); }
+    .cfg-level-5 { background: rgba(240,96,96,0.12); color: var(--err); }
+
+    .cfg-level-sub {
+      font-size: 10px;
       color: var(--t3);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      padding: 0 8px 10px;
-      text-align: center;
-      border-bottom: 1px solid var(--glass-border);
     }
-    .cfg-table th:first-child { text-align: left; padding-left: 0; }
-    .cfg-table td {
-      padding: 10px 8px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      text-align: center;
-      vertical-align: middle;
+    .cfg-level-criterion {
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
-    .cfg-table tr:last-child td { border-bottom: none; }
-    .cfg-row-label {
+    .cfg-crit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cfg-crit-name {
       font-size: 13px;
       font-weight: 600;
       color: var(--t2);
-      text-align: left !important;
-      padding-left: 0 !important;
       white-space: nowrap;
     }
-
-    /* Grid de campos simples */
-    .cfg-fields-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+    .cfg-levels-col .cfg-input-wrap {
+      width: 100%;
+      max-width: 110px;
     }
-    .cfg-field { display: flex; flex-direction: column; gap: 5px; }
-    .cfg-label {
+
+    /* Parâmetros grid */
+    .cfg-params-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .cfg-param-card {
+      background: var(--s2);
+      border: 1px solid var(--div);
+      border-radius: var(--r12);
+      padding: 14px 14px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color .16s;
+    }
+    .cfg-param-card:focus-within {
+      border-color: rgba(91,138,245,.35);
+    }
+    .cfg-param-top {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 2px;
+    }
+    .cfg-param-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--r8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .cfg-param-name {
       font-family: 'Sora', sans-serif;
       font-size: 12px;
       font-weight: 700;
+      color: var(--t1);
+      line-height: 1.3;
+    }
+    .cfg-param-hint {
+      font-size: 11px;
+      color: var(--t3);
+      line-height: 1.45;
+    }
+
+    /* Distribuição layout */
+    .cfg-dist-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .cfg-dist-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .cfg-dist-field {
+      display: flex;
+      align-items: stretch;
+      background: var(--s2);
+      border: 1px solid var(--div);
+      border-radius: var(--r10);
+      overflow: hidden;
+      transition: border-color .16s;
+    }
+    .cfg-dist-field:focus-within {
+      border-color: rgba(91,138,245,.35);
+    }
+    .cfg-dist-field-stripe {
+      width: 4px;
+      flex-shrink: 0;
+    }
+    .cfg-dist-field-body {
+      flex: 1;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Distribuição preview */
+    .cfg-dist-preview-panel {
+      background: var(--s2);
+      border: 1px solid var(--div);
+      border-radius: var(--r12);
+      padding: 18px 18px 16px;
+    }
+    .cfg-dist-preview-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--t3);
+      margin-bottom: 18px;
+    }
+    .cfg-dist-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+    }
+    .cfg-dist-bar-row { display: flex; flex-direction: column; gap: 5px; }
+    .cfg-dist-bar-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--t2);
+      font-weight: 500;
+    }
+    .cfg-dist-bar-track {
+      height: 5px;
+      background: var(--s3);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .cfg-dist-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .3s var(--ease);
+      min-width: 2px;
+    }
+
+    /* Shared input styles (preserved + extended) */
+    .cfg-label {
+      font-family: 'Sora', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
       color: var(--t2);
       text-transform: uppercase;
-      letter-spacing: .4px;
+      letter-spacing: .04em;
     }
     .cfg-hint { font-size: 11px; color: var(--t3); line-height: 1.45; }
-
-    /* Input com unidade */
+    .cfg-preview-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
     .cfg-input-wrap {
       display: flex;
       align-items: center;
@@ -2354,7 +2587,7 @@
       border: 1px solid var(--glass-border);
       border-radius: var(--r8);
       overflow: hidden;
-      transition: border-color .18s;
+      transition: border-color .18s, box-shadow .18s;
     }
     .cfg-input-wrap:focus-within {
       border-color: var(--a1);
@@ -2383,30 +2616,69 @@
       white-space: nowrap;
     }
 
-    /* Preview distribuição */
-    .cfg-preview-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      color: var(--t2);
-      font-weight: 500;
-    }
-    .cfg-preview-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
     /* Banner de feedback */
     #cfg-banner.ok  { background: var(--ok-d);  color: var(--ok);  border: 1px solid rgba(52,211,153,.2); }
     #cfg-banner.err { background: var(--err-d); color: var(--err); border: 1px solid rgba(240,96,96,.2);  }
 
-    @media (max-width: 600px) {
-      .cfg-block { padding: 18px 14px 16px; }
-      .cfg-fields-grid { grid-template-columns: 1fr 1fr; }
+    /* Action bar */
+    .cfg-action-bar {
+      position: sticky;
+      bottom: 0;
+      background: rgba(15,20,32,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--div);
+      padding: 14px 24px;
+      z-index: 30;
     }
-    @media (max-width: 400px) {
-      .cfg-fields-grid { grid-template-columns: 1fr; }
+    .cfg-action-inner {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .cfg-action-info {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
+      color: var(--t3);
+    }
+    .cfg-action-info svg { flex-shrink: 0; }
+    .cfg-action-btns {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .cfg-action-btns .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .cfg-levels-header,
+      .cfg-level-row { grid-template-columns: 110px repeat(4, 1fr); }
+      .cfg-crit-name { font-size: 12px; }
+      .cfg-dist-layout { grid-template-columns: 1fr; }
+      .cfg-action-info { display: none; }
+    }
+    @media (max-width: 520px) {
+      .cfg-panel-inner { padding: 20px 14px 16px; }
+      .cfg-section { padding: 16px 14px 14px; }
+      .cfg-levels-header,
+      .cfg-level-row { grid-template-columns: 100px repeat(4, 1fr); }
+      .cfg-levels-col { padding: 8px 4px; }
+      .cfg-levels-col .cfg-input-wrap { max-width: 90px; }
+      .cfg-params-grid { grid-template-columns: 1fr 1fr; }
+      .cfg-tabs { padding: 0 14px; }
+      .cfg-tab { padding: 12px 10px; font-size: 12px; }
+      .cfg-action-btns .btn span { display: none; }
+    }
+    @media (max-width: 380px) {
+      .cfg-params-grid { grid-template-columns: 1fr; }
     }
