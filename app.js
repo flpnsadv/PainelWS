@@ -12,7 +12,7 @@ const PAGE_META = {
 };
 
 const topbarSub = {
-  home:           'Painel Windsor & Serrão',
+  home:           'Painel Rito',
   calcHonorarios: 'Calculadora de Honorários',
   distribuicao:   'Rateio interno de honorários',
   bacen:          'Revisional de contratos',
@@ -39,11 +39,11 @@ function navigate(pageId) {
     el.classList.toggle('active', el.dataset.page === pageId);
   });
   const label = PAGE_META[pageId];
-  document.title = 'W&S — ' + label;
+  document.title = 'Rito — ' + label;
   const elPage = document.getElementById('topbar-page');
   const elSub  = document.getElementById('topbar-sub');
   if (elPage) elPage.textContent = label;
-  if (elSub)  elSub.textContent  = topbarSub[pageId] || 'Windsor & Serrão';
+  if (elSub)  elSub.textContent  = topbarSub[pageId] || 'Painel Rito';
   // mantém compatibilidade com mobile topbar
   const elTitle = document.getElementById('topbar-title');
   if (elTitle) elTitle.textContent = label;
@@ -97,6 +97,17 @@ const collapseBtn = document.getElementById('collapse-btn');
 collapseBtn.addEventListener('click', () => {
   document.body.classList.toggle('sidebar-collapsed');
 });
+
+/* ── Toggle de tema (light/dark) ── */
+const themeToggleBtn = document.getElementById('theme-toggle');
+if (themeToggleBtn) {
+  themeToggleBtn.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme') || 'light';
+    const next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem('rito-theme', next); } catch (e) {}
+  });
+}
 
 /* ── Mobile Sidebar ── */
 const hamburgerBtn  = document.getElementById('hamburger-btn');
@@ -838,10 +849,10 @@ function showSummary() {
     </div>`:''}
 
     <div class="sum-actions">
-      <button class="btn btn-outline" id="btn-copy-text">📋 Copiar Texto</button>
-      <button class="btn btn-outline" onclick="abrirPropostaForm()">📄 Gerar Proposta (Word)</button>
+      <button class="btn btn-outline" id="btn-copy-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar Texto</button>
+      <button class="btn btn-outline" onclick="abrirPropostaForm()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Gerar Proposta (Word)</button>
       <div style="flex-basis:100%;height:0;border-top:1px solid var(--div);margin:4px 0"></div>
-      <button class="btn btn-ghost" onclick="novaProposta()">✦ Nova Proposta</button>
+      <button class="btn btn-ghost" onclick="novaProposta()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nova Proposta</button>
       <button class="btn btn-ghost" onclick="closeSummary()">Fechar</button>
     </div>`;
 
@@ -864,7 +875,8 @@ function showSummary() {
   document.getElementById('summary-modal').classList.add('open');
   document.getElementById('btn-copy-text').onclick = () => {
     const text = buildPlainText();
-    const flash = () => { const b=document.getElementById('btn-copy-text'); if(b){b.textContent='✓ Copiado!';setTimeout(()=>{if(b)b.textContent='📋 Copiar Texto'},2000);} };
+    const svgCopy = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+    const flash = () => { const b=document.getElementById('btn-copy-text'); if(b){b.innerHTML='✓ Copiado!';setTimeout(()=>{if(b)b.innerHTML=svgCopy+'Copiar Texto'},2000);} };
     navigator.clipboard ? navigator.clipboard.writeText(text).then(flash) : (()=>{const t=Object.assign(document.createElement('textarea'),{value:text});document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);flash();})();
   };
 }

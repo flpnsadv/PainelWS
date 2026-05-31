@@ -539,38 +539,84 @@ function buildPropostaCfg(extras) {
   };
 }
 
-function abrirPropostaForm() {
-  document.getElementById('proposta-descricao').value = '';
-  document.getElementById('proposta-objetivos').value = '';
-  document.getElementById('propostaFormModal').classList.remove('hidden');
+var _svgGerarDoc = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>';
+
+function _avaliarEstadoProposta() {
+  var errDiv = document.getElementById('proposta-error-msg');
+  var btn    = document.getElementById('btn-gerar-docx');
+  var ta     = document.getElementById('proposta-objetivos');
+  if (!errDiv || !btn || !ta) return;
+
+  var obs      = (typeof state !== 'undefined' && state.observacoes || '').trim();
+  var objetivos = ta.value.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+
+  if (!obs) {
+    errDiv.style.display = 'block';
+    errDiv.textContent   = 'A descrição do caso está vazia. Volte à calculadora (Etapa 1, "Observações Adicionais") e preencha antes de gerar a proposta.';
+    btn.disabled = true;
+    return;
+  }
+
+  if (objetivos.length < 2) {
+    errDiv.style.display = 'none';
+    errDiv.textContent   = '';
+    btn.disabled = true;
+    return;
+  }
+
+  errDiv.style.display = 'none';
+  errDiv.textContent   = '';
+  btn.disabled = false;
 }
 
-function fecharPropostaForm() {
+function abrirPropostaForm() {
+  document.getElementById('summary-modal').classList.remove('open');
+  document.getElementById('proposta-objetivos').value = '';
+  document.getElementById('propostaFormModal').classList.remove('hidden');
+  _avaliarEstadoProposta();
+  document.getElementById('proposta-objetivos').oninput = _avaliarEstadoProposta;
+}
+
+function fecharPropostaForm(reabrirSummary) {
   document.getElementById('propostaFormModal').classList.add('hidden');
+  if (reabrirSummary !== false) {
+    document.getElementById('summary-modal').classList.add('open');
+  }
 }
 
 async function confirmarGerarProposta() {
-  const descricao  = document.getElementById('proposta-descricao').value.trim();
-  const objetivos  = document.getElementById('proposta-objetivos').value
-    .split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+  var obs      = (typeof state !== 'undefined' && state.observacoes || '').trim();
+  var ta       = document.getElementById('proposta-objetivos');
+  var objetivos = ta.value.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+  var errDiv   = document.getElementById('proposta-error-msg');
+  var btn      = document.getElementById('btn-gerar-docx');
 
-  if (!descricao) { alert('Informe a descrição do caso.'); return; }
-  if (objetivos.length < 2) { alert('Informe pelo menos 2 objetivos.'); return; }
+  if (!obs) {
+    errDiv.style.display = 'block';
+    errDiv.textContent   = 'A descrição do caso está vazia. Volte à calculadora (Etapa 1, "Observações Adicionais") e preencha antes de gerar a proposta.';
+    btn.disabled = true;
+    return;
+  }
+  if (objetivos.length < 2) {
+    errDiv.style.display = 'block';
+    errDiv.textContent   = 'Informe pelo menos 2 objetivos (um por linha).';
+    btn.disabled = true;
+    return;
+  }
 
-  fecharPropostaForm();
-
-  const btn = document.getElementById('btn-gerar-docx');
-  if (btn) { btn.textContent = '⏳ Gerando...'; btn.disabled = true; }
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Gerando...';
 
   try {
-    await gerarPropostaDocx(buildPropostaCfg({ descricaoCaso: descricao, objetivos: objetivos }));
-    const btnCopy = document.getElementById('btn-copy-text');
-    if (btnCopy) {
-      const orig = btnCopy.textContent;
-      btnCopy.textContent = '✓ Proposta gerada!';
-      setTimeout(function() { if (btnCopy) btnCopy.textContent = orig; }, 3000);
-    }
+    await gerarPropostaDocx(buildPropostaCfg({ descricaoCaso: obs, objetivos: objetivos }));
+    document.getElementById('propostaFormModal').classList.add('hidden');
+    document.getElementById('summary-modal').classList.remove('open');
+  } catch(e) {
+    console.error('[confirmarGerarProposta]', e);
+    errDiv.style.display = 'block';
+    errDiv.textContent   = 'Erro ao gerar o documento. Tente novamente.';
+    btn.disabled = false;
   } finally {
-    if (btn) { btn.textContent = '📄 Gerar documento'; btn.disabled = false; }
+    btn.innerHTML = _svgGerarDoc + 'Gerar documento';
   }
 }

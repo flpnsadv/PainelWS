@@ -1,0 +1,42 @@
+/* ═══════════════════════════════════════════════════════════
+   Rito · Fontes self-hosted (RECOMENDADO)
+   Coloque os arquivos .ttf na pasta /fonts/ do projeto e
+   importe este CSS no topo do app, antes de qualquer outro estilo.
+
+   Fontes inclusas neste pacote:
+   - Fraunces-Variable.ttf
+   - Inter-Variable.ttf
+
+   Ambas são variable fonts: 1 arquivo cobre todos os pesos
+   (de Thin 100 a Black 900) e variações de itálico.
+
+   Download oficial (Google Fonts):
+   https://fonts.google.com/specimen/Fraunces
+   https://fonts.google.com/specimen/Inter
+   ═══════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/fonts/Fraunces-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/Inter-Variable.ttf') format('truetype-variations');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ALTERNATIVA · Via Google Fonts CDN (se preferir não auto-hospedar)
+   Cole no <head> do HTML em vez de usar os @font-face acima:
+
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+
+   ═══════════════════════════════════════════════════════════ */

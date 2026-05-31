@@ -1,0 +1,17 @@
+/* Rito — fontes locais (variable) */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('./Fraunces-Variable.ttf') format('truetype-variations'),
+       url('./Fraunces-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url('./Inter-Variable.ttf') format('truetype-variations'),
+       url('./Inter-Variable.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
