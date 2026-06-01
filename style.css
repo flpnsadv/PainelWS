@@ -3856,3 +3856,225 @@
       .perfil-card { padding: 24px 20px !important; }
 
     }
+
+    /* ══════════════════════════════════════════════════════════════
+       iOS iPhone 16 — OTIMIZAÇÃO MOBILE COMPLETA
+       Dynamic Island · safe-area · touch UX · scroll · typography
+       Tela: 393×852pt · iOS 18+ · Safari Mobile · portrait
+    ══════════════════════════════════════════════════════════════ */
+
+    @media (max-width: 767px) {
+
+      /* ▸ 1 · TOPBAR — expande para o Dynamic Island
+         height: 56px (conteúdo) + env(safe-area-inset-top) (Dynamic Island)
+         O padding-top reserva o espaço da ilha; align-items:center
+         centraliza o conteúdo na área útil de 56px abaixo dela. */
+      #mobile-topbar {
+        height: calc(56px + env(safe-area-inset-top, 0px));
+        padding-top: env(safe-area-inset-top, 0px);
+      }
+
+      /* ▸ 2 · MAIN CONTENT — compensa altura real do topbar expandido */
+      #main-content {
+        padding-top: calc(56px + env(safe-area-inset-top, 0px)) !important;
+      }
+
+      /* ▸ 3 · PAGE SECTIONS — altura total correta descontando safe areas */
+      .page-section.active,
+      #page-home.page-section.active {
+        height: calc(100dvh - 56px - env(safe-area-inset-top, 0px) - 60px - env(safe-area-inset-bottom, 0px)) !important;
+      }
+
+      /* ▸ 4 · BODY — sem rubber-band e text-size bloqueado */
+      body {
+        overscroll-behavior-y: none;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+      }
+
+      /* ▸ 5 · TOUCH — elimina delay 300ms em todos os elementos interativos */
+      .btn, .bnav-item, .nav-item, .home-tool-card,
+      .auth-btn-primary, .auth-btn-ghost,
+      .plat-step-pill, .cfg-tab, .level-btn,
+      .hist-tab, .hist-card, .modal-action-btn,
+      a, button, [role="button"], input[type="submit"],
+      .topbar-brand, .topbar-avatar, .hamburger-btn {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* ▸ 6 · FEEDBACK TÁTIL — estados :active mais visíveis no iPhone */
+      .home-tool-card:active {
+        background: var(--s3) !important;
+        transform: scale(0.98) !important;
+        transition: transform 0.08s, background 0.08s !important;
+      }
+      .btn:active        { transform: scale(0.95) !important; }
+      .auth-btn-primary:active {
+        transform: scale(0.97) translateY(0) !important;
+        opacity: 0.85 !important;
+      }
+      .auth-btn-ghost:active { opacity: 0.7 !important; }
+      .bnav-item:active  { opacity: 0.6; }
+      .plat-step-pill:active { opacity: 0.7 !important; }
+      .hist-card:active  { background: var(--s3) !important; }
+      .hamburger-btn:active { background: var(--s3) !important; }
+      .topbar-avatar:active { opacity: 0.8; }
+
+      /* ▸ 7 · BOTTOM NAV — ícone ativo com micro-escala iOS-like */
+      .bnav-item .bnav-icon svg {
+        transition: transform 0.22s var(--spring), stroke 0.18s var(--ease);
+      }
+      .bnav-item.active .bnav-icon svg {
+        transform: scale(1.14);
+      }
+
+      /* ▸ 8 · INPUTS — min-height de 44pt em todos para touch */
+      input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      textarea, select {
+        min-height: 44px;
+      }
+
+      /* Select: remove aparência padrão iOS, usa estilo customizado */
+      select {
+        -webkit-appearance: none;
+        appearance: none;
+      }
+
+      /* ▸ 9 · FONT SIZES — floor de legibilidade para iPhone */
+      .hss-lbl         { font-size: 11.5px !important; }
+      .page-header-sub { font-size: 12px   !important; }
+      .bnav-label      { font-size: 10px   !important; }
+      .dist-info-note  { font-size: 12px   !important; }
+      .htc-desc        { font-size: 12px   !important; }
+
+      /* ▸ 10 · SCROLL — momentum e overscroll nos containers principais */
+      .page-body, #step-container, .home-body,
+      .cfg-panel.active, .plat-stepper,
+      .hist-lista, .hist-tabs {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+      }
+
+      /* ▸ 11 · AUTH SCREEN — safe area + scroll com teclado virtual */
+      .auth-screen {
+        padding-top:    max(env(safe-area-inset-top, 0px), 20px) !important;
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px) !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      .auth-card {
+        max-width: 440px !important;
+        flex-shrink: 0;
+        margin-top: auto;
+        margin-bottom: auto;
+      }
+
+      /* ▸ 12 · WIZARD NAV BUTTONS — thumb zone, botões lado a lado */
+      .nav-buttons .btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 12px;
+        font-size: 14px;
+      }
+
+      /* ▸ 13 · TOOL CARDS — tap target confortável ≥56px */
+      .home-tool-card {
+        min-height: 56px;
+      }
+
+      /* ▸ 14 · BACEN STEP PILLS — min-height 44pt touch */
+      .plat-step-pill {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* ▸ 15 · USER SELECT — evita seleção de texto no tap */
+      .bnav-item, .bnav-label, .btn,
+      .plat-step-pill, .home-tool-card,
+      .htc-icon, .page-header-icon,
+      .hamburger-btn, .topbar-brand {
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      /* ▸ 16 · FOCO — outline limpo (mantém acessibilidade via :focus-visible) */
+      button:focus:not(:focus-visible),
+      a:focus:not(:focus-visible) {
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      /* ▸ 17 · HOME STATS — padding horizontal ajustado para 393px */
+      .home-stats-strip { padding: 0 12px !important; }
+      .hss-item:first-child { padding-left: 4px; }
+
+      /* ▸ 18 · MODAL — safe area no fundo */
+      .modal-wrap {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
+      }
+
+      /* ▸ 19 · TOPBAR GLASS — blur mais forte no iPhone 16 (ProMotion) */
+      #mobile-topbar {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px) saturate(1.6);
+        -webkit-backdrop-filter: blur(20px) saturate(1.6);
+        border-bottom: 1px solid var(--glass-border);
+      }
+      [data-theme="dark"] #mobile-topbar {
+        background: rgba(42, 31, 24, 0.82);
+        backdrop-filter: blur(20px) saturate(1.4);
+        -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      }
+
+      /* ▸ 20 · BOTTOM NAV GLASS — mesma lógica do topbar */
+      #bottom-nav {
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px) saturate(1.6);
+        -webkit-backdrop-filter: blur(20px) saturate(1.6);
+      }
+      [data-theme="dark"] #bottom-nav {
+        background: rgba(42, 31, 24, 0.82);
+        backdrop-filter: blur(20px) saturate(1.4);
+        -webkit-backdrop-filter: blur(20px) saturate(1.4);
+      }
+
+      /* ▸ 21 · PAGE SECTION — sem rounded corners no mobile (edge-to-edge) */
+      .page-section.active {
+        border-radius: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+
+      /* ▸ 22 · HOME GREETING — tamanho ideal para 393px */
+      .home-greeting { font-size: clamp(20px, 5.5vw, 26px) !important; }
+
+      /* ▸ 23 · LEVEL BUTTONS — touch target ≥44pt */
+      .level-btn {
+        min-height: 44px;
+        min-width: 44px;
+      }
+
+      /* ▸ 24 · SIDEBAR OVERLAY — fechamento por tap em toda a área */
+      #sidebar-overlay { cursor: pointer; }
+
+      /* ▸ 25 · DIST DONUT — centraliza melhor na tela de 393px */
+      .dist-donut-container {
+        margin: 0 auto !important;
+      }
+
+    }
+
+    /* ─── Fallback: browsers sem suporte a 100dvh ─── */
+    @supports not (height: 100dvh) {
+      @media (max-width: 767px) {
+        .page-section.active,
+        #page-home.page-section.active {
+          height: calc(100vh - 56px - env(safe-area-inset-top, 0px) - 60px - env(safe-area-inset-bottom, 0px)) !important;
+        }
+      }
+    }
