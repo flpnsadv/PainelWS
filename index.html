@@ -208,6 +208,48 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
+     MAIN NAV — topbar horizontal (desktop)
+══════════════════════════════════════════════ -->
+<header id="main-nav">
+
+  <div class="mnav-brand" onclick="navigate('home')">
+    <div class="mnav-logo-wrap">
+      <img class="rito-mark rito-mark-light" src="assets/brand/rito-logo-on-cream.svg" alt="Rito">
+      <img class="rito-mark rito-mark-dark" src="assets/brand/rito-logo-on-dark.svg" alt="Rito">
+    </div>
+    <span class="rito-wordmark mnav-wordmark">r<span class="rito-dot">.</span>to</span>
+  </div>
+
+  <div class="mnav-separator"></div>
+
+  <nav class="mnav-links">
+    <div class="mnav-glider" id="mnav-glider"></div>
+    <div class="nav-item mnav-link active" data-page="home" data-tooltip="Home">Home</div>
+    <div class="nav-item mnav-link" data-page="historico" data-tooltip="Histórico de Propostas">Histórico</div>
+    <div class="mnav-rule"></div>
+    <div class="nav-item mnav-link" data-page="calcHonorarios" data-tooltip="Calculadora de Honorários">Honorários</div>
+    <div class="nav-item mnav-link" data-page="distribuicao" data-tooltip="Distribuição de Honorários">Distribuição</div>
+    <div class="nav-item mnav-link" data-page="bacen" data-tooltip="Análise Revisional BACEN">BACEN <span class="mnav-tag mnav-tag-new">NOVO</span></div>
+  </nav>
+
+  <div class="mnav-right">
+    <button class="mnav-icon-btn" onclick="document.getElementById('theme-toggle').click()" title="Alternar tema" aria-label="Alternar tema" type="button">
+      <span class="theme-icon theme-icon-sun" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </span>
+      <span class="theme-icon theme-icon-moon" aria-hidden="true">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </span>
+    </button>
+    <div class="mnav-avatar" id="topbar-avatar-btn" onclick="navigate('perfil')" title="Meu Perfil">?</div>
+    <button class="mnav-icon-btn mnav-logout" onclick="document.getElementById('btn-logout').click()" title="Sair" type="button">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </button>
+  </div>
+
+</header>
+
+<!-- ══════════════════════════════════════════════
      SIDEBAR OVERLAY (mobile)
 ══════════════════════════════════════════════ -->
 <div id="sidebar-overlay"></div>
@@ -294,7 +336,7 @@
         </svg>
       </span>
       <span class="nav-label">Análise BACEN</span>
-      <span class="nav-tag">API</span>
+      <span class="nav-tag nav-tag-new">NOVO</span>
     </div>
 
     <div class="sb-section">Sistema</div>
@@ -406,20 +448,19 @@
       <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       <div class="topbar-notif-dot"></div>
     </div>
-    <div class="topbar-avatar-btn" id="topbar-avatar-btn">FW</div>
+    <div class="topbar-avatar-btn">FW</div>
   </div>
 
   <!-- ── PÁGINA HOME ── -->
   <section id="page-home" class="page-section active">
 
-    <!-- Welcome banner -->
-    <div class="home-welcome glass">
-      <div class="hw-left">
-        <div class="hw-time" id="hw-time"></div>
-        <div class="hw-greeting" id="hw-greeting">Bom dia 👋</div>
-        <div class="hw-sub">Acesse suas ferramentas abaixo.</div>
+    <!-- Header strip -->
+    <div class="home-header">
+      <div class="home-greeting-block">
+        <div class="home-date" id="hw-time"></div>
+        <div class="home-greeting" id="hw-greeting">Bom dia</div>
       </div>
-      <div class="hw-right">
+      <div class="home-header-actions">
         <button class="hw-btn-ghost" onclick="navigate('historico')">Ver histórico</button>
         <button class="hw-btn" onclick="navigate('calcHonorarios')">
           <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
@@ -428,163 +469,95 @@
       </div>
     </div>
 
-    <!-- Quick pills -->
-    <div class="quick-pills">
-      <div class="q-pill" onclick="navigate('calcHonorarios')">
-        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        Calc. Honorários
+    <!-- Stats strip -->
+    <div class="home-stats-strip">
+      <div class="hss-item">
+        <div class="hss-val" id="home-stat-propostas">—</div>
+        <div class="hss-lbl">Propostas este mês</div>
       </div>
-      <div class="q-pill" onclick="navigate('distribuicao')">
-        <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-        Distribuição
+      <div class="hss-sep"></div>
+      <div class="hss-item">
+        <div class="hss-val" id="home-stat-honorarios">—</div>
+        <div class="hss-lbl">Honorários calculados</div>
       </div>
-      <div class="q-pill" onclick="navigate('bacen')">
-        <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
-        Análise BACEN
+      <div class="hss-sep"></div>
+      <div class="hss-item">
+        <div class="hss-val" id="home-stat-bacen">—</div>
+        <div class="hss-lbl">Análises BACEN</div>
       </div>
-      <div class="q-pill" onclick="navigate('historico')">
-        <svg viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
-        Histórico
-      </div>
-    </div>
-
-    <!-- Stats -->
-    <div class="stats-row">
-      <div class="stat-card glass">
-        <div class="stat-top">
-          <div class="stat-icon-wrap">
-            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          </div>
-          <div class="stat-badge badge-up">↑ 12%</div>
-        </div>
-        <div><div class="stat-value" id="home-stat-propostas">—</div><div class="stat-label">Propostas este mês</div></div>
-      </div>
-      <div class="stat-card glass">
-        <div class="stat-top">
-          <div class="stat-icon-wrap">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div class="stat-badge badge-up">↑ 8%</div>
-        </div>
-        <div><div class="stat-value" id="home-stat-honorarios">—</div><div class="stat-label">Honorários calculados</div></div>
-      </div>
-      <div class="stat-card glass">
-        <div class="stat-top">
-          <div class="stat-icon-wrap">
-            <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
-          </div>
-          <div class="stat-badge badge-warn">Este mês</div>
-        </div>
-        <div><div class="stat-value" id="home-stat-bacen">—</div><div class="stat-label">Análises BACEN</div></div>
-      </div>
-      <div class="stat-card glass">
-        <div class="stat-top">
-          <div class="stat-icon-wrap">
-            <svg viewBox="0 0 24 24"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
-          </div>
-          <div class="stat-badge badge-neutral">—</div>
-        </div>
-        <div><div class="stat-value" id="home-stat-total">—</div><div class="stat-label">Total de registros</div></div>
+      <div class="hss-sep"></div>
+      <div class="hss-item">
+        <div class="hss-val" id="home-stat-total">—</div>
+        <div class="hss-lbl">Total de registros</div>
       </div>
     </div>
 
-    <!-- Grid -->
-    <div class="home-grid">
-      <div class="home-col">
+    <!-- Body: tools + activity -->
+    <div class="home-body">
 
-        <!-- Ferramentas -->
-        <div>
-          <div class="sec-hd">
-            <div class="sec-title">Ferramentas disponíveis</div>
-          </div>
-          <div class="tools-grid">
-
-            <div class="tool-card glass" onclick="navigate('calcHonorarios')">
-              <div class="tool-icon-box">
-                <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              </div>
-              <div class="tool-name">Calculadora de Honorários</div>
-              <div class="tool-desc">Proposta advocatícia com parâmetros OAB/SC — honorários mínimos, justos e ideais.</div>
-              <div class="tool-footer">
-                <div class="tool-uses">Honorários advocatícios</div>
-                <div class="tool-go"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-              </div>
-            </div>
-
-            <div class="tool-card glass" onclick="navigate('distribuicao')">
-              <div class="tool-icon-box">
-                <svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              </div>
-              <div class="tool-name">Distribuição de Honorários</div>
-              <div class="tool-desc">Rateio interno — impostos, escritório, pró-labore e reserva de emergência.</div>
-              <div class="tool-footer">
-                <div class="tool-uses">Rateio interno</div>
-                <div class="tool-go"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-              </div>
-            </div>
-
-            <div class="tool-card glass" onclick="navigate('bacen')">
-              <div class="tool-icon-box">
-                <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>
-              </div>
-              <div class="tool-name">Análise Revisional BACEN</div>
-              <div class="tool-desc">Triagem técnica e financeira de contratos com checklist de irregularidades.</div>
-              <div class="tool-footer">
-                <div class="tool-uses">Revisão de contratos</div>
-                <div class="tool-go"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
-              </div>
-            </div>
-
-          </div>
+      <!-- Tools column -->
+      <div class="home-tools-section">
+        <div class="home-section-head">
+          <span class="home-section-label">Ferramentas</span>
         </div>
 
-        <!-- Mini chart -->
-        <div class="chart-card glass">
-          <div class="sec-hd" style="margin-bottom:0">
-            <div class="sec-title">Atividade — últimas 8 semanas</div>
-            <div style="display:flex;gap:14px;font-size:10.5px;color:var(--t3);">
-              <span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:8px;height:8px;background:var(--a1);border-radius:2px;"></span>Calc.</span>
-              <span style="display:flex;align-items:center;gap:5px;"><span style="display:inline-block;width:8px;height:8px;background:var(--a2);border-radius:2px;"></span>BACEN</span>
+        <div class="home-tools-list">
+
+          <div class="home-tool-card" onclick="navigate('calcHonorarios')">
+            <div class="htc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+            <div class="htc-content">
+              <div class="htc-title">Calculadora de Honorários</div>
+              <div class="htc-desc">Proposta advocatícia com parâmetros OAB/SC — honorários mínimos, justos e ideais.</div>
+            </div>
+            <div class="htc-meta">
+              <span class="htc-tag">Honorários advocatícios</span>
+              <span class="htc-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
             </div>
           </div>
-          <div class="mini-chart-wrap">
-            <div class="mc-bar" style="height:38%"></div>
-            <div class="mc-bar" style="height:52%"></div>
-            <div class="mc-bar" style="height:44%"></div>
-            <div class="mc-bar" style="height:70%"></div>
-            <div class="mc-bar" style="height:58%"></div>
-            <div class="mc-bar" style="height:82%"></div>
-            <div class="mc-bar" style="height:66%"></div>
-            <div class="mc-bar cur" style="height:100%"></div>
-          </div>
-          <div class="chart-xlabels">
-            <div class="chart-xlabel">S1</div><div class="chart-xlabel">S2</div>
-            <div class="chart-xlabel">S3</div><div class="chart-xlabel">S4</div>
-            <div class="chart-xlabel">S5</div><div class="chart-xlabel">S6</div>
-            <div class="chart-xlabel">S7</div><div class="chart-xlabel">S8</div>
-          </div>
-        </div>
 
-      </div><!-- /left col -->
-
-      <!-- RIGHT col -->
-      <div class="home-col">
-
-        <div class="activity-card glass">
-          <div class="sec-hd" style="margin-bottom:0">
-            <div class="sec-title">Atividade recente</div>
-            <div class="sec-link" onclick="navigate('historico')">Ver tudo</div>
-          </div>
-          <div class="act-list" id="home-act-list">
-            <div class="act-item">
-              <div class="act-dot-wrap"><div class="act-dot" style="background:var(--t3)"></div></div>
-              <div><div class="act-title" style="color:var(--t3);font-size:11.5px;">Nenhum registro ainda</div></div>
+          <div class="home-tool-card" onclick="navigate('distribuicao')">
+            <div class="htc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
+            <div class="htc-content">
+              <div class="htc-title">Distribuição de Honorários</div>
+              <div class="htc-desc">Rateio interno — impostos, escritório, pró-labore e reserva de emergência.</div>
+            </div>
+            <div class="htc-meta">
+              <span class="htc-tag">Rateio interno</span>
+              <span class="htc-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
             </div>
           </div>
-        </div>
 
-      </div><!-- /right col -->
-    </div><!-- /home-grid -->
+          <div class="home-tool-card" onclick="navigate('bacen')">
+            <div class="htc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
+            <div class="htc-content">
+              <div class="htc-title">Análise Revisional BACEN</div>
+              <div class="htc-desc">Triagem técnica e financeira de contratos com checklist de irregularidades.</div>
+            </div>
+            <div class="htc-meta">
+              <span class="htc-tag">Revisão de contratos</span>
+              <span class="htc-api-tag htc-new-tag">NOVO</span>
+              <span class="htc-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+          </div>
+
+        </div>
+      </div><!-- /tools column -->
+
+      <!-- Activity column -->
+      <div class="home-activity-section">
+        <div class="home-section-head">
+          <span class="home-section-label">Atividade recente</span>
+          <span class="sec-link" onclick="navigate('historico')">Ver tudo</span>
+        </div>
+        <div class="act-list" id="home-act-list">
+          <div class="act-item">
+            <div class="act-dot-wrap"><div class="act-dot" style="background:var(--t3)"></div></div>
+            <div><div class="act-title" style="color:var(--t3);font-size:11.5px;">Nenhum registro ainda</div></div>
+          </div>
+        </div>
+      </div><!-- /activity column -->
+
+    </div><!-- /home-body -->
 
   </section>
 
@@ -592,7 +565,7 @@
   <section id="page-calcHonorarios" class="page-section">
 
     <header class="page-header">
-      <div class="page-header-icon">⚖️</div>
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">HONORÁRIOS</div>
         <div class="page-header-title">Calculadora</div>
@@ -606,7 +579,7 @@
       </div>
     </header>
 
-    <div class="wizard-card">
+    <div class="wizard-card page-body">
       <div id="step-container"></div>
 
       <div class="progress-area">
@@ -646,7 +619,7 @@
   <section id="page-distribuicao" class="page-section">
 
     <header class="page-header">
-      <div class="page-header-icon">💰</div>
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">HONORÁRIOS</div>
         <div class="page-header-title">Distribuição</div>
@@ -660,16 +633,42 @@
       </div>
     </header>
 
-    <div class="dist-layout">
+    <div class="dist-layout page-body">
 
-      <!-- Coluna esquerda: input + tabela -->
-      <div class="dist-input-card">
+      <!-- Coluna esquerda: gráfico visual -->
+      <div class="dist-viz-panel">
 
         <label class="dist-input-label" for="dist-input">Valor Bruto dos Honorários</label>
         <div class="dist-input-wrap">
           <span class="dist-input-prefix">R$</span>
           <input type="text" id="dist-input" placeholder="0,00" inputmode="numeric" autocomplete="off">
         </div>
+
+        <div class="dist-donut-container">
+          <svg id="dist-pie-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <!-- Trilha de fundo -->
+            <circle cx="100" cy="100" r="73" fill="none" stroke="var(--div)" stroke-width="30" opacity="0.45"/>
+            <!-- Sectores injetados via JS -->
+            <g id="dist-pie-sectors"></g>
+            <!-- Buraco central -->
+            <circle cx="100" cy="100" r="57" class="dist-donut-hole"/>
+          </svg>
+          <div class="dist-donut-center">
+            <div class="dist-donut-center-label" id="dist-hover-label">Total</div>
+            <div class="dist-donut-center-value" id="dist-center-value">R$ 0,00</div>
+          </div>
+        </div>
+
+        <div class="dist-legend" id="dist-legend">
+          <!-- preenchido via JS -->
+        </div>
+
+      </div><!-- /dist-viz-panel -->
+
+      <!-- Coluna direita: tabela detalhada -->
+      <div class="dist-data-panel">
+
+        <div class="dist-data-title">Distribuição Detalhada</div>
 
         <table class="dist-table">
           <thead>
@@ -689,54 +688,11 @@
           <span class="val" id="dist-total-val">R$ 0,00</span>
         </div>
 
-      </div><!-- /coluna esquerda -->
+        <div class="dist-info-note" style="margin-top:16px;">
+          <svg class="dist-info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg> O <strong>Restante</strong> (70,5% do bruto) é rateado entre Pró-labore e Reserva de emergência na proporção 75/25.
+        </div>
 
-      <!-- Coluna direita: cards de parâmetro -->
-      <div>
-        <div class="dist-param-title" style="margin-bottom:10px;">Parâmetros de distribuição</div>
-        <div class="dist-params">
-
-          <div class="dist-param-card dpc-card-imposto">
-            <div class="dpc-label"><span class="dpc-icon">🏛️</span> Simples Nacional</div>
-            <div class="dpc-pct dpc-pct-imposto">4,5%</div>
-            <div class="dpc-desc">Tributação sobre honorários</div>
-            <div class="dpc-val" id="dpc-val-imposto">—</div>
-          </div>
-
-          <div class="dist-param-card dpc-card-invest">
-            <div class="dpc-label"><span class="dpc-icon">📈</span> Investimento</div>
-            <div class="dpc-pct dpc-pct-invest">15%</div>
-            <div class="dpc-desc">Reserva para crescimento</div>
-            <div class="dpc-val" id="dpc-val-invest">—</div>
-          </div>
-
-          <div class="dist-param-card dpc-card-escritorio">
-            <div class="dpc-label"><span class="dpc-icon">🏢</span> Escritório</div>
-            <div class="dpc-pct dpc-pct-escritorio">10%</div>
-            <div class="dpc-desc">Custos operacionais</div>
-            <div class="dpc-val" id="dpc-val-escritorio">—</div>
-          </div>
-
-          <div class="dist-param-card dpc-card-prolabore">
-            <div class="dpc-label"><span class="dpc-icon">👤</span> Pró-labore</div>
-            <div class="dpc-pct dpc-pct-prolabore">75% do restante</div>
-            <div class="dpc-desc">≈ 52,875% do bruto</div>
-            <div class="dpc-val" id="dpc-val-prolabore">—</div>
-          </div>
-
-          <div class="dist-param-card dpc-card-reserva">
-            <div class="dpc-label"><span class="dpc-icon">🛡️</span> Reserva de emergência</div>
-            <div class="dpc-pct dpc-pct-reserva">25% do restante</div>
-            <div class="dpc-desc">≈ 17,625% do bruto</div>
-            <div class="dpc-val" id="dpc-val-reserva">—</div>
-          </div>
-
-          <div class="dist-info-note">
-            ℹ️ O <strong>Restante</strong> (70,5% do bruto) é rateado entre Pró-labore e Reserva de emergência na proporção 75/25.
-          </div>
-
-        </div><!-- /dist-params -->
-      </div><!-- /coluna direita -->
+      </div><!-- /dist-data-panel -->
 
     </div><!-- /dist-layout -->
 
@@ -746,18 +702,18 @@
   <section id="page-bacen" class="page-section">
 
     <header class="page-header">
-      <div class="page-header-icon">🏛️</div>
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">REVISIONAL</div>
         <div class="page-header-title">Análise BACEN</div>
         <div class="page-header-sub">Triagem técnica, jurídica e financeira de contratos — comparação com taxa média BACEN, checklist de irregularidades e relatório completo</div>
       </div>
       <div class="page-header-right">
-        <span class="plat-header-badge badge-loading" id="platBadgeAtualizacao">⏳ Atualizando taxas...</span>
+        <span class="plat-header-badge badge-loading" id="platBadgeAtualizacao"><svg class="loader-spin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Atualizando taxas...</span>
       </div>
     </header>
 
-    <div class="plat-page-body">
+    <div class="plat-page-body page-body">
 
     <div class="plat-stepper" id="platStepper">
       <div class="plat-step-pill active" data-plat-step="1">1 · Identificação</div>
@@ -1134,7 +1090,7 @@
     <div class="plat-step-nav hidden" data-plat-step-nav="6">
       <button class="plat-btn plat-btn-secondary" onclick="platGoToStep(5)">← Voltar</button>
       <span class="plat-step-nav-info">Etapa 6 de 7</span>
-      <button class="plat-btn plat-btn-gold" onclick="platCalcular()">⚖ Calcular análise</button>
+      <button class="plat-btn plat-btn-gold" onclick="platCalcular()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg> Calcular análise</button>
     </div>
 
     <!-- STEP 7 -->
@@ -1145,11 +1101,11 @@
       <div class="plat-card-section">
         <div class="plat-card-section-title">Ações</div>
         <div style="display:flex;flex-wrap:wrap;gap:10px;">
-          <button class="plat-btn plat-btn-gold" onclick="platAbrirRelatorio()">📄 Gerar relatório completo</button>
-          <button class="plat-btn plat-btn-green" onclick="platAbrirWhatsApp()">💬 Mensagem WhatsApp</button>
-          <button class="plat-btn plat-btn-secondary" onclick="platSaveCase()">💾 Salvar caso (JSON)</button>
-          <button class="plat-btn plat-btn-secondary" onclick="window.print()">🖨️ Imprimir</button>
-          <button class="plat-btn plat-btn-secondary" onclick="platResetCase()">🔄 Nova análise</button>
+          <button class="plat-btn plat-btn-gold" onclick="platAbrirRelatorio()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg> Gerar relatório</button>
+          <button class="plat-btn plat-btn-green" onclick="platAbrirWhatsApp()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg> WhatsApp</button>
+          <button class="plat-btn plat-btn-secondary" onclick="platSaveCase()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Salvar JSON</button>
+          <button class="plat-btn plat-btn-secondary" onclick="window.print()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg> Imprimir</button>
+          <button class="plat-btn plat-btn-secondary" onclick="platResetCase()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg> Nova análise</button>
         </div>
       </div>
     </section>
@@ -1206,49 +1162,64 @@
   </section>
 
   <!-- ── PÁGINA 4: Histórico ── -->
-  <section id="page-historico" class="page-section" style="padding:28px 24px 64px;">
-    <div style="max-width:860px;margin:0 auto;">
-      <div class="page-header" style="margin-bottom:24px;">
-        <div class="page-eyebrow">Histórico</div>
-        <div class="page-title">Registros</div>
-        <div class="page-sub">Propostas enviadas e análises BACEN realizadas.</div>
-      </div>
+  <section id="page-historico" class="page-section">
 
-      <!-- Tabs -->
-      <div style="display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);padding-bottom:0;">
-        <button id="tab-btn-propostas" onclick="switchHistoricoTab('propostas')"
-          style="padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid var(--a1);color:var(--a1);font-family:'Sora',sans-serif;">
-          Propostas
-        </button>
-        <button id="tab-btn-bacen" onclick="switchHistoricoTab('bacen')"
-          style="padding:8px 18px;font-size:13px;font-weight:600;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;color:var(--t3);font-family:'Sora',sans-serif;">
-          Análises BACEN
-        </button>
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">HISTÓRICO</div>
+        <div class="page-header-title">Registros</div>
+        <div class="page-header-sub">Propostas enviadas e análises BACEN realizadas</div>
       </div>
+    </header>
 
-      <div id="historico-lista"></div>
+    <div class="page-body hist-body">
+      <div style="max-width:860px;margin:0 auto;">
+        <!-- Tabs -->
+        <div class="hist-tabs">
+          <button id="tab-btn-propostas" class="hist-tab active" onclick="switchHistoricoTab('propostas')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Propostas
+          </button>
+          <button id="tab-btn-bacen" class="hist-tab" onclick="switchHistoricoTab('bacen')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+            Análises BACEN
+          </button>
+        </div>
+
+        <div id="historico-lista"></div>
+      </div>
     </div>
+
   </section>
 
   <!-- ── PERFIL ── -->
-  <section id="page-perfil" class="page-section" style="padding:28px 24px 64px;">
-    <div class="page-header">
-      <div class="page-eyebrow">Sistema</div>
-      <div class="page-title">Meu Perfil</div>
-      <div class="page-sub">Informações da sua conta Rito.</div>
+  <section id="page-perfil" class="page-section">
+
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">SISTEMA</div>
+        <div class="page-header-title">Meu Perfil</div>
+        <div class="page-header-sub">Informações da sua conta Rito</div>
+      </div>
+    </header>
+
+    <div class="page-body perfil-body">
+      <div class="perfil-card">
+        <div class="perfil-avatar-wrap" id="perfil-avatar">?</div>
+        <div class="perfil-nome" id="perfil-nome">—</div>
+        <div class="perfil-email" id="perfil-email">—</div>
+      </div>
     </div>
-    <div style="max-width:560px;margin:24px auto 0;padding:32px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--r16);text-align:center;">
-      <div style="width:64px;height:64px;border-radius:50%;background:var(--ag);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Sora',sans-serif;font-size:22px;font-weight:700;color:#fff;" id="perfil-avatar">?</div>
-      <div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:700;color:var(--t1);" id="perfil-nome">—</div>
-      <div style="font-size:13px;color:var(--t3);margin-top:4px;" id="perfil-email">—</div>
-    </div>
+
   </section>
 
   <!-- ── CONFIGURAÇÕES ── -->
   <section id="page-config" class="page-section cfg-page">
 
     <header class="page-header">
-      <div class="page-header-icon">⚙️</div>
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="21" x2="14" y1="4" y2="4"/><line x1="10" x2="3" y1="4" y2="4"/><line x1="21" x2="12" y1="12" y2="12"/><line x1="8" x2="3" y1="12" y2="12"/><line x1="21" x2="16" y1="20" y2="20"/><line x1="12" x2="3" y1="20" y2="20"/><line x1="14" x2="14" y1="2" y2="6"/><line x1="8" x2="8" y1="10" y2="14"/><line x1="16" x2="16" y1="18" y2="22"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">Sistema</div>
         <div class="page-header-title">Configurações</div>
@@ -1262,11 +1233,13 @@
       </div>
     </header>
 
+    <div class="page-body cfg-body">
+
     <!-- Banner de status -->
-    <div id="cfg-banner" style="display:none;margin:0 24px 0;padding:11px 16px;border-radius:var(--r10);font-size:13px;font-weight:600;"></div>
+    <div id="cfg-banner" style="display:none;margin:0 0 12px;padding:11px 16px;border-radius:var(--r10);font-size:13px;font-weight:600;"></div>
 
     <!-- Tab Navigation -->
-    <div class="cfg-tabs">
+    <div class="cfg-tabs" style="margin: 0 -24px; padding: 0 24px;">
       <button class="cfg-tab active" data-cfg-tab="honorarios" onclick="cfgSwitchTab('honorarios')">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
         Calc. Honorários
@@ -1527,6 +1500,8 @@
         </div>
       </div>
     </div>
+
+    </div><!-- /page-body cfg-body -->
 
   </section>
 

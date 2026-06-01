@@ -23,6 +23,20 @@ const topbarSub = {
 
 let currentPage = 'home';
 
+/* ── Slider da topbar ── */
+function updateNavGlider(pageId) {
+  const glider  = document.getElementById('mnav-glider');
+  const nav     = document.querySelector('.mnav-links');
+  if (!glider || !nav) return;
+  const activeEl = nav.querySelector(`.nav-item[data-page="${pageId}"]`);
+  if (!activeEl) { glider.style.opacity = '0'; return; }
+  const navRect  = nav.getBoundingClientRect();
+  const itemRect = activeEl.getBoundingClientRect();
+  glider.style.left  = (itemRect.left - navRect.left) + 'px';
+  glider.style.width = itemRect.width + 'px';
+  glider.style.opacity = '1';
+}
+
 function navigate(pageId) {
   if (!PAGE_META[pageId] || pageId === currentPage) return;
 
@@ -34,6 +48,7 @@ function navigate(pageId) {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pageId);
   });
+  updateNavGlider(pageId);
   // Sincroniza bottom nav mobile
   document.querySelectorAll('#bottom-nav .bnav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pageId);
@@ -86,6 +101,15 @@ function navigate(pageId) {
 document.querySelectorAll('.nav-item').forEach(el => {
   el.addEventListener('click', () => navigate(el.dataset.page));
 });
+
+// Inicializa posição do glider sem animação
+(function initGlider() {
+  const glider = document.getElementById('mnav-glider');
+  if (!glider) return;
+  glider.style.transition = 'none';
+  updateNavGlider(currentPage);
+  requestAnimationFrame(() => { glider.style.transition = ''; });
+})();
 
 // Cliques no bottom nav mobile
 document.querySelectorAll('#bottom-nav .bnav-item').forEach(el => {
@@ -1041,6 +1065,103 @@ updateProgress(1);
     ];
   }
 
+  // ── Cores do gráfico de pizza ──
+  const PIE_COLORS = {
+    imposto:    '#E87059',
+    invest:     '#6B9E7F',
+    escritorio: '#C9923F',
+    prolabore:  '#5C3D2E',
+    reserva:    '#D4A84B',
+  };
+
+  function polarToXY(cx, cy, r, deg) {
+    const rad = (deg - 90) * Math.PI / 180;
+    return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  }
+
+  function makeDonutPath(cx, cy, r1, r2, startDeg, endDeg) {
+    const gap = 2;
+    const s = startDeg + gap / 2;
+    const e = endDeg - gap / 2;
+    if (e - s < 0.5) return '';
+    const p1 = polarToXY(cx, cy, r1, s);
+    const p2 = polarToXY(cx, cy, r1, e);
+    const p3 = polarToXY(cx, cy, r2, e);
+    const p4 = polarToXY(cx, cy, r2, s);
+    const large = (e - s) > 180 ? 1 : 0;
+    return `M ${p1.x.toFixed(3)} ${p1.y.toFixed(3)} A ${r1} ${r1} 0 ${large} 1 ${p2.x.toFixed(3)} ${p2.y.toFixed(3)} L ${p3.x.toFixed(3)} ${p3.y.toFixed(3)} A ${r2} ${r2} 0 ${large} 0 ${p4.x.toFixed(3)} ${p4.y.toFixed(3)} Z`;
+  }
+
+  function renderPieChart(V) {
+    const p = getDistParams();
+    const slices = [
+      { id: 'imposto',    label: 'Simples Nacional', pct: p.imp, val: V * p.imp  },
+      { id: 'invest',     label: 'Investimento',      pct: p.inv, val: V * p.inv  },
+      { id: 'escritorio', label: 'Escritório',        pct: p.esc, val: V * p.esc  },
+      { id: 'prolabore',  label: 'Pró-labore',        pct: p.pl,  val: V * p.pl   },
+      { id: 'reserva',    label: 'Reserva',           pct: p.res, val: V * p.res  },
+    ];
+
+    const sectorsEl  = document.getElementById('dist-pie-sectors');
+    const legendEl   = document.getElementById('dist-legend');
+    const hoverLabel = document.getElementById('dist-hover-label');
+    const centerVal  = document.getElementById('dist-center-value');
+    if (!sectorsEl || !legendEl || !hoverLabel || !centerVal) return;
+
+    centerVal.textContent  = fmtBRL(V);
+    hoverLabel.textContent = 'Total';
+    sectorsEl.innerHTML    = '';
+    legendEl.innerHTML     = '';
+
+    let startDeg = 0;
+    slices.forEach(slice => {
+      const deg    = slice.pct * 360;
+      const endDeg = startDeg + deg;
+      const color  = PIE_COLORS[slice.id] || 'var(--a1)';
+
+      if (deg > 0.5) {
+        const ns   = 'http://www.w3.org/2000/svg';
+        const path = document.createElementNS(ns, 'path');
+        const d    = makeDonutPath(100, 100, 88, 58, startDeg, endDeg);
+        if (d) {
+          path.setAttribute('d', d);
+          path.setAttribute('fill', color);
+          path.setAttribute('class', 'dist-pie-sector');
+
+          path.addEventListener('mouseenter', () => {
+            hoverLabel.textContent = slice.label;
+            centerVal.textContent  = V > 0 ? fmtBRL(slice.val) : '—';
+            document.querySelectorAll('.dist-pie-sector').forEach(el => el.classList.add('dimmed'));
+            path.classList.remove('dimmed');
+            path.classList.add('highlighted');
+          });
+          path.addEventListener('mouseleave', () => {
+            hoverLabel.textContent = 'Total';
+            centerVal.textContent  = fmtBRL(V);
+            document.querySelectorAll('.dist-pie-sector').forEach(el => {
+              el.classList.remove('dimmed', 'highlighted');
+            });
+          });
+
+          sectorsEl.appendChild(path);
+        }
+      }
+
+      // Legenda
+      const row = document.createElement('div');
+      row.className = 'dist-legend-row';
+      row.innerHTML = `
+        <span class="dist-legend-dot" style="background:${color}"></span>
+        <span class="dist-legend-label">${slice.label}</span>
+        <span class="dist-legend-pct">${(slice.pct * 100).toFixed(1)}%</span>
+        <span class="dist-legend-val${V > 0 ? ' has-value' : ''}">${V > 0 ? fmtBRL(slice.val) : '—'}</span>
+      `;
+      legendEl.appendChild(row);
+
+      startDeg = endDeg;
+    });
+  }
+
   // ── Renderiza tabela ──
   function renderDist() {
     const V = getInputValue();
@@ -1107,6 +1228,8 @@ updateProgress(1);
         el.classList.remove('has-value');
       }
     });
+
+    renderPieChart(V);
   }
 
   // Expõe renderDist globalmente para ser chamado ao salvar configurações
@@ -2447,7 +2570,7 @@ window._currentUser = null;
     var hora = new Date().getHours();
     var saudacao = hora < 12 ? 'Bom dia' : hora < 18 ? 'Boa tarde' : 'Boa noite';
     var greetingEl = document.getElementById('hw-greeting');
-    if (greetingEl) greetingEl.textContent = saudacao + ', ' + primeiroNome + ' 👋';
+    if (greetingEl) greetingEl.textContent = saudacao + ', ' + primeiroNome;
 
     // Carrega configurações personalizadas do usuário
     cfgCarregar();
