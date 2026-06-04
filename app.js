@@ -3068,3 +3068,14 @@ function novaProposta() {
   });
   goToStep(1, false);
 }
+
+/* ── iOS visualViewport: keyboard-aware modal sizing ── */
+(function() {
+  if (!window.visualViewport) return;
+  function onViewportResize() {
+    var vh = window.visualViewport.height * 0.01;
+    document.documentElement.style.setProperty('--visual-vh', vh + 'px');
+  }
+  window.visualViewport.addEventListener('resize', onViewportResize);
+  onViewportResize();
+})();
