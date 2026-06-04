@@ -186,6 +186,7 @@
         var(--bg);
       color: var(--t1);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
@@ -563,6 +564,7 @@
       margin-left: calc(var(--sidebar-width) + 20px);
       transition: margin-left .34s var(--spring);
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
     }
@@ -722,7 +724,7 @@
       /* Prevent iOS zoom on focus */
       input[type=text], input[type=number],
       input[type=email], input[type=password],
-      input[type=tel], textarea, .auth-input {
+      input[type=tel], textarea, select, .auth-input {
         font-size: 16px !important;
       }
       /* Touch targets */
@@ -1877,7 +1879,15 @@
       display: flex; align-items: center; justify-content: center;
     }
     .plat-modal-close:hover { background: var(--s4); border-color: var(--gbt); color: var(--t1); }
-    .plat-modal-body { padding: 28px 32px; max-height: calc(100vh - 220px); overflow-y: auto; }
+    .plat-modal-body {
+      padding: 28px 32px;
+      max-height: calc(100vh - 220px);
+      max-height: calc(100dvh - 220px);
+      max-height: calc(var(--visual-vh, 1dvh) * 100 - 220px);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
     .plat-modal-footer { padding: 16px 28px; border-top: 1px solid var(--div); display: flex; gap: 10px; justify-content: flex-end; }
     .plat-modal-body textarea {
       width: 100%; min-height: 380px; font-family: 'Inter', sans-serif;
@@ -3691,8 +3701,8 @@
         display: flex !important;
         flex-direction: column !important;
         align-items: stretch !important;
-        height: calc(100dvh - 56px - 60px);
         height: calc(100vh - 56px - 60px - env(safe-area-inset-bottom, 0px));
+        height: calc(100dvh - 56px - 60px - env(safe-area-inset-bottom, 0px));
         overflow: hidden !important;
       }
 
@@ -3718,8 +3728,8 @@
 
       /* ── Home: home-body rola ── */
       #page-home.page-section.active {
-        height: calc(100dvh - 56px - 60px);
         height: calc(100vh - 56px - 60px - env(safe-area-inset-bottom, 0px));
+        height: calc(100dvh - 56px - 60px - env(safe-area-inset-bottom, 0px));
       }
       #page-home .home-header   { flex-shrink: 0; }
       #page-home .home-stats-strip { flex-shrink: 0; }
@@ -3951,7 +3961,7 @@
       /* ▸ 10 · SCROLL — momentum e overscroll nos containers principais */
       .page-body, #step-container, .home-body,
       .cfg-panel.active, .plat-stepper,
-      .hist-lista, .hist-tabs {
+      .hist-lista, .hist-tabs, .home-stats-strip {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
       }
