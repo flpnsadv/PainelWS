@@ -3463,6 +3463,57 @@
     .hist-tab.active { color: var(--a1); border-bottom-color: var(--a1); }
     .hist-tab:hover  { color: var(--t2); }
 
+    /* ── Cards do histórico ── */
+    .hist-empty { color: var(--t3); font-size: 14px; text-align: center; padding: 40px 0; }
+    .hist-card { margin-bottom: 10px; }
+    .hist-card-main {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; gap: 12px; cursor: pointer;
+    }
+    .hist-card-right { text-align: right; flex-shrink: 0; }
+    .hist-nome {
+      font-family: var(--rito-font-display);
+      font-size: 15px; font-weight: 700;
+      color: var(--t1); margin-bottom: 3px;
+    }
+    .hist-servicos { font-size: 12px; color: var(--t3); }
+    .hist-valor {
+      font-family: var(--rito-font-display);
+      font-size: 16px; font-weight: 800; color: var(--a1);
+    }
+    .hist-data { font-size: 11px; color: var(--t3); margin-top: 2px; }
+    .hist-ver-analise {
+      margin-top: 6px; padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; display: inline-block;
+      background: #f0f9ff; color: #0284c7;
+    }
+    .hist-status-row {
+      margin-top: 12px; padding-top: 10px;
+      border-top: 1px solid var(--div);
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    }
+    .hist-status-lbl {
+      font-size: 11px; color: var(--t3); font-weight: 600;
+      text-transform: uppercase; letter-spacing: .5px;
+    }
+    .hist-status-badge {
+      display: inline-block; padding: 3px 10px;
+      border-radius: 20px; font-size: 12px; font-weight: 700;
+    }
+    .hist-status-badge.st-aguardando { background: #fff8e1; color: #f59e0b; }
+    .hist-status-badge.st-enviado    { background: #e0f2fe; color: #0284c7; }
+    .hist-status-badge.st-assinado   { background: #dcfce7; color: #16a34a; }
+    .hist-status-badge.st-nao_aceito { background: #fee2e2; color: #dc2626; }
+    .hist-status-btns { display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap; }
+    .hist-status-btn {
+      padding: 4px 10px; font-size: 11px; border-radius: 6px;
+      border: 1px solid var(--gb); background: var(--s2); color: var(--t2);
+      cursor: pointer; font-family: var(--rito-font-body);
+    }
+    .hist-status-btn.st-enviado    { border-color: #bae6fd; background: #e0f2fe; color: #0284c7; }
+    .hist-status-btn.st-assinado   { border-color: #bbf7d0; background: #dcfce7; color: #16a34a; }
+    .hist-status-btn.st-nao_aceito { border-color: #fecaca; background: #fee2e2; color: #dc2626; }
+
     /* ══════════════════════════════════════════════
        PERFIL — card redesign
     ══════════════════════════════════════════════ */
