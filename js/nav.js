@@ -158,3 +158,14 @@ document.addEventListener('keydown', e => {
   document.querySelectorAll('.plat-modal-backdrop:not(.hidden)').forEach(bd => bd.classList.add('hidden'));
 });
 
+/* ── iOS visualViewport: keyboard-aware modal sizing ── */
+(function() {
+  if (!window.visualViewport) return;
+  function onViewportResize() {
+    var vh = window.visualViewport.height * 0.01;
+    document.documentElement.style.setProperty('--visual-vh', vh + 'px');
+  }
+  window.visualViewport.addEventListener('resize', onViewportResize);
+  onViewportResize();
+})();
+
