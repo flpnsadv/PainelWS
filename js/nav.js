@@ -65,6 +65,7 @@ function navigate(pageId) {
   currentPage = pageId;
   if (window.innerWidth < 768) closeMobileSidebar();
   if (pageId === 'historico') carregarHistorico();
+  if (pageId === 'home' && typeof dashCarregar === 'function') dashCarregar(true);
 
   if (!outgoing || outgoing === incoming) {
     incoming.classList.add('active');

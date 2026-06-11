@@ -120,6 +120,9 @@ window._currentUser = null;
     // Carrega configurações personalizadas do usuário
     cfgCarregar();
 
+    // Carrega os relatórios do dashboard da home
+    if (typeof dashCarregar === 'function') dashCarregar(true);
+
     // Data na home
     var hwTime = document.getElementById('hw-time');
     if (hwTime) {

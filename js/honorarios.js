@@ -502,6 +502,7 @@ function showSummary() {
         dados_completos: JSON.parse(JSON.stringify(s))
       });
       if (error) state._propostaSalva = false;
+      else if (typeof dashInvalidar === 'function') dashInvalidar();
     })();
   }
 

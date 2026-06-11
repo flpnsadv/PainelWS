@@ -469,26 +469,59 @@
       </div>
     </div>
 
+    <!-- Seletor de período do relatório -->
+    <div class="dash-period-strip">
+      <span class="home-section-label">Relatório do período</span>
+      <div class="dash-period" id="dash-period">
+        <button class="dash-period-btn active" data-period="mes">Este mês</button>
+        <button class="dash-period-btn" data-period="3m">3 meses</button>
+        <button class="dash-period-btn" data-period="ano">Este ano</button>
+        <button class="dash-period-btn" data-period="tudo">Tudo</button>
+      </div>
+    </div>
+
     <!-- Stats strip -->
     <div class="home-stats-strip">
       <div class="hss-item">
         <div class="hss-val" id="home-stat-propostas">—</div>
-        <div class="hss-lbl">Propostas este mês</div>
+        <div class="hss-lbl">Propostas criadas</div>
+        <div class="hss-sub" id="home-sub-propostas">—</div>
       </div>
       <div class="hss-sep"></div>
       <div class="hss-item">
-        <div class="hss-val" id="home-stat-honorarios">—</div>
-        <div class="hss-lbl">Honorários calculados</div>
+        <div class="hss-val" id="home-stat-assinadas">—</div>
+        <div class="hss-lbl">Contratos assinados</div>
+        <div class="hss-sub" id="home-sub-assinadas">—</div>
+      </div>
+      <div class="hss-sep"></div>
+      <div class="hss-item">
+        <div class="hss-val" id="home-stat-conversao">—</div>
+        <div class="hss-lbl">Taxa de conversão</div>
+        <div class="hss-sub" id="home-sub-conversao">—</div>
+      </div>
+      <div class="hss-sep"></div>
+      <div class="hss-item">
+        <div class="hss-val" id="home-stat-ticket">—</div>
+        <div class="hss-lbl">Ticket médio</div>
+        <div class="hss-sub" id="home-sub-ticket">—</div>
       </div>
       <div class="hss-sep"></div>
       <div class="hss-item">
         <div class="hss-val" id="home-stat-bacen">—</div>
         <div class="hss-lbl">Análises BACEN</div>
+        <div class="hss-sub" id="home-sub-bacen">—</div>
       </div>
-      <div class="hss-sep"></div>
-      <div class="hss-item">
-        <div class="hss-val" id="home-stat-total">—</div>
-        <div class="hss-lbl">Total de registros</div>
+    </div>
+
+    <!-- Relatórios: funil de status + evolução mensal -->
+    <div class="dash-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">Funil de propostas</div>
+        <div id="dash-funil"><div class="dash-empty">Carregando…</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Últimos 6 meses — proposto × assinado</div>
+        <div id="dash-grafico"><div class="dash-empty">Carregando…</div></div>
       </div>
     </div>
 
@@ -1590,6 +1623,7 @@
 <script src="js/bacen-api.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/historico.js"></script>
+<script src="js/dashboard.js"></script>
 <script src="js/proposta-docx.js"></script>
 </body>
 </html>

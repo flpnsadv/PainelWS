@@ -86,10 +86,13 @@ async function carregarHistoricoPropostas() {
 async function alterarStatusProposta(id, novoStatus) {
   if (!window._sb || !window._currentUser) return;
   const { error } = await window._sb.from('propostas')
-    .update({ status: novoStatus })
+    .update({ status: novoStatus, status_atualizado_em: new Date().toISOString() })
     .eq('id', id)
     .eq('user_id', window._currentUser.id);
-  if (!error) carregarHistoricoPropostas();
+  if (!error) {
+    carregarHistoricoPropostas();
+    if (typeof dashInvalidar === 'function') dashInvalidar();
+  }
 }
 
 async function carregarHistoricoBacen() {
