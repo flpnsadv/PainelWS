@@ -68,6 +68,10 @@ function navigate(pageId) {
   document.querySelectorAll('.nav-item').forEach(el => {
     el.classList.toggle('active', el.dataset.page === pageId);
   });
+  // Marca o grupo da área ativa (usado no trilho recolhido)
+  document.querySelectorAll('.nav-group').forEach(g => {
+    g.classList.toggle('has-active', !!g.querySelector('.nav-item.active'));
+  });
   updateNavGlider(pageId);
   // Sincroniza bottom nav mobile
   document.querySelectorAll('#bottom-nav .bnav-item').forEach(el => {

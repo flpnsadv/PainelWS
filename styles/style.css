@@ -2351,7 +2351,9 @@
       font-size: 9px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
       color: var(--t3); padding: 14px 10px 5px;
       opacity: 1; transition: opacity .18s var(--ease); white-space: nowrap; overflow: hidden;
+      flex-shrink: 0;
     }
+    .sidebar-nav .nav-item { flex-shrink: 0; }
     body.sidebar-collapsed .sb-section { opacity: 0; pointer-events: none; }
 
     .nav-tag {
@@ -2950,16 +2952,22 @@
        MAIN NAV — topbar horizontal (desktop)
     ══════════════════════════════════════════════ */
 
+    /* Faixa de utilidades "disfarçada" — flutua no canto superior direito */
     #main-nav {
       position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 56px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--rito-border);
+      top: 12px; right: 16px; left: auto;
+      height: auto;
+      background: color-mix(in srgb, var(--bg) 72%, transparent);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--gb);
+      border-radius: 99px;
       display: flex;
       align-items: center;
-      padding: 0 20px;
-      z-index: 200;
+      gap: 2px;
+      padding: 4px 6px;
+      z-index: 210;
+      box-shadow: var(--sh-s);
     }
 
     body.auth-active  #main-nav,
@@ -3053,15 +3061,19 @@
     }
     .mnav-avatar:hover { opacity: .85; }
 
-    [data-theme="dark"] #main-nav { border-bottom-color: var(--rito-dark-border); }
+    [data-theme="dark"] #main-nav { border-color: var(--rito-dark-border); }
 
     /* ══════════════════════════════════════════════
-       LAYOUT OVERRIDE — topbar mode (desktop ≥768px)
+       LAYOUT — sidebar mode (desktop ≥768px)
+       Sidebar flutuante é a navegação primária;
+       #main-nav vira a faixa discreta de utilidades.
     ══════════════════════════════════════════════ */
     @media (min-width: 768px) {
-      #sidebar        { display: none !important; }
       #desktop-topbar { display: none !important; }
-      #main-content   { margin-left: 0 !important; padding-top: 56px; }
+      #main-content   { padding-top: 38px; }
+      /* itens legados do rodapé da sidebar ficam exclusivos do mobile
+         (tema/sair/avatar agora vivem na faixa de utilidades) */
+      .sidebar-user, .sidebar-logout-btn, .sidebar-theme-toggle { display: none; }
     }
 
     /* ══════════════════════════════════════════════
@@ -3436,11 +3448,12 @@
       background-size: 200px 200px, cover !important;
     }
 
-    /* Topbar: dissolve no background — sem fundo, sem borda */
+    /* Faixa de utilidades: glass sutil sobre o gradiente */
     @media (min-width: 768px) {
       #main-nav {
-        background: transparent !important;
-        border-bottom: none !important;
+        background: color-mix(in srgb, var(--bg) 72%, transparent) !important;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
       }
     }
 
@@ -5039,5 +5052,101 @@
   .crud-busca { max-width:none; }
   .mkt-conv-card { width:100%; }
   .tar-right { flex-direction:column; align-items:flex-end; gap:4px; }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   SIDEBAR — grupos por área + flyout no modo recolhido
+══════════════════════════════════════════════════════════════════ */
+
+/* Expandida (e mobile): grupos são transparentes ao layout */
+.nav-group, .nav-group-items { display: contents; }
+.nav-group-head { display: none; }
+
+@media (min-width: 768px) {
+
+  /* Recolhida: trilho de ícones por área */
+  body.sidebar-collapsed #sidebar,
+  body.sidebar-collapsed .sidebar-nav { overflow: visible; }
+
+  body.sidebar-collapsed .nav-group {
+    display: block;
+    position: relative;
+  }
+
+  body.sidebar-collapsed .nav-group-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px 10px;
+    border-radius: var(--r8);
+    color: var(--t3);
+    cursor: pointer;
+    transition: background .16s var(--ease), color .16s;
+  }
+  body.sidebar-collapsed .nav-group-head .nav-icon svg {
+    width: 19px; height: 19px;
+    stroke: currentColor; fill: none;
+    stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  }
+  body.sidebar-collapsed .nav-group:hover .nav-group-head {
+    background: var(--s2);
+    color: var(--t1);
+  }
+  body.sidebar-collapsed .nav-group.has-active .nav-group-head {
+    background: var(--adim);
+    color: var(--a1);
+  }
+
+  /* Itens da área escondidos no trilho... */
+  body.sidebar-collapsed .nav-group > .nav-group-items {
+    display: none;
+    position: absolute;
+    left: calc(100% + 12px);
+    top: -8px;
+    width: 216px;
+    background: var(--s1);
+    border: 1px solid var(--gb);
+    border-radius: var(--r12);
+    box-shadow: var(--sh-l);
+    padding: 8px;
+    z-index: 400;
+  }
+  /* ...e revelados em flyout ao passar o mouse na área */
+  body.sidebar-collapsed .nav-group:hover > .nav-group-items {
+    display: block;
+    animation: flyoutIn .16s var(--ease);
+  }
+  /* ponte invisível: cobre o vão entre o trilho e o flyout */
+  body.sidebar-collapsed .nav-group > .nav-group-items::after {
+    content: '';
+    position: absolute;
+    left: -16px; top: 0; bottom: 0;
+    width: 16px;
+  }
+
+  /* Dentro do flyout tudo volta a ser legível */
+  body.sidebar-collapsed .nav-group-items .nav-label   { opacity: 1; pointer-events: auto; }
+  body.sidebar-collapsed .nav-group-items .sb-section  { opacity: 1; pointer-events: auto; }
+  body.sidebar-collapsed .nav-group-items .nav-tag     { opacity: 1; }
+  body.sidebar-collapsed .nav-group-items .nav-item::after { display: none; }
+
+  @keyframes flyoutIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Rodapé: Perfil/Config como itens compactos */
+  .sidebar-footer .nav-item { margin-bottom: 2px; }
+}
+
+/* Recolher menu não faz sentido no mobile (sidebar é overlay) */
+@media (max-width: 767px) {
+  .sidebar-collapse-btn { display: none; }
+}
+
+[data-theme="dark"] body.sidebar-collapsed .nav-group > .nav-group-items,
+[data-theme="dark"].sidebar-collapsed .nav-group > .nav-group-items {
+  border-color: var(--rito-dark-border);
 }
 
