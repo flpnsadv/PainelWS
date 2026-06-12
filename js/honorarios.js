@@ -130,11 +130,22 @@ function buildStep1() {
       </div>
     </div>` : '';
 
+  const section = (num, title, hint, inner) => `
+    <div class="form-section">
+      <div class="form-section-hd">
+        <span class="fs-num">${num}</span>
+        <span class="fs-title">${title}</span>
+        ${hint ? `<span class="fs-hint">${hint}</span>` : ''}
+      </div>
+      ${inner}
+    </div>`;
+
   return `
     <div class="step-eyebrow">Etapa 01</div>
     <div class="step-title">Dados do Caso</div>
     <div class="step-sub">Preencha as informações para calcular os honorários</div>
 
+    ${section('i', 'Cliente & serviço', '', `
     <div class="field" data-field="nomeCliente">
       <label class="field-label">Nome do Cliente</label>
       <input type="text" data-bind="nomeCliente" value="${escHtml(s.nomeCliente)}" placeholder="Nome completo do cliente">
@@ -145,8 +156,9 @@ function buildStep1() {
       <label class="field-label">Tipo de Serviço <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:10px">(múltipla escolha)</span></label>
       <div class="card-grid">${cards}</div>
       <div class="field-error-msg">Selecione ao menos um tipo de serviço</div>
-    </div>
+    </div>`)}
 
+    ${section('ii', 'Valores do caso', '', `
     <div class="input-row">
       <div class="field" data-field="valorBase">
         <label class="field-label">Valor Base (R$)</label>
@@ -167,16 +179,14 @@ function buildStep1() {
         <div class="toggle-btn ${!s.tutelaLiminar?'sel-ok':''}" data-action="set-tutela" data-val="false">Não</div>
         <div class="toggle-btn ${s.tutelaLiminar?'sel':''}" data-action="set-tutela" data-val="true">Sim — tutela/liminar (+${fmt.pct(CFG.tutela)})</div>
       </div>
-    </div>
+    </div>`)}
 
-    <hr class="section-sep">
-
+    ${section('iii', 'Graus do caso', 'cada nível acrescenta um percentual ao valor base', `
     ${levelRow('Grau de Urgência', 'urgencia', PCT_URGENCIA)}
     ${levelRow('Grau de Especificidade', 'especificidade', PCT_ESPECIFIC)}
-    ${levelRow('Grau de Complexidade', 'complexidade', PCT_COMPLEXIDADE)}
+    ${levelRow('Grau de Complexidade', 'complexidade', PCT_COMPLEXIDADE)}`)}
 
-    <hr class="section-sep">
-
+    ${section('iv', 'Êxito & observações', '', `
     <div class="field">
       <label class="field-label">Honorários de Êxito</label>
       <div class="toggle-group">
@@ -189,7 +199,7 @@ function buildStep1() {
     <div class="field" style="margin-top:8px">
       <label class="field-label">Observações Adicionais</label>
       <textarea data-bind="observacoes" placeholder="Descreva particularidades do caso, acordos especiais ou outras observações relevantes...">${escHtml(s.observacoes)}</textarea>
-    </div>`;
+    </div>`)}`;
 }
 
 function buildStep2() {
@@ -206,26 +216,43 @@ function buildStep2() {
     <div class="step-title">Cálculo dos Honorários</div>
     <div class="step-sub">Resumo completo dos valores calculados</div>
 
-    ${s.tutelaLiminar ? `<div class="info-banner">⚡ <span><strong>Tutela/Liminar ativa</strong> — acréscimo de ${fmt.pct(CFG.tutela)} incluído nos ajustes.</span></div>` : ''}
-
-    <div class="calc-block">
-      <div class="calc-block-title">Dados Gerais</div>
-      <div class="calc-row"><span class="lbl">Cliente</span><span class="val">${escHtml(s.nomeCliente)}</span></div>
-      <div class="calc-row"><span class="lbl">Serviço</span><span class="val" style="text-align:right;max-width:58%">${svNames}</span></div>
-      <div class="calc-row"><span class="lbl">Valor Base OAB/SC</span><span class="val">${fmt.brl(s.valorBase)}</span></div>
-      <div class="calc-row"><span class="lbl">Horas de Análise</span><span class="val">${s.horasAnalise}h</span></div>
+    <!-- Resultado primeiro: o número que importa, em destaque -->
+    <div class="calc-hero">
+      <div class="calc-hero-eyebrow">Total dos honorários fixos</div>
+      <div class="calc-hero-val">${fmt.brl(c.totalFixo)}</div>
+      <div class="calc-hero-meta">
+        <span>À vista <strong>${fmt.brl(c.avista)}</strong> <em>(−${fmt.pct(CFG.avista)})</em></span>
+        <span class="chm-sep"></span>
+        <span>Parcelado <strong>${fmt.brl(c.entrada)}</strong> + ${c.nParcelas}x de <strong>${fmt.brl(c.valorParcela)}</strong></span>
+      </div>
+      ${s.honorariosExito && c.valorExito > 0 ? `
+      <div class="calc-hero-exito">
+        Com honorários de êxito (${modLabel.toLowerCase()}): <strong>${fmt.brl(c.totalFinal)}</strong>
+      </div>` : ''}
     </div>
 
-    <div class="calc-block">
-      <div class="calc-block-title">Ajustes Aplicados</div>
-      <div class="calc-row"><span class="lbl">Urgência — Nível ${s.urgencia} (${LEVEL_LABELS[s.urgencia]})</span>${badge(c.pctUrgencia)}</div>
-      <div class="calc-row"><span class="lbl">Especificidade — Nível ${s.especificidade} (${LEVEL_LABELS[s.especificidade]})</span>${badge(c.pctEspecific)}</div>
-      <div class="calc-row"><span class="lbl">Complexidade — Nível ${s.complexidade} (${LEVEL_LABELS[s.complexidade]})</span>${badge(c.pctComplexidade)}</div>
-      ${s.tutelaLiminar ? `<div class="calc-row"><span class="lbl">Tutela / Liminar</span><span class="badge">+${fmt.pct(CFG.tutela)}</span></div>` : ''}
-      <hr class="calc-divider">
-      <div class="calc-row">
-        <span class="lbl" style="font-weight:700;color:var(--t1)">Total de Ajustes</span>
-        ${c.pctTotal > 0 ? `<span class="badge" style="font-size:12px;padding:3px 12px">+${fmt.pct(c.pctTotal)}</span>` : `<span class="badge badge-neutral" style="font-size:12px;padding:3px 12px">0%</span>`}
+    ${s.tutelaLiminar ? `<div class="info-banner">⚡ <span><strong>Tutela/Liminar ativa</strong> — acréscimo de ${fmt.pct(CFG.tutela)} incluído nos ajustes.</span></div>` : ''}
+
+    <div class="calc-detail-grid">
+      <div class="calc-block">
+        <div class="calc-block-title">Dados Gerais</div>
+        <div class="calc-row"><span class="lbl">Cliente</span><span class="val">${escHtml(s.nomeCliente)}</span></div>
+        <div class="calc-row"><span class="lbl">Serviço</span><span class="val" style="text-align:right;max-width:58%">${svNames}</span></div>
+        <div class="calc-row"><span class="lbl">Valor Base OAB/SC</span><span class="val">${fmt.brl(s.valorBase)}</span></div>
+        <div class="calc-row"><span class="lbl">Horas de Análise</span><span class="val">${s.horasAnalise}h</span></div>
+      </div>
+
+      <div class="calc-block">
+        <div class="calc-block-title">Ajustes Aplicados</div>
+        <div class="calc-row"><span class="lbl">Urgência — Nível ${s.urgencia} (${LEVEL_LABELS[s.urgencia]})</span>${badge(c.pctUrgencia)}</div>
+        <div class="calc-row"><span class="lbl">Especificidade — Nível ${s.especificidade} (${LEVEL_LABELS[s.especificidade]})</span>${badge(c.pctEspecific)}</div>
+        <div class="calc-row"><span class="lbl">Complexidade — Nível ${s.complexidade} (${LEVEL_LABELS[s.complexidade]})</span>${badge(c.pctComplexidade)}</div>
+        ${s.tutelaLiminar ? `<div class="calc-row"><span class="lbl">Tutela / Liminar</span><span class="badge">+${fmt.pct(CFG.tutela)}</span></div>` : ''}
+        <hr class="calc-divider">
+        <div class="calc-row">
+          <span class="lbl" style="font-weight:700;color:var(--t1)">Total de Ajustes</span>
+          ${c.pctTotal > 0 ? `<span class="badge" style="font-size:12px;padding:3px 12px">+${fmt.pct(c.pctTotal)}</span>` : `<span class="badge badge-neutral" style="font-size:12px;padding:3px 12px">0%</span>`}
+        </div>
       </div>
     </div>
 
@@ -237,11 +264,8 @@ function buildStep2() {
       <hr class="calc-divider">
       <div class="calc-row"><span class="lbl">Subtotal</span><span class="val">${fmt.brl(c.subtotal)}</span></div>
       <div class="calc-row"><span class="lbl">Imposto ${fmt.pct(CFG.iss)}</span><span class="val">${fmt.brl(c.iss)}</span></div>
-    </div>
-
-    <div class="calc-total-box">
-      <div class="lbl">TOTAL DOS HONORÁRIOS FIXOS</div>
-      <div class="val">${fmt.brl(c.totalFixo)}</div>
+      <hr class="calc-divider">
+      <div class="calc-row"><span class="lbl" style="font-weight:700;color:var(--t1)">Total Fixos</span><span class="val accent" style="font-weight:800">${fmt.brl(c.totalFixo)}</span></div>
     </div>
 
     ${s.honorariosExito ? `
@@ -278,6 +302,7 @@ function buildStep3() {
     <div class="step-title">Opções de Pagamento</div>
     <div class="step-sub">Referência: <strong>${fmt.brl(c.totalFixo)}</strong> em honorários fixos</div>
 
+    <div class="pay-grid">
     <div class="pay-card">
       <div class="pay-header">
         <div class="pay-title">💵 Opção 1 — À Vista</div>
@@ -310,7 +335,7 @@ function buildStep3() {
       </div>
     </div>
 
-    <div class="pay-card">
+    <div class="pay-card pay-card-cc">
       <div class="pay-header">
         <div class="pay-title">💳 Opção 3 — Cartão de Crédito</div>
         <div class="pay-badge pb-red">Juros compostos ${fmt.pct(CFG.cartao)} a.m.</div>
@@ -325,6 +350,7 @@ function buildStep3() {
         <tbody>${ccRows}</tbody>
       </table>
     </div>
+    </div><!-- /pay-grid -->
 
     <button class="btn btn-primary btn-full" data-action="gerar-resumo">
       📄 Gerar Resumo da Proposta
@@ -336,6 +362,28 @@ function refreshInPlace() {
   const n = state.currentStep;
   document.getElementById('step-container').innerHTML =
     n===1 ? buildStep1() : n===2 ? buildStep2() : buildStep3();
+  updateLiveTotal();
+}
+
+// ── Total ao vivo na barra do wizard: o resultado nunca sai de vista ──
+function updateLiveTotal() {
+  const wrap = document.getElementById('wizard-live-total');
+  if (!wrap) return;
+  const c = state.calc;
+  const ok = state.valorBase > 0 && isFinite(c.totalFixo);
+  wrap.classList.toggle('visible', ok);
+  if (!ok) return;
+  const val = document.getElementById('wlt-val');
+  if (val) val.textContent = fmt.brl(c.totalFixo);
+  const fin = document.getElementById('wlt-final');
+  if (fin) {
+    if (state.honorariosExito && c.valorExito > 0) {
+      fin.style.display = '';
+      fin.textContent = 'com êxito ' + fmt.brl(c.totalFinal);
+    } else {
+      fin.style.display = 'none';
+    }
+  }
 }
 
 function validate1() {
@@ -364,6 +412,7 @@ function goToStep(n, animate=true) {
   const render = () => {
     calculate();
     container.innerHTML = n===1 ? buildStep1() : n===2 ? buildStep2() : buildStep3();
+    updateLiveTotal();
     if (n === 2) setTimeout(() => animateCounters(container), 60);
   };
   if (animate) {
@@ -414,11 +463,12 @@ function showSummary() {
       <div>
         <div class="sum-eyebrow">Proposta de Honorários Advocatícios</div>
         <div class="sum-client">${escHtml(s.nomeCliente)}</div>
-        <div class="sum-date">${now}</div>
+        <div class="sum-date">${now} <span class="sum-saved${s._propostaSalva ? ' show' : ''}" id="sum-saved-badge">✓ salva no histórico</span></div>
       </div>
       <div class="sum-total">
         <div class="sum-total-lbl">Honorários Fixos</div>
         <div class="sum-total-val">${fmt.brl(c.totalFixo)}</div>
+        ${s.honorariosExito && c.valorExito > 0 ? `<div class="sum-total-final">com êxito ${fmt.brl(c.totalFinal)}</div>` : ''}
       </div>
     </div>
 
@@ -478,10 +528,9 @@ function showSummary() {
     </div>`:''}
 
     <div class="sum-actions">
-      <button class="btn btn-outline" id="btn-copy-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar Texto</button>
-      <button class="btn btn-outline" id="btn-gerar-docx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Gerar Proposta (Word)</button>
-      <div style="flex-basis:100%;height:0;border-top:1px solid var(--div);margin:4px 0"></div>
-      <button class="btn btn-ghost" id="btn-nova-proposta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nova Proposta</button>
+      <button class="btn btn-primary sum-action-main" id="btn-gerar-docx"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Gerar Proposta (Word)</button>
+      <button class="btn btn-outline" id="btn-copy-text"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copiar</button>
+      <button class="btn btn-ghost" id="btn-nova-proposta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Nova</button>
       <button class="btn btn-ghost" id="btn-fechar-resumo">Fechar</button>
     </div>`;
 
@@ -501,8 +550,12 @@ function showSummary() {
         total_final:    c.totalFinal || 0,
         dados_completos: JSON.parse(JSON.stringify(s))
       });
-      if (error) state._propostaSalva = false;
-      else if (typeof dashInvalidar === 'function') dashInvalidar();
+      if (error) {
+        state._propostaSalva = false;
+      } else {
+        if (typeof dashInvalidar === 'function') dashInvalidar();
+        document.getElementById('sum-saved-badge')?.classList.add('show');
+      }
     })();
   }
 
@@ -513,7 +566,7 @@ function showSummary() {
   document.getElementById('btn-copy-text').onclick = () => {
     const text = buildPlainText();
     const svgCopy = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-    const flash = () => { const b=document.getElementById('btn-copy-text'); if(b){b.innerHTML='✓ Copiado!';setTimeout(()=>{if(b)b.innerHTML=svgCopy+'Copiar Texto'},2000);} };
+    const flash = () => { const b=document.getElementById('btn-copy-text'); if(b){b.innerHTML='✓ Copiado!';setTimeout(()=>{if(b)b.innerHTML=svgCopy+'Copiar'},2000);} };
     navigator.clipboard ? navigator.clipboard.writeText(text).then(flash) : (()=>{const t=Object.assign(document.createElement('textarea'),{value:text});document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);flash();})();
   };
 }
@@ -556,7 +609,7 @@ function buildPlainText() {
 
 // Count-up animation nos valores do resultado
 function animateCounters(container) {
-  container.querySelectorAll('.calc-total-box .val').forEach(el => {
+  container.querySelectorAll('.calc-hero-val, .calc-total-box .val').forEach(el => {
     const original = el.textContent.trim();
     const digits = original.replace(/[^\d,]/g, '');
     const target = parseFloat(digits.replace(/\./g,'').replace(',','.'));
@@ -605,6 +658,8 @@ document.getElementById('step-container').addEventListener('input', function(e) 
   state[el.dataset.bind] = el.type==='number' ? (parseFloat(el.value)||0) : el.value;
   state._propostaSalva = false;
   el.closest('[data-field]')?.classList.remove('has-error');
+  calculate();
+  updateLiveTotal();
 });
 
 document.getElementById('btn-prev').addEventListener('click', () => goToStep(state.currentStep-1));
@@ -615,3 +670,4 @@ document.getElementById('summary-modal').addEventListener('click', e => { if(e.t
 calculate();
 document.getElementById('step-container').innerHTML = buildStep1();
 updateProgress(1);
+updateLiveTotal();

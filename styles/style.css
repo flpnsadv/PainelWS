@@ -1686,7 +1686,6 @@
       80%     { transform: translateX(3px); }
     }
     .plat-shake { animation: platShake .4s var(--ease) both; }
-    }
     #page-bacen .plat-form-group label .hint {
       font-weight: 400; text-transform: none; letter-spacing: normal;
       color: var(--t3); font-size: 10px; margin-left: 6px; opacity: .7;
@@ -4336,5 +4335,531 @@
         #page-home.page-section.active {
           height: calc(100vh - 56px - env(safe-area-inset-top, 0px) - 82px - env(safe-area-inset-bottom, 0px)) !important;
         }
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       REFRESH DESKTOP · "Editorial quente e fluido"
+       Tudo abaixo sobrescreve regras anteriores (append-cascade).
+       Mobile permanece intocado: regras visuais vivem em min-width:768px.
+    ══════════════════════════════════════════════════════════════════ */
+
+    /* ── 1 · TOKENS DE PROFUNDIDADE (desktop) ── */
+    @media (min-width: 768px) {
+      :root {
+        --sh-s: 0 1px 2px rgba(61, 38, 32, .07), 0 2px 10px rgba(61, 38, 32, .05);
+        --sh-m: 0 2px 8px rgba(61, 38, 32, .10), 0 12px 32px rgba(61, 38, 32, .08);
+        --sh-l: 0 10px 24px rgba(61, 38, 32, .14), 0 32px 64px rgba(61, 38, 32, .10);
+        --sh-hover: 0 4px 12px rgba(61, 38, 32, .10), 0 16px 40px rgba(61, 38, 32, .10);
+        --surface-raised: #FFFCF8;
+        --hairline-raised: transparent;
+      }
+      [data-theme="dark"] {
+        --sh-s: 0 1px 2px rgba(0, 0, 0, .22), 0 2px 10px rgba(0, 0, 0, .16);
+        --sh-m: 0 2px 8px rgba(0, 0, 0, .26), 0 12px 32px rgba(0, 0, 0, .20);
+        --sh-l: 0 10px 24px rgba(0, 0, 0, .34), 0 32px 64px rgba(0, 0, 0, .26);
+        --sh-hover: 0 4px 12px rgba(0, 0, 0, .30), 0 16px 40px rgba(0, 0, 0, .24);
+        --surface-raised: var(--rito-dark-surface2);
+        --hairline-raised: rgba(250, 244, 238, .06);
+      }
+    }
+
+    /* ── 2 · MOTION: transição de páginas por classes ── */
+    @keyframes pageOut {
+      to { opacity: 0; transform: translateY(-6px); }
+    }
+    @keyframes riseIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes fadeOnly {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Base global: fade simples (paridade com o comportamento mobile atual) */
+    .page-section.page-exit  { animation: pageOut .14s var(--ease) both; }
+    .page-section.page-enter { animation: fadeOnly .22s var(--ease) both; }
+
+    /* Desktop: cascata staggered nos filhos diretos */
+    @media (min-width: 768px) {
+      .page-section.page-enter > * { animation: riseIn .32s var(--spring) both; }
+      .page-section.page-enter > *:nth-child(2) { animation-delay: .04s; }
+      .page-section.page-enter > *:nth-child(3) { animation-delay: .08s; }
+      .page-section.page-enter > *:nth-child(4) { animation-delay: .12s; }
+      .page-section.page-enter > *:nth-child(n+5) { animation-delay: .15s; }
+
+      /* Páginas com sticky interno (header BACEN, tabs config):
+         entrada opacity-only — transform criaria containing block e
+         quebraria position:sticky durante a animação. */
+      #page-bacen.page-enter > *,
+      #page-config.page-enter > * { animation-name: fadeOnly; }
+    }
+
+    /* ── Acessibilidade: respeita prefers-reduced-motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ── 3 · TIPOGRAFIA EDITORIAL + HEADERS ── */
+    /* Acento itálico terracota nos títulos (global — itálico real via
+       Fraunces-Italic-Variable.woff2 registrado em fonts.css) */
+    .page-header-title em {
+      font-style: italic;
+      font-weight: 420;
+      color: var(--a1);
+      letter-spacing: -.01em;
+    }
+
+    @media (min-width: 768px) {
+      .page-header {
+        padding: 30px 32px 20px;
+        gap: 0;
+        align-items: flex-end;
+      }
+      .page-header-icon { display: none !important; }
+
+      .page-header-eyebrow {
+        font-family: var(--rito-font-body);
+        font-size: 10px; font-weight: 600;
+        letter-spacing: .15em;
+        color: var(--rito-clay-800);
+        display: flex; align-items: center; gap: 10px;
+        margin-bottom: 8px;
+      }
+      [data-theme="dark"] .page-header-eyebrow { color: var(--rito-clay-300); }
+      .page-header-eyebrow::before {
+        content: '';
+        width: 20px; height: 1px;
+        background: var(--a1);
+        flex-shrink: 0;
+        opacity: .7;
+      }
+
+      .page-header-title {
+        font-size: clamp(24px, 2.6vw, 30px);
+        font-weight: 500;
+        letter-spacing: -.02em;
+        line-height: 1.12;
+        font-optical-sizing: auto;
+        margin-bottom: 6px;
+      }
+
+      .page-header-sub {
+        font-size: 13px;
+        line-height: 1.55;
+        max-width: 640px;
+      }
+
+      .page-header-right { padding-bottom: 4px; }
+
+      /* Home: saudação e KPIs com mais presença editorial */
+      .home-greeting {
+        font-size: clamp(24px, 2.8vw, 31px);
+        font-weight: 500;
+        letter-spacing: -.02em;
+      }
+      .hss-val {
+        font-size: 26px;
+        font-weight: 600;
+        letter-spacing: -.02em;
+      }
+    }
+
+    /* ── 4 · PROFUNDIDADE: camadas em vez de bordas (desktop) ── */
+    @media (min-width: 768px) {
+
+      /* Cartão de página: mais presença flutuando sobre o gradiente */
+      .page-section.active {
+        border-radius: 16px;
+        box-shadow:
+          0 1px 3px rgba(61, 38, 32, .06),
+          0 12px 48px rgba(61, 38, 32, .13);
+      }
+      [data-theme="dark"] .page-section.active {
+        box-shadow:
+          0 1px 3px rgba(0, 0, 0, .25),
+          0 12px 48px rgba(0, 0, 0, .38);
+      }
+
+      /* Topbar: glass sutil em vez de totalmente transparente */
+      #main-nav {
+        background: color-mix(in srgb, var(--bg) 52%, transparent) !important;
+        backdrop-filter: blur(14px) saturate(1.25);
+        -webkit-backdrop-filter: blur(14px) saturate(1.25);
+      }
+
+      /* ── Camada RAISED: superfície clara + sombra, sem borda ──
+         (hairline só no dark, para não sumir sobre o fundo escuro) */
+      .dash-card,
+      .home-tools-list,
+      .plat-card,
+      #historico-lista .hist-card {
+        border: 1px solid var(--hairline-raised);
+        background: var(--surface-raised);
+        box-shadow: var(--sh-s);
+      }
+      .plat-card { box-shadow: var(--sh-m); }
+
+      .dash-card {
+        transition: box-shadow .18s var(--ease);
+      }
+      .dash-card:hover { box-shadow: var(--sh-hover); }
+
+      #historico-lista .hist-card {
+        transition: transform .16s var(--ease), box-shadow .16s var(--ease);
+      }
+      #historico-lista .hist-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--sh-hover);
+      }
+
+      /* ── Camada INSET: rebaixo suave, sem borda ── */
+      .calc-block,
+      .pay-card,
+      .dist-param-card,
+      .plat-stepper {
+        border-color: transparent;
+        background: var(--s2);
+      }
+
+      /* KPIs da home: hover discreto de leitura */
+      .hss-item {
+        border-radius: var(--r8);
+        transition: background .15s var(--ease);
+      }
+      .hss-item:hover { background: var(--s2); }
+    }
+
+    /* ── 5 · FLUIDEZ DE GRIDS (desktop) ── */
+    @media (min-width: 768px) {
+      /* Distribuição: proporção fluida em vez de coluna fixa 360px */
+      #page-distribuicao .dist-layout.page-body {
+        grid-template-columns: minmax(330px, 2fr) 3fr !important;
+      }
+
+      /* BACEN: formulário com mais respiro */
+      .plat-form-grid { gap: 20px 26px; }
+
+      /* Dashboard da home */
+      .dash-grid { gap: 16px; }
+    }
+
+    /* ── 6 · HOME: scroll único da página inteira (desktop) ──
+       O cartão mantém a altura do viewport, mas o conteúdo todo rola
+       junto — sem scrolls internos espremidos nas colunas. */
+    @media (min-width: 768px) {
+      #page-home.page-section.active {
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      #page-home .home-body {
+        flex: none;
+        min-height: auto;
+      }
+      #page-home .home-tools-section,
+      #page-home .home-activity-section {
+        overflow-y: visible;
+        min-height: auto;
+      }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       REFRESH · CALCULADORA DE HONORÁRIOS — "resultado primeiro"
+    ══════════════════════════════════════════════════════════════════ */
+
+    /* ── Etapa 1: seções numeradas editoriais ── */
+    .form-section { margin-bottom: 28px; }
+    .form-section:last-child { margin-bottom: 0; }
+    .form-section-hd {
+      display: flex; align-items: baseline; gap: 10px;
+      margin-bottom: 16px; padding-bottom: 9px;
+      border-bottom: 1px solid var(--div);
+    }
+    .fs-num {
+      font-family: var(--rito-font-display);
+      font-style: italic;
+      font-size: 15px; font-weight: 500;
+      color: var(--a1);
+      min-width: 18px;
+    }
+    .fs-title {
+      font-family: var(--rito-font-display);
+      font-size: 15px; font-weight: 600;
+      color: var(--t1); letter-spacing: -.01em;
+    }
+    .fs-hint {
+      font-size: 11px; color: var(--t3);
+      margin-left: auto; font-style: normal;
+    }
+    @media (max-width: 600px) { .fs-hint { display: none; } }
+
+    /* ── Etapa 2: hero do resultado ── */
+    .calc-hero {
+      position: relative; overflow: hidden;
+      background:
+        radial-gradient(ellipse 90% 120% at 100% 0%, rgba(226, 166, 137, .16) 0%, transparent 55%),
+        linear-gradient(135deg, rgba(201, 123, 95, .13) 0%, rgba(226, 166, 137, .08) 100%);
+      border: 1px solid rgba(201, 123, 95, .28);
+      border-radius: var(--r16);
+      padding: 22px 24px 20px;
+      margin-bottom: 14px;
+    }
+    .calc-hero-eyebrow {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--rito-clay-800);
+      margin-bottom: 6px;
+    }
+    [data-theme="dark"] .calc-hero-eyebrow { color: var(--rito-clay-300); }
+    .calc-hero-val {
+      font-family: var(--rito-font-display);
+      font-size: clamp(30px, 4.4vw, 40px);
+      font-weight: 600; letter-spacing: -.02em;
+      color: var(--a1); line-height: 1.05;
+      font-variant-numeric: tabular-nums;
+    }
+    .calc-hero-meta {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: 8px 14px; margin-top: 12px;
+      font-size: 12.5px; color: var(--t2);
+    }
+    .calc-hero-meta strong { color: var(--t1); font-weight: 700; }
+    .calc-hero-meta em { font-style: normal; color: var(--ok); font-size: 11.5px; }
+    .chm-sep { width: 1px; height: 14px; background: var(--gbt); }
+    @media (max-width: 600px) { .chm-sep { display: none; } }
+    .calc-hero-exito {
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px dashed rgba(201, 123, 95, .30);
+      font-size: 12.5px; color: var(--t2);
+    }
+    .calc-hero-exito strong {
+      font-family: var(--rito-font-display);
+      font-size: 17px; font-weight: 700;
+      color: var(--ok); letter-spacing: -.01em;
+      margin-left: 4px;
+    }
+
+    /* ── Etapa 2: detalhamento em grid (desktop) ── */
+    @media (min-width: 768px) {
+      .calc-detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        align-items: stretch;
+      }
+      .calc-detail-grid .calc-block { margin-bottom: 0; height: 100%; }
+      .calc-detail-grid { margin-bottom: 12px; }
+    }
+
+    /* ── Etapa 3: opções de pagamento lado a lado (desktop) ── */
+    @media (min-width: 768px) {
+      .pay-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+      .pay-grid .pay-card { margin-bottom: 0; }
+      .pay-grid .pay-card-cc { grid-column: 1 / -1; }
+    }
+
+    /* ── Total ao vivo na barra do wizard ── */
+    .nav-buttons { position: relative; }
+    .wizard-live-total {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0; line-height: 1.25;
+      opacity: 0; transform: translateY(3px);
+      transition: opacity .25s var(--ease), transform .25s var(--ease);
+      pointer-events: none;
+      text-align: center;
+      min-width: 0;
+    }
+    .wizard-live-total.visible { opacity: 1; transform: none; }
+    .wlt-lbl {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--t3);
+    }
+    .wlt-val {
+      font-family: var(--rito-font-display);
+      font-size: 18px; font-weight: 600;
+      color: var(--a1); letter-spacing: -.01em;
+      font-variant-numeric: tabular-nums;
+    }
+    .wlt-final { font-size: 10.5px; color: var(--ok); font-weight: 600; }
+
+    /* ══════════════════════════════════════════════════════════════════
+       REFRESH · MODAL DE RESUMO — legível, quente e com ações fixas
+    ══════════════════════════════════════════════════════════════════ */
+    .summary-box {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201, 123, 95, .07) 0%, transparent 60%),
+        var(--s1);
+      border: 1px solid var(--gbt);
+      padding: 30px 34px 0;
+    }
+    [data-theme="dark"] .summary-box {
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(226, 166, 137, .06) 0%, transparent 60%),
+        var(--rito-dark-surface);
+    }
+
+    .sum-client {
+      font-family: var(--rito-font-display);
+      font-size: 21px; font-weight: 600;
+      letter-spacing: -.015em; color: var(--t1);
+      margin-top: 3px;
+    }
+    .sum-total-val {
+      font-size: clamp(24px, 3vw, 30px);
+      font-weight: 600; letter-spacing: -.02em;
+    }
+    .sum-total-final {
+      font-size: 11.5px; color: var(--ok);
+      font-weight: 600; margin-top: 3px;
+    }
+    .sum-saved {
+      display: none;
+      margin-left: 8px;
+      padding: 1px 8px; border-radius: 20px;
+      background: var(--ok-d); color: var(--ok);
+      font-size: 10px; font-weight: 700;
+      vertical-align: 1px;
+    }
+    .sum-saved.show { display: inline-block; }
+
+    /* Ações sempre visíveis: barra fixa no rodapé do modal */
+    .sum-actions {
+      position: sticky; bottom: 0;
+      margin: 24px -34px 0;
+      padding: 14px 34px 18px;
+      background: var(--s1);
+      border-top: 1px solid var(--div);
+      border-radius: 0 0 var(--r24) var(--r24);
+      box-shadow: 0 -10px 24px rgba(61, 38, 32, .07);
+      flex-wrap: nowrap;
+    }
+    [data-theme="dark"] .sum-actions {
+      background: var(--rito-dark-surface);
+      box-shadow: 0 -10px 24px rgba(0, 0, 0, .30);
+    }
+    .sum-actions .btn { flex: 0 1 auto; min-width: 0; }
+    .sum-action-main { flex: 1 1 auto !important; }
+    @media (max-width: 600px) {
+      .summary-box { padding: 22px 16px 0; }
+      .sum-actions {
+        margin: 18px -16px 0;
+        padding: 12px 16px 14px;
+        flex-wrap: wrap;
+      }
+      .sum-action-main { flex-basis: 100% !important; }
+    }
+
+    /* ══════════════════════════════════════════════════════════════════
+       REFRESH MOBILE · profundidade, motion e Home na bottom nav
+    ══════════════════════════════════════════════════════════════════ */
+
+    /* Tokens de profundidade em todas as larguras (mesmos valores do desktop) */
+    :root {
+      --surface-raised: #FFFCF8;
+      --hairline-raised: transparent;
+    }
+    [data-theme="dark"] {
+      --surface-raised: var(--rito-dark-surface2);
+      --hairline-raised: rgba(250, 244, 238, .06);
+    }
+
+    @media (max-width: 767px) {
+      /* ── Bottom nav: pílula ativa proporcional a 5 itens ── */
+      .bnav-item.active::before { width: 46px; }
+
+      /* ── Profundidade: camadas em vez de bordas ── */
+      .dash-card,
+      .home-tools-list,
+      #historico-lista .hist-card {
+        border: 1px solid var(--hairline-raised);
+        background: var(--surface-raised);
+        box-shadow: 0 1px 2px rgba(61, 38, 32, .06), 0 4px 14px rgba(61, 38, 32, .05);
+      }
+      [data-theme="dark"] .dash-card,
+      [data-theme="dark"] .home-tools-list,
+      [data-theme="dark"] #historico-lista .hist-card {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, .20), 0 4px 14px rgba(0, 0, 0, .16);
+      }
+      .calc-block,
+      .pay-card,
+      .dist-param-card,
+      .plat-stepper {
+        border-color: transparent;
+        background: var(--s2);
+      }
+
+      /* ── Header: eyebrow editorial (o em itálico já é global) ── */
+      .page-header-eyebrow {
+        font-family: var(--rito-font-body);
+        font-size: 9px; font-weight: 600;
+        letter-spacing: .14em;
+        color: var(--rito-clay-800);
+      }
+      [data-theme="dark"] .page-header-eyebrow { color: var(--rito-clay-300); }
+
+      /* ── Entrada staggered curta (sem sticky interno no mobile) ── */
+      .page-section.page-enter > * { animation: riseIn .28s var(--spring) both; }
+      .page-section.page-enter > *:nth-child(2)    { animation-delay: .04s; }
+      .page-section.page-enter > *:nth-child(3)    { animation-delay: .07s; }
+      .page-section.page-enter > *:nth-child(n+4)  { animation-delay: .10s; }
+
+      /* ── Calculadora: hero compacto ── */
+      .calc-hero { padding: 18px 18px 16px; border-radius: var(--r12); }
+      .calc-hero-val { font-size: 28px; }
+
+      /* ── KPIs da home com presença ── */
+      .hss-val { font-size: 22px; font-weight: 600; }
+
+      /* ── Home: scroll único da página inteira (igual ao desktop) ── */
+      #page-home.page-section.active {
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      #page-home .home-header { overflow: visible; }
+      #page-home .home-body {
+        flex: none !important;
+        overflow: visible !important;
+        min-height: auto !important;
+      }
+      #page-home .home-tools-section,
+      #page-home .home-activity-section {
+        overflow: visible !important;
+        min-height: auto !important;
+      }
+    }
+
+    /* ── Calculadora: coluna do wizard centralizada (desktop) ──
+       (sobrepõe o antigo "alinhamento esquerdo" da linha ~3782) */
+    @media (min-width: 768px) {
+      #page-calcHonorarios .wizard-card.page-body {
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      .wizard-card.page-body #step-container > * {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .wizard-card.page-body .progress-area {
+        padding-left: 28px;
+        padding-right: 28px;
+      }
+      .wizard-card.page-body .nav-buttons {
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
       }
     }

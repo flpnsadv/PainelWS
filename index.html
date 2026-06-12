@@ -434,24 +434,6 @@
 ══════════════════════════════════════════════ -->
 <div id="main-content">
 
-  <!-- ── TOPBAR DESKTOP ── -->
-  <div id="desktop-topbar">
-    <div class="topbar-breadcrumb">
-      <span class="topbar-page" id="topbar-page">Home</span>
-      <div class="topbar-divider"></div>
-      <span class="topbar-sub" id="topbar-sub">Painel Rito</span>
-    </div>
-    <div class="topbar-search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Buscar ferramenta, cliente...">
-    </div>
-    <div class="topbar-action" title="Notificações">
-      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      <div class="topbar-notif-dot"></div>
-    </div>
-    <div class="topbar-avatar-btn">FW</div>
-  </div>
-
   <!-- ── PÁGINA HOME ── -->
   <section id="page-home" class="page-section active">
 
@@ -602,7 +584,7 @@
       <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">HONORÁRIOS</div>
-        <div class="page-header-title">Calculadora</div>
+        <div class="page-header-title">Calculadora de <em>Honorários</em></div>
         <div class="page-header-sub">Proposta advocatícia com parâmetros OAB/SC — cálculo de honorários mínimos, justos e ideais</div>
       </div>
       <div class="page-header-right">
@@ -642,6 +624,11 @@
 
         <div class="nav-buttons">
           <button class="btn btn-ghost btn-invisible" id="btn-prev">← Anterior</button>
+          <div class="wizard-live-total" id="wizard-live-total" title="Total atualizado conforme você preenche">
+            <span class="wlt-lbl">Honorários fixos</span>
+            <span class="wlt-val" id="wlt-val">R$ 0,00</span>
+            <span class="wlt-final" id="wlt-final" style="display:none"></span>
+          </div>
           <button class="btn btn-primary" id="btn-next">Próximo →</button>
         </div>
       </div>
@@ -656,7 +643,7 @@
       <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">HONORÁRIOS</div>
-        <div class="page-header-title">Distribuição</div>
+        <div class="page-header-title">Distribuição de <em>Honorários</em></div>
         <div class="page-header-sub">Rateio interno — impostos, escritório, pró-labore e reserva de emergência</div>
       </div>
       <div class="page-header-right">
@@ -739,7 +726,7 @@
       <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">REVISIONAL</div>
-        <div class="page-header-title">Análise BACEN</div>
+        <div class="page-header-title">Análise <em>Revisional</em> BACEN</div>
         <div class="page-header-sub">Triagem técnica, jurídica e financeira de contratos — comparação com taxa média BACEN, checklist de irregularidades e relatório completo</div>
       </div>
       <div class="page-header-right">
@@ -1202,7 +1189,7 @@
       <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
       <div class="page-header-body">
         <div class="page-header-eyebrow">HISTÓRICO</div>
-        <div class="page-header-title">Registros</div>
+        <div class="page-header-title">Histórico de <em>Propostas</em></div>
         <div class="page-header-sub">Propostas enviadas e análises BACEN realizadas</div>
       </div>
     </header>
@@ -1545,6 +1532,17 @@
      BOTTOM NAVIGATION — MOBILE
 ══════════════════════════════════════════════ -->
 <nav id="bottom-nav" aria-label="Navegação principal">
+  <div class="bnav-item active" data-page="home">
+    <div class="bnav-icon">
+      <svg viewBox="0 0 24 24">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+        <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+    </div>
+    <span class="bnav-label">Home</span>
+  </div>
   <div class="bnav-item" data-page="calcHonorarios">
     <div class="bnav-icon">
       <svg viewBox="0 0 24 24">

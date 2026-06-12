@@ -72,30 +72,16 @@ function navigate(pageId) {
     return;
   }
 
-  // Fade-out da página atual com slide leve
-  outgoing.style.transition = 'opacity .18s ease, transform .18s ease';
-  outgoing.style.opacity    = '0';
-  outgoing.style.transform  = 'translateX(-12px)';
-
+  // Saída rápida + entrada em cascata (classes page-exit/page-enter no CSS)
+  outgoing.classList.add('page-exit');
   setTimeout(() => {
-    outgoing.classList.remove('active');
-    outgoing.style.cssText = '';
-
-    // Prepara página entrante vindo da direita
-    incoming.style.opacity   = '0';
-    incoming.style.transform = 'translateX(16px)';
-    incoming.classList.add('active');
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        incoming.style.transition = 'opacity .24s ease, transform .24s ease';
-        incoming.style.opacity    = '1';
-        incoming.style.transform  = 'translateX(0)';
-      });
-    });
-
-    setTimeout(() => { incoming.style.cssText = ''; }, 280);
-  }, 190);
+    outgoing.classList.remove('active', 'page-exit');
+    incoming.classList.remove('page-exit', 'page-enter');
+    incoming.classList.add('active', 'page-enter');
+    // Remove a classe ao fim da cascata: estado final sem transform
+    // (sticky headers internos voltam a funcionar normalmente)
+    setTimeout(() => incoming.classList.remove('page-enter'), 520);
+  }, 140);
 }
 
 // Cliques nos itens do menu
