@@ -85,9 +85,19 @@ window._currentUser = null;
     }
   }
 
-  function populateSidebarUser(user) {
+  async function populateSidebarUser(user) {
     if (!user) return;
     window._currentUser = user;
+
+    // Carrega o escritório (multiusuário). Sem escritório → onboarding.
+    if (typeof officeCarregar === 'function') {
+      var temOffice = await officeCarregar();
+      if (!temOffice) {
+        officeMostrarOnboarding();
+      } else if (typeof officeRenderEquipe === 'function') {
+        officeRenderEquipe();
+      }
+    }
     var meta  = user.user_metadata || {};
     var nome  = meta.nome || user.email || '?';
     var email = user.email || '';

@@ -125,6 +125,7 @@ async function salvarAnaliseAuto() {
             }).eq('id', _analiseRowId).eq('user_id', window._currentUser.id);
         } else {
             const { data } = await window._sb.from('bacen_analises').insert({
+                office_id:       (typeof officeId === 'function' ? officeId() : null),
                 user_id:         window._currentUser.id,
                 nome_cliente:    nomeCli,
                 banco:           banco,

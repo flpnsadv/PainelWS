@@ -209,6 +209,33 @@
 </div>
 
 <!-- ══════════════════════════════════════════════
+     SCREEN: CRIAR ESCRITÓRIO (onboarding)
+══════════════════════════════════════════════ -->
+<div id="screen-office" class="auth-screen" style="display:none">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-brand-logo">
+        <img class="rito-mark rito-mark-light" src="assets/brand/rito-logotype-on-cream.svg" alt="Rito"><img class="rito-mark rito-mark-dark" src="assets/brand/rito-logotype-on-dark.svg" alt="Rito">
+      </div>
+      <div class="auth-brand-tagline auth-brand-tagline-quote">Todo bom advogado tem seu rito.</div>
+    </div>
+    <div class="auth-form-label">Criar seu escritório</div>
+    <p class="auth-sub" style="text-align:center;font-size:13px;color:var(--t2);margin-top:-4px;line-height:1.5;">
+      Os dados do painel (clientes, casos, prazos) são compartilhados entre os membros do escritório.
+      Se um colega já criou o escritório, peça para ele adicionar o seu e-mail em <strong>Meu Perfil → Equipe</strong>.
+    </p>
+    <div id="office-alert" class="auth-alert" style="display:none"></div>
+    <div class="auth-field">
+      <label class="auth-label" for="office-nome">Nome do escritório</label>
+      <input class="auth-input" id="office-nome" type="text" placeholder="Ex: Windsor e Serrão Advogados" autocomplete="organization">
+    </div>
+    <button class="auth-btn-primary" id="btn-criar-office">Criar escritório</button>
+    <div class="auth-divider"><span>ou</span></div>
+    <button class="auth-btn-ghost" onclick="document.getElementById('btn-logout').click()">Sair da conta</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      MAIN NAV — topbar horizontal (desktop)
 ══════════════════════════════════════════════ -->
 <header id="main-nav">
@@ -226,11 +253,14 @@
   <nav class="mnav-links">
     <div class="mnav-glider" id="mnav-glider"></div>
     <div class="nav-item mnav-link active" data-page="home" data-tooltip="Home">Home</div>
-    <div class="nav-item mnav-link" data-page="historico" data-tooltip="Histórico de Propostas">Histórico</div>
+    <div class="mnav-rule"></div>
+    <div class="nav-item mnav-link" data-page="clientes" data-tooltip="Clientes">Clientes</div>
+    <div class="nav-item mnav-link" data-page="casos" data-tooltip="Casos e Processos">Casos</div>
+    <div class="nav-item mnav-link" data-page="tarefas" data-tooltip="Tarefas e Prazos">Tarefas</div>
+    <div class="nav-item mnav-link" data-page="intimacoes" data-tooltip="Intimações DJEN">Intimações <span class="mnav-tag mnav-tag-new">NOVO</span></div>
     <div class="mnav-rule"></div>
     <div class="nav-item mnav-link" data-page="calcHonorarios" data-tooltip="Calculadora de Honorários">Honorários</div>
-    <div class="nav-item mnav-link" data-page="distribuicao" data-tooltip="Distribuição de Honorários">Distribuição</div>
-    <div class="nav-item mnav-link" data-page="bacen" data-tooltip="Análise Revisional BACEN">BACEN <span class="mnav-tag mnav-tag-new">NOVO</span></div>
+    <div class="nav-item mnav-link" data-page="historico" data-tooltip="Histórico de Propostas">Histórico</div>
   </nav>
 
   <div class="mnav-right">
@@ -286,18 +316,56 @@
       <span class="nav-label">Home</span>
     </div>
 
-    <div class="nav-item"
-         data-page="historico"
-         data-tooltip="Histórico de Propostas">
+    <div class="sb-section">Jurídico</div>
+
+    <div class="nav-item" data-page="clientes" data-tooltip="Clientes">
       <span class="nav-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+          <path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
         </svg>
       </span>
-      <span class="nav-label">Histórico</span>
+      <span class="nav-label">Clientes</span>
     </div>
 
-    <div class="sb-section">Ferramentas</div>
+    <div class="nav-item" data-page="casos" data-tooltip="Casos e Processos">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+        </svg>
+      </span>
+      <span class="nav-label">Casos e Processos</span>
+    </div>
+
+    <div class="nav-item" data-page="andamentos" data-tooltip="Andamentos">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        </svg>
+      </span>
+      <span class="nav-label">Andamentos</span>
+    </div>
+
+    <div class="nav-item" data-page="tarefas" data-tooltip="Tarefas e Prazos">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </span>
+      <span class="nav-label">Tarefas e Prazos</span>
+    </div>
+
+    <div class="nav-item" data-page="intimacoes" data-tooltip="Intimações DJEN">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </span>
+      <span class="nav-label">Intimações</span>
+      <span class="nav-tag nav-tag-new">NOVO</span>
+    </div>
+
+    <div class="sb-section">Gestão</div>
 
     <div class="nav-item"
          data-page="calcHonorarios"
@@ -328,6 +396,38 @@
     </div>
 
     <div class="nav-item"
+         data-page="historico"
+         data-tooltip="Histórico de Propostas">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/>
+        </svg>
+      </span>
+      <span class="nav-label">Histórico</span>
+    </div>
+
+    <div class="nav-item" data-page="marketing" data-tooltip="Marketing — leads e origens">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+        </svg>
+      </span>
+      <span class="nav-label">Marketing</span>
+    </div>
+
+    <div class="nav-item" data-page="comunicacao" data-tooltip="Comunicação interna">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+      </span>
+      <span class="nav-label">Comunicação</span>
+      <span class="nav-tag nav-tag-new" id="com-nav-badge" style="display:none">0</span>
+    </div>
+
+    <div class="sb-section">Ferramentas</div>
+
+    <div class="nav-item"
          data-page="bacen"
          data-tooltip="Análise Revisional BACEN">
       <span class="nav-icon">
@@ -337,6 +437,16 @@
         </svg>
       </span>
       <span class="nav-label">Análise BACEN</span>
+    </div>
+
+    <div class="nav-item" data-page="sistemas" data-tooltip="Sistemas Eletrônicos — links de tribunais">
+      <span class="nav-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+        </svg>
+      </span>
+      <span class="nav-label">Sistemas Eletrônicos</span>
       <span class="nav-tag nav-tag-new">NOVO</span>
     </div>
 
@@ -1214,6 +1324,215 @@
 
   </section>
 
+  <!-- ═══ PAGE: clientes ═══ -->
+  <section id="page-clientes" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">JURÍDICO</div>
+        <div class="page-header-title">Clientes</div>
+        <div class="page-header-sub">CRM do escritório — cadastro, ficha do cliente, atendimentos e anotações</div>
+      </div>
+      <div class="page-header-right">
+        <button class="plat-btn plat-btn-primary" onclick="cliAbrirForm()">+ Novo cliente</button>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="crud-toolbar">
+        <input type="text" id="cli-busca" class="crud-busca" placeholder="Buscar por nome, CPF/CNPJ ou e-mail…">
+        <select id="cli-filtro-status" class="crud-select">
+          <option value="todos">Todos os status</option>
+          <option value="ativo">Ativos</option>
+          <option value="prospecto">Prospectos</option>
+          <option value="inativo">Inativos</option>
+        </select>
+        <span class="crud-count" id="cli-count"></span>
+      </div>
+      <div id="cli-lista" class="crud-list"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: casos ═══ -->
+  <section id="page-casos" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">JURÍDICO</div>
+        <div class="page-header-title">Casos e <em>Processos</em></div>
+        <div class="page-header-sub">Acompanhe os casos do escritório, processos vinculados e andamentos</div>
+      </div>
+      <div class="page-header-right">
+        <button class="plat-btn plat-btn-primary" onclick="casoAbrirForm()">+ Novo caso</button>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="crud-toolbar">
+        <input type="text" id="casos-busca" class="crud-busca" placeholder="Buscar por título, nº do processo ou cliente…">
+        <select id="casos-filtro-status" class="crud-select">
+          <option value="todos">Todos os status</option>
+          <option value="ativo">Ativos</option>
+          <option value="suspenso">Suspensos</option>
+          <option value="arquivado">Arquivados</option>
+          <option value="encerrado">Encerrados</option>
+        </select>
+        <span class="crud-count" id="casos-count"></span>
+      </div>
+      <div id="casos-lista" class="crud-list"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: andamentos ═══ -->
+  <section id="page-andamentos" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">JURÍDICO</div>
+        <div class="page-header-title">Andamentos</div>
+        <div class="page-header-sub">Feed cronológico das movimentações de todos os casos do escritório</div>
+      </div>
+    </header>
+    <div class="page-body">
+      <div id="and-feed" class="and-feed"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: tarefas ═══ -->
+  <section id="page-tarefas" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">JURÍDICO</div>
+        <div class="page-header-title">Tarefas e <em>Prazos</em></div>
+        <div class="page-header-sub">Prazos processuais, audiências e tarefas do escritório — em ordem de vencimento</div>
+      </div>
+      <div class="page-header-right">
+        <button class="plat-btn plat-btn-primary" onclick="tarefaAbrirForm()">+ Nova tarefa</button>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="crud-toolbar">
+        <select id="tar-filtro-tipo" class="crud-select">
+          <option value="todos">Todos os tipos</option>
+          <option value="prazo">Prazos</option>
+          <option value="audiencia">Audiências</option>
+          <option value="tarefa">Tarefas</option>
+        </select>
+        <label class="crud-chk"><input type="checkbox" id="tar-mostrar-concluidas"> Mostrar concluídas</label>
+        <span class="crud-count" id="tar-count"></span>
+      </div>
+      <div id="tar-lista" class="crud-list"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: intimacoes ═══ -->
+  <section id="page-intimacoes" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">JURÍDICO</div>
+        <div class="page-header-title">Intimações</div>
+        <div class="page-header-sub">Busca automática no DJEN (Comunica PJe) pela OAB + cadastro manual e geração de prazos</div>
+      </div>
+      <div class="page-header-right">
+        <button class="plat-btn plat-btn-secondary" onclick="intAbrirManual()">+ Manual</button>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="plat-card" style="margin-bottom:16px;">
+        <div class="plat-card-title" style="font-size:14px;">Buscar no DJEN</div>
+        <div class="int-djen-form">
+          <input type="text" id="int-oab-num" class="crud-busca" style="max-width:160px" placeholder="Nº da OAB" inputmode="numeric">
+          <select id="int-oab-uf" class="crud-select">
+            <option>SC</option><option>PR</option><option>RS</option><option>SP</option><option>RJ</option><option>MG</option><option>ES</option><option>BA</option><option>DF</option><option>GO</option><option>MT</option><option>MS</option><option>PA</option><option>AM</option><option>CE</option><option>PE</option><option>RN</option><option>PB</option><option>AL</option><option>SE</option><option>PI</option><option>MA</option><option>TO</option><option>RO</option><option>AC</option><option>RR</option><option>AP</option>
+          </select>
+          <button class="plat-btn plat-btn-primary" onclick="intBuscarDJEN()">Buscar últimos 7 dias</button>
+        </div>
+        <div id="int-djen-status" style="font-size:12.5px;color:var(--t2);margin-top:10px;"></div>
+        <div id="int-djen-resultados" class="crud-list" style="margin-top:10px;"></div>
+      </div>
+      <div class="crud-toolbar">
+        <span class="home-section-label">Intimações registradas</span>
+        <span class="crud-count" id="int-count"></span>
+      </div>
+      <div id="int-lista" class="crud-list"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: marketing ═══ -->
+  <section id="page-marketing" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">GESTÃO</div>
+        <div class="page-header-title">Marketing</div>
+        <div class="page-header-sub">Funil de leads, origem dos clientes e taxa de conversão do escritório</div>
+      </div>
+      <div class="page-header-right">
+        <button class="plat-btn plat-btn-primary" onclick="leadAbrirForm()">+ Novo lead</button>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="mkt-stats-row">
+        <div class="dash-card" style="flex:1">
+          <div class="dash-card-title">Origem dos leads</div>
+          <div id="mkt-origens"></div>
+        </div>
+        <div class="dash-card mkt-conv-card">
+          <div class="dash-card-title">Taxa de conversão</div>
+          <div class="mkt-conv-val" id="mkt-taxa-conv">—</div>
+          <div style="font-size:11px;color:var(--t3)">convertidos ÷ encerrados</div>
+        </div>
+      </div>
+      <div id="mkt-funil" class="mkt-funil"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: comunicacao ═══ -->
+  <section id="page-comunicacao" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">GESTÃO</div>
+        <div class="page-header-title">Comunicação</div>
+        <div class="page-header-sub">Mural interno do escritório — avisos, recados e comunicados fixados</div>
+      </div>
+    </header>
+    <div class="page-body" style="max-width:760px;">
+      <div class="plat-card" style="margin-bottom:16px;">
+        <div class="plat-form-grid">
+          <div class="plat-form-group full"><label for="com-f-titulo">Novo comunicado</label><input type="text" id="com-f-titulo" placeholder="Título do aviso ou recado"></div>
+          <div class="plat-form-group full"><textarea id="com-f-corpo" rows="3" placeholder="Detalhes (opcional)" style="width:100%;box-sizing:border-box"></textarea></div>
+          <div class="plat-form-group">
+            <select id="com-f-tipo" class="crud-select"><option value="mural">Recado</option><option value="aviso">Aviso importante</option></select>
+          </div>
+          <div class="plat-form-group" style="display:flex;align-items:center;gap:14px;">
+            <label class="crud-chk"><input type="checkbox" id="com-f-fixado"> Fixar no topo</label>
+            <button class="plat-btn plat-btn-primary" onclick="comPublicar()">Publicar</button>
+          </div>
+        </div>
+      </div>
+      <div id="com-lista"></div>
+    </div>
+  </section>
+
+  <!-- ═══ PAGE: sistemas ═══ -->
+  <section id="page-sistemas" class="page-section">
+    <header class="page-header">
+      <div class="page-header-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div class="page-header-body">
+        <div class="page-header-eyebrow">FERRAMENTAS</div>
+        <div class="page-header-title">Sistemas <em>Eletrônicos</em></div>
+        <div class="page-header-sub">Acesso rápido aos tribunais e serviços mais usados no dia a dia — favorite os seus</div>
+      </div>
+    </header>
+    <div class="page-body">
+      <div class="crud-toolbar">
+        <input type="text" id="sis-busca" class="crud-busca" placeholder="Buscar tribunal ou sistema…">
+      </div>
+      <div id="sis-grid" class="sis-grid"></div>
+    </div>
+  </section>
+
   <!-- ── PERFIL ── -->
   <section id="page-perfil" class="page-section">
 
@@ -1231,6 +1550,20 @@
         <div class="perfil-avatar-wrap" id="perfil-avatar">?</div>
         <div class="perfil-nome" id="perfil-nome">—</div>
         <div class="perfil-email" id="perfil-email">—</div>
+      </div>
+
+      <!-- Equipe do escritório -->
+      <div class="perfil-card" id="office-equipe-card" style="display:none;margin-top:16px;text-align:left;">
+        <div class="ficha-sec-title" style="margin-top:0;">Equipe — <span id="office-equipe-nome"></span></div>
+        <div id="office-equipe-lista"></div>
+        <div id="office-add-membro-wrap" style="display:none;margin-top:14px;">
+          <div style="font-size:12px;color:var(--t3);margin-bottom:6px;">Adicionar membro (ele precisa já ter conta no painel):</div>
+          <div style="display:flex;gap:8px;">
+            <input type="email" id="office-add-email" class="crud-busca" style="flex:1" placeholder="email@docolega.com">
+            <button class="plat-btn plat-btn-primary" id="btn-office-add-membro">Adicionar</button>
+          </div>
+          <div id="office-add-msg" style="display:none;font-size:12px;margin-top:6px;"></div>
+        </div>
       </div>
     </div>
 
@@ -1510,6 +1843,10 @@
           As alterações são aplicadas em todos os cálculos após salvar
         </div>
         <div class="cfg-action-btns">
+          <button class="btn btn-outline" id="btn-backup" onclick="backupGerar()" title="Exporta todos os dados do escritório em JSON">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Gerar backup (JSON)
+          </button>
           <button class="btn btn-outline" onclick="cfgRestaurarPadroes()">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             Restaurar Padrões
@@ -1543,40 +1880,288 @@
     </div>
     <span class="bnav-label">Home</span>
   </div>
-  <div class="bnav-item" data-page="calcHonorarios">
+  <div class="bnav-item" data-page="clientes">
     <div class="bnav-icon">
       <svg viewBox="0 0 24 24">
-        <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-        <path d="M18.375 2.625a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
       </svg>
     </div>
-    <span class="bnav-label">Honorários</span>
+    <span class="bnav-label">Clientes</span>
   </div>
-  <div class="bnav-item" data-page="distribuicao">
+  <div class="bnav-item" data-page="casos">
     <div class="bnav-icon">
       <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="9"/>
-        <path d="M12 3v9l4.5 4.5"/>
-        <path d="M12 12 7.5 7.5"/>
+        <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
       </svg>
     </div>
-    <span class="bnav-label">Distribuição</span>
+    <span class="bnav-label">Casos</span>
   </div>
-  <div class="bnav-item" data-page="bacen">
+  <div class="bnav-item" data-page="tarefas">
     <div class="bnav-icon">
       <svg viewBox="0 0 24 24">
-        <rect x="3" y="10" width="18" height="11" rx="1"/>
-        <path d="M3 10 12 3l9 7"/>
-        <path d="M9 21V14h6v7"/>
+        <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
       </svg>
     </div>
-    <span class="bnav-label">BACEN</span>
+    <span class="bnav-label">Tarefas</span>
   </div>
-  <div class="bnav-item" data-page="historico">
-    <div class="bnav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
-    <div class="bnav-label">Histórico</div>
+  <div class="bnav-item" data-page="intimacoes">
+    <div class="bnav-icon">
+      <svg viewBox="0 0 24 24">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+      </svg>
+    </div>
+    <span class="bnav-label">Intimações</span>
   </div>
 </nav>
+
+<!-- ═══ MODAIS: Clientes ═══ -->
+<div class="plat-modal-backdrop hidden" id="cliFormModal">
+  <div class="plat-modal-content" style="max-width:640px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title" id="cli-form-titulo">Novo cliente</div>
+      <button class="plat-modal-close" onclick="cliFecharForm()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <input type="hidden" id="cli-form-id">
+      <div class="plat-form-grid">
+        <div class="plat-form-group span-2"><label for="cli-f-nome">Nome / Razão Social</label><input type="text" id="cli-f-nome" placeholder="Nome completo"></div>
+        <div class="plat-form-group"><label for="cli-f-tipo">Tipo</label><select id="cli-f-tipo"><option value="PF">Pessoa Física</option><option value="PJ">Pessoa Jurídica</option></select></div>
+        <div class="plat-form-group"><label for="cli-f-doc">CPF / CNPJ</label><input type="text" id="cli-f-doc" placeholder="000.000.000-00"></div>
+        <div class="plat-form-group"><label for="cli-f-tel">Telefone / WhatsApp</label><input type="tel" id="cli-f-tel" placeholder="(00) 00000-0000"></div>
+        <div class="plat-form-group"><label for="cli-f-email">E-mail</label><input type="email" id="cli-f-email" placeholder="cliente@email.com"></div>
+        <div class="plat-form-group"><label for="cli-f-origem">Origem</label><select id="cli-f-origem"><option value="">—</option><option value="indicacao">Indicação</option><option value="google">Google</option><option value="instagram">Instagram</option><option value="site">Site</option><option value="outro">Outro</option></select></div>
+        <div class="plat-form-group"><label for="cli-f-status">Status</label><select id="cli-f-status"><option value="ativo">Ativo</option><option value="prospecto">Prospecto</option><option value="inativo">Inativo</option></select></div>
+        <div class="plat-form-group full"><label for="cli-f-obs">Observações</label><textarea id="cli-f-obs" rows="3" style="width:100%;box-sizing:border-box"></textarea></div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-secondary" onclick="cliFecharForm()">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="cliSalvar()">Salvar cliente</button>
+    </div>
+  </div>
+</div>
+
+<div class="plat-modal-backdrop hidden" id="cliFichaModal">
+  <div class="plat-modal-content" style="max-width:720px">
+    <div class="plat-modal-header">
+      <div>
+        <div class="plat-modal-title" id="cli-ficha-nome">Cliente</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;" id="cli-ficha-meta"></div>
+      </div>
+      <span class="crud-badge" id="cli-ficha-status"></span>
+      <button class="plat-modal-close" onclick="cliFecharFicha()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div class="ficha-acoes">
+        <button class="plat-btn plat-btn-secondary" onclick="cliEditarAtual()">Editar dados</button>
+        <button class="plat-btn plat-btn-primary" onclick="cliNovaInteracao()">+ Registrar atendimento</button>
+      </div>
+      <div class="ficha-sec-title">Observações</div>
+      <div id="cli-ficha-obs" style="font-size:13px;color:var(--t2);white-space:pre-wrap;"></div>
+      <div class="ficha-sec-title">Casos vinculados</div>
+      <div id="cli-ficha-casos"></div>
+      <div class="ficha-sec-title">Histórico de atendimentos e anotações</div>
+      <div id="cli-ficha-interacoes"></div>
+    </div>
+  </div>
+</div>
+
+<div class="plat-modal-backdrop hidden" id="cliIntModal">
+  <div class="plat-modal-content" style="max-width:520px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title">Registrar na ficha do cliente</div>
+      <button class="plat-modal-close" onclick="document.getElementById('cliIntModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div class="plat-form-grid">
+        <div class="plat-form-group"><label for="cli-i-tipo">Tipo</label><select id="cli-i-tipo"><option value="atendimento">Atendimento</option><option value="reuniao">Reunião</option><option value="ligacao">Ligação</option><option value="anotacao">Anotação</option></select></div>
+        <div class="plat-form-group full"><label for="cli-i-titulo">Título</label><input type="text" id="cli-i-titulo" placeholder="Ex: Reunião inicial sobre o caso"></div>
+        <div class="plat-form-group full"><label for="cli-i-desc">Descrição</label><textarea id="cli-i-desc" rows="4" style="width:100%;box-sizing:border-box"></textarea></div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-secondary" onclick="document.getElementById('cliIntModal').classList.add('hidden')">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="cliSalvarInteracao()">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAIS: Casos ═══ -->
+<div class="plat-modal-backdrop hidden" id="casoFormModal">
+  <div class="plat-modal-content" style="max-width:680px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title" id="caso-form-titulo">Novo caso</div>
+      <button class="plat-modal-close" onclick="casoFecharForm()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <input type="hidden" id="caso-form-id">
+      <div class="plat-form-grid">
+        <div class="plat-form-group span-2"><label for="caso-f-titulo">Título do caso</label><input type="text" id="caso-f-titulo" placeholder="Ex: Revisional Banco X — João"></div>
+        <div class="plat-form-group"><label for="caso-f-cliente">Cliente</label><select id="caso-f-cliente"></select></div>
+        <div class="plat-form-group"><label for="caso-f-numero">Nº do processo</label><input type="text" id="caso-f-numero" placeholder="0000000-00.0000.0.00.0000"></div>
+        <div class="plat-form-group"><label for="caso-f-tribunal">Tribunal</label><input type="text" id="caso-f-tribunal" placeholder="Ex: TJSC"></div>
+        <div class="plat-form-group"><label for="caso-f-vara">Vara / Câmara</label><input type="text" id="caso-f-vara" placeholder="Ex: 2ª Vara Cível de Itajaí"></div>
+        <div class="plat-form-group"><label for="caso-f-area">Área</label><input type="text" id="caso-f-area" placeholder="Cível, Criminal, Trabalhista…"></div>
+        <div class="plat-form-group"><label for="caso-f-fase">Fase</label><input type="text" id="caso-f-fase" placeholder="Conhecimento, Recurso, Execução…"></div>
+        <div class="plat-form-group"><label for="caso-f-status">Status</label><select id="caso-f-status"><option value="ativo">Ativo</option><option value="suspenso">Suspenso</option><option value="arquivado">Arquivado</option><option value="encerrado">Encerrado</option></select></div>
+        <div class="plat-form-group"><label for="caso-f-valor">Valor da causa (R$)</label><input type="number" id="caso-f-valor" step="0.01" min="0" placeholder="0,00"></div>
+        <div class="plat-form-group"><label for="caso-f-contraria">Parte contrária</label><input type="text" id="caso-f-contraria"></div>
+        <div class="plat-form-group full"><label for="caso-f-obs">Observações</label><textarea id="caso-f-obs" rows="3" style="width:100%;box-sizing:border-box"></textarea></div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-secondary" onclick="casoFecharForm()">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="casoSalvar()">Salvar caso</button>
+    </div>
+  </div>
+</div>
+
+<div class="plat-modal-backdrop hidden" id="casoDetModal">
+  <div class="plat-modal-content" style="max-width:720px">
+    <div class="plat-modal-header">
+      <div>
+        <div class="plat-modal-title" id="caso-det-titulo">Caso</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;" id="caso-det-meta"></div>
+      </div>
+      <span class="crud-badge" id="caso-det-status"></span>
+      <button class="plat-modal-close" onclick="casoFecharDet()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div class="ficha-acoes">
+        <button class="plat-btn plat-btn-secondary" onclick="casoEditarAtual()">Editar caso</button>
+      </div>
+      <div class="ficha-sec-title">Detalhes</div>
+      <div id="caso-det-info" class="caso-info-grid"></div>
+      <div class="ficha-sec-title">Novo andamento</div>
+      <div style="display:flex;gap:8px;">
+        <input type="text" id="caso-and-desc" class="crud-busca" style="flex:1" placeholder="Descreva a movimentação…" onkeydown="if(event.key==='Enter')andamentoAdd()">
+        <button class="plat-btn plat-btn-primary" onclick="andamentoAdd()">Registrar</button>
+      </div>
+      <div class="ficha-sec-title">Andamentos</div>
+      <div id="caso-det-andamentos"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAIS: Tarefas ═══ -->
+<div class="plat-modal-backdrop hidden" id="tarFormModal">
+  <div class="plat-modal-content" style="max-width:620px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title" id="tar-form-titulo">Nova tarefa</div>
+      <button class="plat-modal-close" onclick="tarefaFecharForm()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <input type="hidden" id="tar-form-id">
+      <div class="plat-form-grid">
+        <div class="plat-form-group span-2"><label for="tar-f-titulo">Título</label><input type="text" id="tar-f-titulo" placeholder="Ex: Protocolar contestação"></div>
+        <div class="plat-form-group"><label for="tar-f-tipo">Tipo</label><select id="tar-f-tipo"><option value="tarefa">Tarefa</option><option value="prazo">Prazo</option><option value="audiencia">Audiência</option></select></div>
+        <div class="plat-form-group"><label for="tar-f-prioridade">Prioridade</label><select id="tar-f-prioridade"><option value="baixa">Baixa</option><option value="media">Média</option><option value="alta">Alta</option></select></div>
+        <div class="plat-form-group"><label for="tar-f-data">Data limite</label><input type="date" id="tar-f-data"></div>
+        <div class="plat-form-group"><label for="tar-f-hora">Hora</label><input type="time" id="tar-f-hora"></div>
+        <div class="plat-form-group"><label for="tar-f-caso">Caso vinculado</label><select id="tar-f-caso"></select></div>
+        <div class="plat-form-group"><label for="tar-f-resp">Responsável</label><select id="tar-f-resp"></select></div>
+        <div class="plat-form-group full"><label for="tar-f-desc">Descrição</label><textarea id="tar-f-desc" rows="3" style="width:100%;box-sizing:border-box"></textarea></div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-secondary" id="btn-tar-excluir" onclick="tarefaExcluir()" style="margin-right:auto;color:var(--err)">Excluir</button>
+      <button class="plat-btn plat-btn-secondary" onclick="tarefaFecharForm()">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="tarefaSalvar()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAIS: Intimações ═══ -->
+<div class="plat-modal-backdrop hidden" id="intManualModal">
+  <div class="plat-modal-content" style="max-width:560px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title">Cadastrar intimação manual</div>
+      <button class="plat-modal-close" onclick="document.getElementById('intManualModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div class="plat-form-grid">
+        <div class="plat-form-group span-2"><label for="int-m-numero">Nº do processo</label><input type="text" id="int-m-numero"></div>
+        <div class="plat-form-group"><label for="int-m-tribunal">Tribunal</label><input type="text" id="int-m-tribunal" placeholder="Ex: TJSC"></div>
+        <div class="plat-form-group"><label for="int-m-orgao">Órgão / Vara</label><input type="text" id="int-m-orgao"></div>
+        <div class="plat-form-group"><label for="int-m-data">Data de disponibilização</label><input type="date" id="int-m-data"></div>
+        <div class="plat-form-group full"><label for="int-m-texto">Teor / observações</label><textarea id="int-m-texto" rows="4" style="width:100%;box-sizing:border-box"></textarea></div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-secondary" onclick="document.getElementById('intManualModal').classList.add('hidden')">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="intSalvarManual()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="plat-modal-backdrop hidden" id="intTextoModal">
+  <div class="plat-modal-content" style="max-width:680px">
+    <div class="plat-modal-header">
+      <div>
+        <div class="plat-modal-title" id="int-texto-titulo">Intimação</div>
+        <div style="font-size:12px;color:var(--t3);margin-top:2px;" id="int-texto-meta"></div>
+      </div>
+      <button class="plat-modal-close" onclick="document.getElementById('intTextoModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div id="int-texto-corpo" style="font-size:13px;line-height:1.65;color:var(--t2);white-space:pre-wrap;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="plat-modal-backdrop hidden" id="intPrazoModal">
+  <div class="plat-modal-content" style="max-width:520px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title">Gerar prazo</div>
+      <button class="plat-modal-close" onclick="document.getElementById('intPrazoModal').classList.add('hidden')">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <div id="int-p-info" style="font-size:13px;color:var(--t2);margin-bottom:14px;"></div>
+      <div class="plat-form-grid">
+        <div class="plat-form-group">
+          <label for="int-p-dias">Prazo (dias úteis)</label>
+          <select id="int-p-dias"><option value="5">5 dias</option><option value="10">10 dias</option><option value="15" selected>15 dias</option><option value="30">30 dias</option></select>
+        </div>
+        <div class="plat-form-group" style="display:flex;align-items:flex-end;">
+          <label class="crud-chk"><input type="checkbox" id="int-p-dobro"> Prazo em dobro</label>
+        </div>
+      </div>
+      <div id="int-p-preview" style="margin-top:14px;font-size:13px;line-height:1.7;background:var(--adim,rgba(91,138,245,.08));border-radius:10px;padding:12px 14px;"></div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-secondary" onclick="document.getElementById('intPrazoModal').classList.add('hidden')">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="intCriarPrazo()">Criar prazo nas Tarefas</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: Lead ═══ -->
+<div class="plat-modal-backdrop hidden" id="leadFormModal">
+  <div class="plat-modal-content" style="max-width:600px">
+    <div class="plat-modal-header">
+      <div class="plat-modal-title" id="lead-form-titulo">Novo lead</div>
+      <button class="plat-modal-close" onclick="leadFecharForm()">✕</button>
+    </div>
+    <div class="plat-modal-body">
+      <input type="hidden" id="lead-form-id">
+      <div class="plat-form-grid">
+        <div class="plat-form-group span-2"><label for="lead-f-nome">Nome</label><input type="text" id="lead-f-nome"></div>
+        <div class="plat-form-group"><label for="lead-f-contato">Contato (tel/e-mail)</label><input type="text" id="lead-f-contato"></div>
+        <div class="plat-form-group"><label for="lead-f-origem">Origem</label><select id="lead-f-origem"><option value="indicacao">Indicação</option><option value="google">Google</option><option value="instagram">Instagram</option><option value="site">Site</option><option value="outro">Outro</option></select></div>
+        <div class="plat-form-group"><label for="lead-f-status">Status</label><select id="lead-f-status"><option value="novo">Novo</option><option value="contato">Em contato</option><option value="proposta">Proposta enviada</option><option value="convertido">Convertido</option><option value="perdido">Perdido</option></select></div>
+        <div class="plat-form-group"><label for="lead-f-valor">Valor estimado (R$)</label><input type="number" id="lead-f-valor" step="0.01" min="0"></div>
+        <div class="plat-form-group full"><label for="lead-f-interesse">Interesse / área</label><input type="text" id="lead-f-interesse" placeholder="Ex: Revisional de financiamento"></div>
+        <div class="plat-form-group full"><label for="lead-f-obs">Observações</label><textarea id="lead-f-obs" rows="3" style="width:100%;box-sizing:border-box"></textarea></div>
+      </div>
+    </div>
+    <div class="plat-modal-footer">
+      <button class="plat-btn plat-btn-green" id="btn-lead-converter" onclick="leadConverter()" style="margin-right:auto;">→ Converter em cliente</button>
+      <button class="plat-btn plat-btn-secondary" onclick="leadFecharForm()">Cancelar</button>
+      <button class="plat-btn plat-btn-primary" onclick="leadSalvar()">Salvar</button>
+    </div>
+  </div>
+</div>
 
 <!-- ── Summary Modal ── -->
 <div id="summary-modal">
@@ -1615,6 +2200,17 @@
 <script src="js/utils.js"></script>
 <script src="js/config.js"></script>
 <script src="js/nav.js"></script>
+<script src="js/office.js"></script>
+<script src="js/prazos-calc.js"></script>
+<script src="js/clientes.js"></script>
+<script src="js/casos.js"></script>
+<script src="js/tarefas.js"></script>
+<script src="js/intimacoes.js"></script>
+<script src="js/marketing.js"></script>
+<script src="js/comunicacao.js"></script>
+<script src="js/sistemas-data.js"></script>
+<script src="js/sistemas.js"></script>
+<script src="js/backup.js"></script>
 <script src="js/honorarios.js"></script>
 <script src="js/distribuicao.js"></script>
 <script src="js/bacen-data.js"></script>

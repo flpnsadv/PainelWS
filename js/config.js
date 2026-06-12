@@ -30,11 +30,12 @@ let CFG = JSON.parse(JSON.stringify(CFG_DEFAULTS));
 // ── Carrega configurações do Supabase para o usuário logado ──
 async function cfgCarregar() {
   if (!window._sb || !window._currentUser) return;
+  if (typeof officeId === 'function' && !officeId()) return; // sem escritório ainda
   try {
     const { data } = await window._sb
       .from('configuracoes')
       .select('dados')
-      .eq('user_id', window._currentUser.id)
+      .eq('office_id', officeId())
       .single();
     if (data && data.dados) {
       CFG = Object.assign(JSON.parse(JSON.stringify(CFG_DEFAULTS)), data.dados);
@@ -189,10 +190,11 @@ async function cfgSalvar() {
   try {
     // Tenta upsert (insert ou update)
     const { error } = await window._sb.from('configuracoes').upsert({
+      office_id: officeId(),
       user_id: window._currentUser.id,
       dados:   novaCfg,
       atualizado_em: new Date().toISOString(),
-    }, { onConflict: 'user_id' });
+    }, { onConflict: 'office_id' });
 
     if (error) throw error;
 

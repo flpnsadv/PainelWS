@@ -3,20 +3,40 @@
 ══════════════════════════════════════════════════════════════════ */
 const PAGE_META = {
   home:           'Home',
+  // Jurídico
+  clientes:       'Clientes',
+  casos:          'Casos e Processos',
+  andamentos:     'Andamentos',
+  tarefas:        'Tarefas e Prazos',
+  intimacoes:     'Intimações',
+  // Gestão
   calcHonorarios: 'Calculadora de Honorários',
   distribuicao:   'Distribuição de Honorários',
-  bacen:          'Análise Revisional - BACEN',
   historico:      'Histórico de Propostas',
+  marketing:      'Marketing',
+  comunicacao:    'Comunicação',
+  // Ferramentas
+  bacen:          'Análise Revisional - BACEN',
+  sistemas:       'Sistemas Eletrônicos',
+  // Sistema
   perfil:         'Meu Perfil',
   config:         'Configurações',
 };
 
 const topbarSub = {
   home:           'Painel Rito',
+  clientes:       'CRM e ficha do cliente',
+  casos:          'Processos e casos do escritório',
+  andamentos:     'Feed de movimentações',
+  tarefas:        'Prazos, audiências e tarefas',
+  intimacoes:     'Comunicações do DJEN',
   calcHonorarios: 'Calculadora de Honorários',
   distribuicao:   'Rateio interno de honorários',
-  bacen:          'Revisional de contratos',
   historico:      'Propostas e registros',
+  marketing:      'Leads e origem de clientes',
+  comunicacao:    'Mural interno do escritório',
+  bacen:          'Revisional de contratos',
+  sistemas:       'Links de tribunais e serviços',
   perfil:         'Dados da conta',
   config:         'Preferências do sistema',
 };
@@ -66,6 +86,16 @@ function navigate(pageId) {
   if (window.innerWidth < 768) closeMobileSidebar();
   if (pageId === 'historico') carregarHistorico();
   if (pageId === 'home' && typeof dashCarregar === 'function') dashCarregar(true);
+  // Hooks de carregamento das páginas novas (typeof: módulos podem não ter carregado)
+  if (pageId === 'clientes'    && typeof cliCarregar     === 'function') cliCarregar();
+  if (pageId === 'casos'       && typeof casosCarregar   === 'function') casosCarregar();
+  if (pageId === 'andamentos'  && typeof andCarregar     === 'function') andCarregar();
+  if (pageId === 'tarefas'     && typeof tarefasCarregar === 'function') tarefasCarregar();
+  if (pageId === 'intimacoes'  && typeof intCarregar     === 'function') intCarregar();
+  if (pageId === 'marketing'   && typeof mktCarregar     === 'function') mktCarregar();
+  if (pageId === 'comunicacao' && typeof comCarregar     === 'function') comCarregar();
+  if (pageId === 'sistemas'    && typeof sisRender       === 'function') sisRender();
+  if (pageId === 'perfil'      && typeof officeRenderEquipe === 'function') officeRenderEquipe();
 
   if (!outgoing || outgoing === incoming) {
     incoming.classList.add('active');

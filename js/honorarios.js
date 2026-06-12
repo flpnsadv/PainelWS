@@ -542,6 +542,7 @@ function showSummary() {
       const s = state;
       const c = s.calc;
       const { error } = await window._sb.from('propostas').insert({
+        office_id:      (typeof officeId === 'function' ? officeId() : null),
         user_id:        window._currentUser.id,
         nome_cliente:   s.nomeCliente,
         tipo_servico:   s.tipoServico,
