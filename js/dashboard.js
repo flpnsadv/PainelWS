@@ -31,24 +31,112 @@ function _dashInicioPeriodo(periodo) {
   return null; // tudo
 }
 
+// Cache da visão geral do escritório (clientes, casos, prazos, intimações, leads)
+let _dashSaas = null;
+
 // ── Carrega dados do Supabase e renderiza tudo ──
 async function dashCarregar(force) {
   if (!window._sb || !window._currentUser) return;
+  if (typeof officeId === 'function' && !officeId()) return; // sem escritório ainda
+  const oid = officeId();
   if (force || !_dashPropostas) {
-    const [props, bacen] = await Promise.all([
+    const [props, bacen, clientes, casos, tarefas, intimacoes, leads] = await Promise.all([
       window._sb.from('propostas')
         .select('id, criado_em, nome_cliente, tipo_servico, total_fixo, total_final, status, status_atualizado_em')
-        .eq('user_id', window._currentUser.id)
+        .eq('office_id', oid)
         .order('criado_em', { ascending: false }),
       window._sb.from('bacen_analises')
         .select('id, nome_cliente, banco, atualizado_em')
-        .eq('user_id', window._currentUser.id)
+        .eq('office_id', oid)
         .order('atualizado_em', { ascending: false }),
+      window._sb.from('clientes').select('id, status').eq('office_id', oid),
+      window._sb.from('casos').select('id, status').eq('office_id', oid),
+      window._sb.from('tarefas')
+        .select('id, titulo, tipo, data_limite, hora, status, prioridade, casos(titulo)')
+        .eq('office_id', oid).eq('status', 'pendente')
+        .order('data_limite', { ascending: true, nullsFirst: false })
+        .limit(200),
+      window._sb.from('intimacoes').select('id, lida').eq('office_id', oid),
+      window._sb.from('leads').select('id, status').eq('office_id', oid),
     ]);
     _dashPropostas = props.data || [];
     _dashBacen     = bacen.data || [];
+    _dashSaas = {
+      clientes:   clientes.data   || [],
+      casos:      casos.data      || [],
+      tarefas:    tarefas.data    || [],
+      intimacoes: intimacoes.data || [],
+      leads:      leads.data      || [],
+    };
   }
   dashRender();
+}
+
+/* ── Visão geral do escritório: KPIs + próximos prazos ── */
+function _dashRenderSaas() {
+  if (!_dashSaas) return;
+  const set = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+  const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
+  const diasAte = t => Math.round((new Date(t.data_limite + 'T00:00:00') - hoje) / 86400000);
+
+  const cliAtivos = _dashSaas.clientes.filter(c => c.status === 'ativo').length;
+  set('kpi-clientes', String(cliAtivos));
+  const prospectos = _dashSaas.clientes.filter(c => c.status === 'prospecto').length;
+  set('kpi-clientes-sub', prospectos ? prospectos + ' prospecto' + (prospectos > 1 ? 's' : '') : 'nenhum prospecto');
+
+  const casosAtivos = _dashSaas.casos.filter(c => c.status === 'ativo').length;
+  set('kpi-casos', String(casosAtivos));
+  set('kpi-casos-sub', _dashSaas.casos.length + ' no total');
+
+  const comData = _dashSaas.tarefas.filter(t => t.data_limite);
+  const vencidos = comData.filter(t => diasAte(t) < 0).length;
+  const em7 = comData.filter(t => { const d = diasAte(t); return d >= 0 && d <= 7; }).length;
+  set('kpi-prazos', String(em7));
+  set('kpi-prazos-sub', vencidos ? '⚠ ' + vencidos + ' vencido' + (vencidos > 1 ? 's' : '') : 'nenhum vencido');
+  const kpiPrazos = document.getElementById('kpi-prazos-sub');
+  if (kpiPrazos) kpiPrazos.style.color = vencidos ? 'var(--err)' : '';
+
+  set('kpi-tarefas', String(_dashSaas.tarefas.length));
+  const audiencias = _dashSaas.tarefas.filter(t => t.tipo === 'audiencia').length;
+  set('kpi-tarefas-sub', audiencias ? audiencias + ' audiência' + (audiencias > 1 ? 's' : '') : 'em aberto');
+
+  const naoLidas = _dashSaas.intimacoes.filter(i => !i.lida).length;
+  set('kpi-intimacoes', String(naoLidas));
+  set('kpi-intimacoes-sub', _dashSaas.intimacoes.length + ' registradas');
+
+  const leadsAbertos = _dashSaas.leads.filter(l => ['novo', 'contato', 'proposta'].includes(l.status)).length;
+  set('kpi-leads', String(leadsAbertos));
+  const convertidos = _dashSaas.leads.filter(l => l.status === 'convertido').length;
+  set('kpi-leads-sub', convertidos ? convertidos + ' convertido' + (convertidos > 1 ? 's' : '') : 'no funil');
+
+  // Lista de próximos prazos e audiências
+  const wrap = document.getElementById('home-prazos-list');
+  if (!wrap) return;
+  const proximos = comData.slice(0, 6);
+  if (proximos.length === 0) {
+    wrap.innerHTML = '<div class="dash-empty">Nenhum prazo agendado. ✓<br><span style="font-size:11px;">Importe intimações do DJEN ou crie tarefas com data limite.</span></div>';
+    return;
+  }
+  const tipoLbl = { prazo: 'Prazo', audiencia: 'Audiência', tarefa: 'Tarefa' };
+  wrap.innerHTML = proximos.map(t => {
+    const d = diasAte(t);
+    const urg = d < 0 ? 'vencida' : d <= 2 ? 'urgente' : d <= 7 ? 'proxima' : '';
+    const quando = d < 0 ? Math.abs(d) + 'd atrás' : d === 0 ? 'HOJE' : d === 1 ? 'amanhã' : 'em ' + d + ' dias';
+    const dt = new Date(t.data_limite + 'T12:00:00');
+    const mesesLbl = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    return `
+      <div class="home-prazo-item" onclick="navigate('tarefas')">
+        <div class="home-prazo-data ${urg}">
+          <div class="hp-dia">${dt.getDate()}</div>
+          <div class="hp-mes">${mesesLbl[dt.getMonth()]}</div>
+        </div>
+        <div class="home-prazo-body">
+          <div class="home-prazo-titulo">${escHtml(t.titulo)}</div>
+          <div class="home-prazo-meta">${tipoLbl[t.tipo] || t.tipo}${t.casos ? ' · ' + escHtml(t.casos.titulo) : ''}${t.hora ? ' · ' + t.hora.slice(0, 5) : ''}</div>
+        </div>
+        <span class="home-prazo-quando ${urg}">${quando}</span>
+      </div>`;
+  }).join('');
 }
 
 function dashSetPeriodo(periodo) {
@@ -70,6 +158,7 @@ function dashRender() {
   const props = _dashPropostas.filter(noPeriodo);
   const bacen = _dashBacen.filter(a => !inicio || new Date(a.atualizado_em) >= inicio);
 
+  _dashRenderSaas();
   _dashRenderKpis(props, bacen);
   _dashRenderFunil(props);
   _dashRenderGrafico();

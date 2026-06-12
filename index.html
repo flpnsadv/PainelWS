@@ -569,9 +569,69 @@
       </div>
     </div>
 
-    <!-- Seletor de período do relatório -->
+    <!-- ── Visão geral do escritório (cards clicáveis) ── -->
+    <div class="home-section-head" style="padding:18px 28px 0;">
+      <span class="home-section-label">Visão geral do escritório</span>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-card" onclick="navigate('clientes')">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        <div class="kpi-val" id="kpi-clientes">—</div>
+        <div class="kpi-lbl">Clientes ativos</div>
+        <div class="kpi-sub" id="kpi-clientes-sub">&nbsp;</div>
+      </div>
+      <div class="kpi-card" onclick="navigate('casos')">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+        <div class="kpi-val" id="kpi-casos">—</div>
+        <div class="kpi-lbl">Casos ativos</div>
+        <div class="kpi-sub" id="kpi-casos-sub">&nbsp;</div>
+      </div>
+      <div class="kpi-card kpi-card-alert" onclick="navigate('tarefas')">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <div class="kpi-val" id="kpi-prazos">—</div>
+        <div class="kpi-lbl">Prazos em 7 dias</div>
+        <div class="kpi-sub" id="kpi-prazos-sub">&nbsp;</div>
+      </div>
+      <div class="kpi-card" onclick="navigate('tarefas')">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <div class="kpi-val" id="kpi-tarefas">—</div>
+        <div class="kpi-lbl">Tarefas pendentes</div>
+        <div class="kpi-sub" id="kpi-tarefas-sub">&nbsp;</div>
+      </div>
+      <div class="kpi-card" onclick="navigate('intimacoes')">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="kpi-val" id="kpi-intimacoes">—</div>
+        <div class="kpi-lbl">Intimações não lidas</div>
+        <div class="kpi-sub" id="kpi-intimacoes-sub">&nbsp;</div>
+      </div>
+      <div class="kpi-card" onclick="navigate('marketing')">
+        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg></div>
+        <div class="kpi-val" id="kpi-leads">—</div>
+        <div class="kpi-lbl">Leads em aberto</div>
+        <div class="kpi-sub" id="kpi-leads-sub">&nbsp;</div>
+      </div>
+    </div>
+
+    <!-- ── Prazos próximos + atividade ── -->
+    <div class="home-mid-grid">
+      <div class="dash-card">
+        <div class="dash-card-title">Próximos prazos e audiências <span class="sec-link" onclick="navigate('tarefas')">Ver tudo</span></div>
+        <div id="home-prazos-list"><div class="dash-empty">Carregando…</div></div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-title">Atividade recente <span class="sec-link" onclick="navigate('historico')">Ver tudo</span></div>
+        <div class="act-list" id="home-act-list">
+          <div class="act-item">
+            <div class="act-dot-wrap"><div class="act-dot" style="background:var(--t3)"></div></div>
+            <div><div class="act-title" style="color:var(--t3);font-size:11.5px;">Nenhum registro ainda</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Gestão financeira: propostas e honorários ── -->
     <div class="dash-period-strip">
-      <span class="home-section-label">Relatório do período</span>
+      <span class="home-section-label">Propostas e honorários</span>
       <div class="dash-period" id="dash-period">
         <button class="dash-period-btn active" data-period="mes">Este mês</button>
         <button class="dash-period-btn" data-period="3m">3 meses</button>
@@ -625,72 +685,6 @@
       </div>
     </div>
 
-    <!-- Body: tools + activity -->
-    <div class="home-body">
-
-      <!-- Tools column -->
-      <div class="home-tools-section">
-        <div class="home-section-head">
-          <span class="home-section-label">Ferramentas</span>
-        </div>
-
-        <div class="home-tools-list">
-
-          <div class="home-tool-card" onclick="navigate('calcHonorarios')">
-            <div class="htc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
-            <div class="htc-content">
-              <div class="htc-title">Calculadora de Honorários</div>
-              <div class="htc-desc">Proposta advocatícia com parâmetros OAB/SC — honorários mínimos, justos e ideais.</div>
-            </div>
-            <div class="htc-meta">
-              <span class="htc-tag">Honorários advocatícios</span>
-              <span class="htc-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </div>
-
-          <div class="home-tool-card" onclick="navigate('distribuicao')">
-            <div class="htc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg></div>
-            <div class="htc-content">
-              <div class="htc-title">Distribuição de Honorários</div>
-              <div class="htc-desc">Rateio interno — impostos, escritório, pró-labore e reserva de emergência.</div>
-            </div>
-            <div class="htc-meta">
-              <span class="htc-tag">Rateio interno</span>
-              <span class="htc-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </div>
-
-          <div class="home-tool-card" onclick="navigate('bacen')">
-            <div class="htc-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg></div>
-            <div class="htc-content">
-              <div class="htc-title">Análise Revisional BACEN</div>
-              <div class="htc-desc">Triagem técnica e financeira de contratos com checklist de irregularidades.</div>
-            </div>
-            <div class="htc-meta">
-              <span class="htc-tag">Revisão de contratos</span>
-              <span class="htc-api-tag htc-new-tag">NOVO</span>
-              <span class="htc-arrow"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
-            </div>
-          </div>
-
-        </div>
-      </div><!-- /tools column -->
-
-      <!-- Activity column -->
-      <div class="home-activity-section">
-        <div class="home-section-head">
-          <span class="home-section-label">Atividade recente</span>
-          <span class="sec-link" onclick="navigate('historico')">Ver tudo</span>
-        </div>
-        <div class="act-list" id="home-act-list">
-          <div class="act-item">
-            <div class="act-dot-wrap"><div class="act-dot" style="background:var(--t3)"></div></div>
-            <div><div class="act-title" style="color:var(--t3);font-size:11.5px;">Nenhum registro ainda</div></div>
-          </div>
-        </div>
-      </div><!-- /activity column -->
-
-    </div><!-- /home-body -->
 
   </section>
 
