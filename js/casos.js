@@ -222,7 +222,10 @@ async function andamentoAdd() {
   casoAbrir(_casoAberto);
 }
 
-/* ── Feed geral de andamentos (page-andamentos) ── */
+/* ── Feed geral de andamentos (page-andamentos) — agrupado por processo ── */
+let _andLista = [];
+let _andFiltro = '';
+
 async function andCarregar() {
   if (!window._sb || !officeId()) return;
   const cont = document.getElementById('and-feed');
@@ -230,25 +233,163 @@ async function andCarregar() {
   cont.innerHTML = '<div class="crud-empty">Carregando…</div>';
   const { data, error } = await window._sb
     .from('andamentos')
-    .select('*, casos(titulo, numero_processo)')
+    .select('*, casos(titulo, numero_processo, status, ultima_sincronizacao)')
     .eq('office_id', officeId())
     .order('data', { ascending: false })
     .order('created_at', { ascending: false })
-    .limit(80);
-  if (error) { console.error('andCarregar:', error); return; }
-  cont.innerHTML = (data && data.length)
-    ? data.map(a => `
-      <div class="and-feed-item">
-        <div class="and-feed-dot"></div>
-        <div class="and-feed-body">
-          <div class="and-feed-head">
-            <span class="and-feed-caso">${escHtml(a.casos ? a.casos.titulo : 'Caso removido')}</span>
-            <span class="and-feed-data">${new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}${a.fonte === 'intimacao' ? ' · DJEN' : (a.fonte === 'datajud' ? ' · DataJud' : '')}</span>
+    .limit(2000);
+  if (error) { console.error('andCarregar:', error); cont.innerHTML = '<div class="crud-empty">Erro ao carregar andamentos.</div>'; return; }
+  _andLista = data || [];
+  andRender();
+}
+
+function andRender() {
+  const cont = document.getElementById('and-feed');
+  if (!cont) return;
+
+  // agrupa andamentos por caso (preservando a ordem cronológica desc já vinda do banco)
+  const grupos = new Map();
+  for (const a of _andLista) {
+    const key = a.caso_id || 'sem-caso';
+    let g = grupos.get(key);
+    if (!g) {
+      g = {
+        casoId: a.caso_id || null,
+        titulo: a.casos ? a.casos.titulo : 'Caso removido',
+        numero: a.casos ? a.casos.numero_processo : null,
+        status: a.casos ? a.casos.status : null,
+        itens: [],
+      };
+      grupos.set(key, g);
+    }
+    g.itens.push(a);
+  }
+
+  const q = _andFiltro.trim().toLowerCase();
+  let lista = [...grupos.values()];
+  if (q) {
+    lista = lista.filter(g =>
+      (g.titulo || '').toLowerCase().includes(q) ||
+      (g.numero || '').toLowerCase().includes(q) ||
+      g.itens.some(i => (i.descricao || '').toLowerCase().includes(q))
+    );
+  }
+  // processos com a movimentação mais recente no topo
+  lista.sort((a, b) => (b.itens[0] ? b.itens[0].data : '').localeCompare(a.itens[0] ? a.itens[0].data : ''));
+
+  const countEl = document.getElementById('and-count');
+  if (countEl) countEl.textContent = lista.length + (lista.length === 1 ? ' processo' : ' processos');
+
+  if (lista.length === 0) {
+    cont.innerHTML = '<div class="crud-empty">' +
+      (q ? 'Nenhum resultado para a busca.'
+         : 'Nenhum andamento ainda. Abra um caso e use “Sincronizar andamentos”, ou registre manualmente.') +
+      '</div>';
+    return;
+  }
+
+  const fmtData = d => new Date(d + 'T12:00:00').toLocaleDateString('pt-BR');
+  const MAX = 5;
+
+  const itemHtml = a => `
+    <div class="proc-tl-item">
+      <span class="proc-tl-dot${a.fonte === 'datajud' ? ' dot-datajud' : (a.fonte === 'intimacao' ? ' dot-djen' : '')}"></span>
+      <div class="proc-tl-body">
+        <div class="proc-tl-desc">${escHtml(a.descricao)}</div>
+        <div class="proc-tl-date">${fmtData(a.data)}${andSeloFonte(a.fonte)}</div>
+      </div>
+    </div>`;
+
+  cont.innerHTML = lista.map(g => {
+    const inicial = (g.titulo || '?').trim().charAt(0).toUpperCase();
+    const numFmt = g.numero ? (typeof maskProcessoCNJ === 'function' ? maskProcessoCNJ(g.numero) : g.numero) : '';
+    const meta = [];
+    if (numFmt) meta.push('<span class="proc-card-num">' + escHtml(numFmt) + '</span>');
+    meta.push(g.itens.length + (g.itens.length === 1 ? ' movimentação' : ' movimentações'));
+    const statusBadge = g.status ? '<span class="crud-badge badge-' + g.status + '">' + (CASO_STATUS_LABEL[g.status] || g.status) + '</span>' : '';
+
+    const visiveis = g.itens.slice(0, MAX).map(itemHtml).join('');
+    const resto = g.itens.slice(MAX);
+    const maisBloco = resto.length
+      ? `<details class="proc-more"><summary>+ ver outras ${resto.length} movimentações</summary>${resto.map(itemHtml).join('')}</details>`
+      : '';
+
+    const syncBtn = g.casoId
+      ? `<button class="proc-card-sync" onclick="event.stopPropagation(); andSincronizarCaso('${g.casoId}', this)" title="Buscar andamentos no DataJud">
+           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></button>`
+      : '';
+
+    return `
+      <div class="proc-card">
+        <div class="proc-card-head"${g.casoId ? ` onclick="casoAbrir('${g.casoId}')"` : ''}>
+          <div class="proc-card-avatar">${escHtml(inicial)}</div>
+          <div class="proc-card-id">
+            <div class="proc-card-title">${escHtml(g.titulo)}</div>
+            <div class="proc-card-meta">${meta.join(' · ')}</div>
           </div>
-          <div class="and-feed-desc">${escHtml(a.descricao)}</div>
+          ${statusBadge}
+          ${syncBtn}
         </div>
-      </div>`).join('')
-    : '<div class="crud-empty">Nenhum andamento ainda. Os andamentos dos casos aparecem aqui em ordem cronológica.</div>';
+        <div class="proc-timeline">${visiveis}${maisBloco}</div>
+      </div>`;
+  }).join('');
+}
+
+/* mensagem transitória no topo da página de andamentos */
+function andStatus(msg, tipo) {
+  const st = document.getElementById('and-status');
+  if (!st) return;
+  st.textContent = msg;
+  st.className = 'and-status show' + (tipo ? ' st-' + tipo : '');
+  clearTimeout(andStatus._t);
+  andStatus._t = setTimeout(() => { st.className = 'and-status'; st.textContent = ''; }, 6000);
+}
+
+/* sincroniza um processo (a partir do card) */
+async function andSincronizarCaso(casoId, btn) {
+  if (!casoId) return;
+  if (btn) { btn.disabled = true; btn.classList.add('is-syncing'); }
+  try {
+    const { data, error } = await window._sb.functions.invoke('sync-andamentos', { body: { caso_id: casoId } });
+    if (error) {
+      let m = 'Falha ao sincronizar.';
+      try { const j = await error.context.json(); if (j && j.error) m = j.error; } catch (e) {}
+      andStatus('⚠ ' + m, 'err');
+      return;
+    }
+    andStatus(
+      data && data.aviso ? 'ℹ ' + data.aviso
+        : (data && data.novos > 0 ? '✓ ' + data.novos + (data.novos === 1 ? ' novo andamento' : ' novos andamentos') : 'Tudo em dia — nenhum andamento novo.'),
+      data && data.aviso ? 'muted' : 'ok'
+    );
+    await andCarregar();
+  } catch (e) {
+    console.error('andSincronizarCaso:', e);
+    andStatus('⚠ Erro inesperado ao sincronizar.', 'err');
+  } finally {
+    if (btn && document.body.contains(btn)) { btn.disabled = false; btn.classList.remove('is-syncing'); }
+  }
+}
+
+/* sincroniza todos os processos com número CNJ válido */
+async function andSincronizarTodos() {
+  const btn = document.getElementById('and-sync-all');
+  if (typeof casosCarregar === 'function' && (typeof _casosLista === 'undefined' || !_casosLista.length)) await casosCarregar();
+  const alvos = (_casosLista || []).filter(c => c.numero_processo && c.numero_processo.replace(/\D/g, '').length === 20);
+  if (!alvos.length) { andStatus('Nenhum processo com número CNJ para sincronizar.', 'muted'); return; }
+  if (btn) { btn.disabled = true; btn.classList.add('is-syncing'); }
+  let novos = 0, erros = 0;
+  for (let i = 0; i < alvos.length; i++) {
+    andStatus('Sincronizando ' + (i + 1) + '/' + alvos.length + '…', 'muted');
+    try {
+      const { data, error } = await window._sb.functions.invoke('sync-andamentos', { body: { caso_id: alvos[i].id } });
+      if (error) erros++;
+      else if (data && data.novos) novos += data.novos;
+    } catch (e) { erros++; }
+  }
+  if (btn) { btn.disabled = false; btn.classList.remove('is-syncing'); }
+  andStatus('✓ Concluído — ' + novos + (novos === 1 ? ' novo andamento' : ' novos andamentos') + (erros ? ' · ' + erros + ' sem retorno' : ''), erros ? 'muted' : 'ok');
+  await andCarregar();
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -256,4 +397,6 @@ document.addEventListener('DOMContentLoaded', function() {
   if (busca) busca.addEventListener('input', function() { _casoFiltro = this.value; casosRender(); });
   const filtro = document.getElementById('casos-filtro-status');
   if (filtro) filtro.addEventListener('change', function() { _casoStatusFiltro = this.value; casosRender(); });
+  const andBusca = document.getElementById('and-busca');
+  if (andBusca) andBusca.addEventListener('input', function() { _andFiltro = this.value; andRender(); });
 });

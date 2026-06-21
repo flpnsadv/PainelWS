@@ -5088,14 +5088,70 @@
 .and-desc { font-size:13px; color:var(--t1); margin-top:2px; }
 
 /* Feed de andamentos */
-.and-feed { max-width:760px; }
-.and-feed-item { display:flex; gap:14px; padding:12px 0; border-bottom:1px solid var(--div); }
-.and-feed-dot { width:9px; height:9px; border-radius:50%; background:var(--a1); margin-top:6px; flex-shrink:0; }
-.and-feed-body { flex:1; min-width:0; }
-.and-feed-head { display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
-.and-feed-caso { font-size:12.5px; font-weight:700; color:var(--a1); }
-.and-feed-data { font-size:11px; color:var(--t3); white-space:nowrap; }
-.and-feed-desc { font-size:13px; color:var(--t1); margin-top:2px; }
+/* ═══ Página de Andamentos — cards por processo ═══ */
+.and-feed { max-width:880px; display:flex; flex-direction:column; gap:16px; }
+
+.and-toolbar { display:flex; align-items:center; gap:12px; max-width:880px; margin-bottom:16px; flex-wrap:wrap; }
+.and-toolbar .crud-busca { flex:1; min-width:220px; max-width:none; }
+.and-count { font-size:12px; color:var(--t3); white-space:nowrap; font-weight:600; }
+.and-sync-all { white-space:nowrap; }
+.and-sync-all.is-syncing { opacity:.7; cursor:progress; }
+.and-sync-all.is-syncing svg { animation:procSpin .8s linear infinite; }
+
+.and-status { max-height:0; overflow:hidden; opacity:0; max-width:880px; font-size:13px;
+  transition:max-height .25s var(--ease), opacity .25s var(--ease), margin .25s var(--ease), padding .25s var(--ease); }
+.and-status.show { max-height:80px; opacity:1; margin:0 0 16px; padding:11px 15px;
+  border-radius:var(--r10); background:var(--s2); border:1px solid var(--gb); }
+.and-status.st-ok  { color:var(--ok);  border-color:rgba(126,153,104,.4); }
+.and-status.st-err { color:var(--err); border-color:rgba(184,90,74,.4); background:rgba(184,90,74,.06); }
+.and-status.st-muted { color:var(--t2); }
+
+@keyframes procSpin { to { transform:rotate(360deg); } }
+
+.proc-card { background:var(--s1); border:1px solid var(--gb); border-top-color:var(--gbt);
+  border-radius:var(--r16); overflow:hidden; box-shadow:var(--rito-shadow-sm, 0 1px 2px rgba(61,38,32,.06));
+  transition:box-shadow .2s var(--ease), border-color .2s var(--ease); }
+.proc-card:hover { box-shadow:var(--rito-shadow-md, 0 4px 12px rgba(61,38,32,.08)); }
+
+.proc-card-head { display:flex; align-items:center; gap:13px; padding:15px 18px;
+  border-bottom:1px solid var(--div); cursor:pointer; transition:background .15s var(--ease); }
+.proc-card-head:hover { background:var(--s2); }
+.proc-card-avatar { width:38px; height:38px; flex-shrink:0; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Fraunces',serif; font-weight:800; font-size:16px; color:#fff;
+  background:linear-gradient(135deg, var(--a1), var(--a2)); box-shadow:inset 0 0 0 1px rgba(255,255,255,.12); }
+.proc-card-id { flex:1; min-width:0; }
+.proc-card-title { font-family:'Fraunces',serif; font-weight:700; font-size:15px; color:var(--t1);
+  letter-spacing:-.2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.proc-card-meta { font-size:11.5px; color:var(--t3); margin-top:2px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.proc-card-num { color:var(--a1); font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:.01em; }
+.proc-card-sync { flex-shrink:0; width:32px; height:32px; border-radius:var(--r8);
+  display:inline-flex; align-items:center; justify-content:center;
+  background:var(--s2); border:1px solid var(--gb); color:var(--t2); cursor:pointer;
+  transition:all .15s var(--ease); }
+.proc-card-sync:hover { background:var(--adim); border-color:var(--a1); color:var(--a1); }
+.proc-card-sync[disabled] { cursor:progress; opacity:.7; }
+.proc-card-sync.is-syncing svg { animation:procSpin .8s linear infinite; }
+
+.proc-timeline { padding:12px 18px 14px; }
+.proc-tl-item { position:relative; display:flex; gap:12px; padding:6px 0; }
+.proc-tl-item::before { content:''; position:absolute; left:4px; top:17px; bottom:-6px; width:1.5px; background:var(--div); }
+.proc-tl-item:last-child::before { display:none; }
+.proc-tl-dot { width:9px; height:9px; border-radius:50%; background:var(--t3); margin-top:5px; flex-shrink:0;
+  position:relative; z-index:1; box-shadow:0 0 0 3px var(--s1); }
+.proc-tl-dot.dot-datajud { background:var(--a1); }
+.proc-tl-dot.dot-djen { background:var(--warn, #D9A152); }
+.proc-tl-body { flex:1; min-width:0; }
+.proc-tl-desc { font-size:13px; color:var(--t1); line-height:1.4; }
+.proc-tl-date { font-size:11px; color:var(--t3); margin-top:1px; }
+
+.proc-more { margin-top:4px; }
+.proc-more > summary { list-style:none; cursor:pointer; display:inline-flex; align-items:center;
+  font-size:12px; font-weight:600; color:var(--a1); padding:6px 0 6px 21px; user-select:none; }
+.proc-more > summary::-webkit-details-marker { display:none; }
+.proc-more > summary:hover { color:var(--a2); }
+.proc-more[open] > summary { color:var(--t3); }
+.proc-more[open] > summary::after { content:' — recolher'; font-weight:400; }
 
 /* Marketing — funil */
 .mkt-stats-row { display:flex; gap:14px; margin-bottom:18px; flex-wrap:wrap; }
