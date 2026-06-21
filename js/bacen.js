@@ -138,6 +138,14 @@ async function salvarAnaliseAuto() {
 }
 
 function goToStep(n) {
+    // Ao avançar da Etapa 1, bloqueia se o CPF/CNPJ estiver preenchido e inválido
+    if (stepAtual === 1 && n > 1) {
+        const docEl = document.getElementById('cliDoc');
+        if (typeof validarCampoMascarado === 'function' && !validarCampoMascarado(docEl)) {
+            docEl.focus();
+            return;
+        }
+    }
     coletarDados(stepAtual);
     salvarAnaliseAuto();
     document.querySelectorAll('[id^="platStep"]').forEach(el => el.classList.add('hidden'));
@@ -222,7 +230,7 @@ function coletarDados(step) {
 
 function aplicarEstadoAosCampos() {
     document.getElementById('cliNome').value = estado.cliente.nome;
-    document.getElementById('cliDoc').value = estado.cliente.doc;
+    document.getElementById('cliDoc').value = (typeof maskCpfCnpj === 'function') ? maskCpfCnpj(estado.cliente.doc || '') : estado.cliente.doc;
     setRadio('cliTipo', estado.cliente.tipo);
     document.getElementById('cliVulnerab').value = estado.cliente.vulnerab;
     document.getElementById('banco').value = estado.contrato.banco;

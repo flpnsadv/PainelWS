@@ -870,7 +870,7 @@
           </div>
           <div class="plat-form-group">
             <label for="cliDoc">CPF / CNPJ <span class="hint">opcional</span></label>
-            <input type="text" id="cliDoc" placeholder="000.000.000-00" autocomplete="off">
+            <input type="text" id="cliDoc" placeholder="000.000.000-00" autocomplete="off" data-mask="cpf-cnpj" data-mask-tipo="radio:cliTipo" maxlength="18">
           </div>
           <div class="plat-form-group">
             <label>Tipo</label>
@@ -1926,11 +1926,13 @@
     <div class="plat-modal-body">
       <input type="hidden" id="cli-form-id">
       <div class="plat-form-grid">
+        <div class="plat-form-section">Identificação</div>
         <div class="plat-form-group span-2"><label for="cli-f-nome">Nome / Razão Social</label><input type="text" id="cli-f-nome" placeholder="Nome completo"></div>
         <div class="plat-form-group"><label for="cli-f-tipo">Tipo</label><select id="cli-f-tipo"><option value="PF">Pessoa Física</option><option value="PJ">Pessoa Jurídica</option></select></div>
-        <div class="plat-form-group"><label for="cli-f-doc">CPF / CNPJ</label><input type="text" id="cli-f-doc" placeholder="000.000.000-00"></div>
-        <div class="plat-form-group"><label for="cli-f-tel">Telefone / WhatsApp</label><input type="tel" id="cli-f-tel" placeholder="(00) 00000-0000"></div>
-        <div class="plat-form-group"><label for="cli-f-email">E-mail</label><input type="email" id="cli-f-email" placeholder="cliente@email.com"></div>
+        <div class="plat-form-group"><label for="cli-f-doc">CPF / CNPJ</label><input type="text" id="cli-f-doc" class="field-has-icon field-ic-doc" placeholder="000.000.000-00" data-mask="cpf-cnpj" data-mask-tipo="#cli-f-tipo" maxlength="18"></div>
+        <div class="plat-form-section">Contato</div>
+        <div class="plat-form-group"><label for="cli-f-tel">Telefone / WhatsApp</label><input type="tel" id="cli-f-tel" class="field-has-icon field-ic-tel" placeholder="(00) 00000-0000" data-mask="tel" maxlength="15"></div>
+        <div class="plat-form-group"><label for="cli-f-email">E-mail</label><input type="email" id="cli-f-email" class="field-has-icon field-ic-mail" placeholder="cliente@email.com"></div>
         <div class="plat-form-group"><label for="cli-f-origem">Origem</label><select id="cli-f-origem"><option value="">—</option><option value="indicacao">Indicação</option><option value="google">Google</option><option value="instagram">Instagram</option><option value="site">Site</option><option value="outro">Outro</option></select></div>
         <div class="plat-form-group"><label for="cli-f-status">Status</label><select id="cli-f-status"><option value="ativo">Ativo</option><option value="prospecto">Prospecto</option><option value="inativo">Inativo</option></select></div>
         <div class="plat-form-group full"><label for="cli-f-obs">Observações</label><textarea id="cli-f-obs" rows="3" style="width:100%;box-sizing:border-box"></textarea></div>
@@ -2000,12 +2002,14 @@
       <div class="plat-form-grid">
         <div class="plat-form-group span-2"><label for="caso-f-titulo">Título do caso</label><input type="text" id="caso-f-titulo" placeholder="Ex: Revisional Banco X — João"></div>
         <div class="plat-form-group"><label for="caso-f-cliente">Cliente</label><select id="caso-f-cliente"></select></div>
-        <div class="plat-form-group"><label for="caso-f-numero">Nº do processo</label><input type="text" id="caso-f-numero" placeholder="0000000-00.0000.0.00.0000"></div>
+        <div class="plat-form-section">Dados do processo</div>
+        <div class="plat-form-group"><label for="caso-f-numero">Nº do processo</label><input type="text" id="caso-f-numero" class="field-has-icon field-ic-proc" placeholder="0000000-00.0000.0.00.0000" data-mask="processo" maxlength="25"></div>
         <div class="plat-form-group"><label for="caso-f-tribunal">Tribunal</label><input type="text" id="caso-f-tribunal" placeholder="Ex: TJSC"></div>
         <div class="plat-form-group"><label for="caso-f-vara">Vara / Câmara</label><input type="text" id="caso-f-vara" placeholder="Ex: 2ª Vara Cível de Itajaí"></div>
         <div class="plat-form-group"><label for="caso-f-area">Área</label><input type="text" id="caso-f-area" placeholder="Cível, Criminal, Trabalhista…"></div>
         <div class="plat-form-group"><label for="caso-f-fase">Fase</label><input type="text" id="caso-f-fase" placeholder="Conhecimento, Recurso, Execução…"></div>
         <div class="plat-form-group"><label for="caso-f-status">Status</label><select id="caso-f-status"><option value="ativo">Ativo</option><option value="suspenso">Suspenso</option><option value="arquivado">Arquivado</option><option value="encerrado">Encerrado</option></select></div>
+        <div class="plat-form-section">Outras informações</div>
         <div class="plat-form-group"><label for="caso-f-valor">Valor da causa (R$)</label><input type="number" id="caso-f-valor" step="0.01" min="0" placeholder="0,00"></div>
         <div class="plat-form-group"><label for="caso-f-contraria">Parte contrária</label><input type="text" id="caso-f-contraria"></div>
         <div class="plat-form-group full"><label for="caso-f-obs">Observações</label><textarea id="caso-f-obs" rows="3" style="width:100%;box-sizing:border-box"></textarea></div>
@@ -2082,7 +2086,7 @@
     </div>
     <div class="plat-modal-body">
       <div class="plat-form-grid">
-        <div class="plat-form-group span-2"><label for="int-m-numero">Nº do processo</label><input type="text" id="int-m-numero"></div>
+        <div class="plat-form-group span-2"><label for="int-m-numero">Nº do processo</label><input type="text" id="int-m-numero" class="field-has-icon field-ic-proc" placeholder="0000000-00.0000.0.00.0000" data-mask="processo" maxlength="25"></div>
         <div class="plat-form-group"><label for="int-m-tribunal">Tribunal</label><input type="text" id="int-m-tribunal" placeholder="Ex: TJSC"></div>
         <div class="plat-form-group"><label for="int-m-orgao">Órgão / Vara</label><input type="text" id="int-m-orgao"></div>
         <div class="plat-form-group"><label for="int-m-data">Data de disponibilização</label><input type="date" id="int-m-data"></div>
@@ -2148,7 +2152,7 @@
       <input type="hidden" id="lead-form-id">
       <div class="plat-form-grid">
         <div class="plat-form-group span-2"><label for="lead-f-nome">Nome</label><input type="text" id="lead-f-nome"></div>
-        <div class="plat-form-group"><label for="lead-f-contato">Contato (tel/e-mail)</label><input type="text" id="lead-f-contato"></div>
+        <div class="plat-form-group"><label for="lead-f-contato">Contato (tel/e-mail)</label><input type="text" id="lead-f-contato" class="field-has-icon field-ic-tel" placeholder="(00) 00000-0000 ou e-mail" data-mask="tel-ou-email" maxlength="60"></div>
         <div class="plat-form-group"><label for="lead-f-origem">Origem</label><select id="lead-f-origem"><option value="indicacao">Indicação</option><option value="google">Google</option><option value="instagram">Instagram</option><option value="site">Site</option><option value="outro">Outro</option></select></div>
         <div class="plat-form-group"><label for="lead-f-status">Status</label><select id="lead-f-status"><option value="novo">Novo</option><option value="contato">Em contato</option><option value="proposta">Proposta enviada</option><option value="convertido">Convertido</option><option value="perdido">Perdido</option></select></div>
         <div class="plat-form-group"><label for="lead-f-valor">Valor estimado (R$)</label><input type="number" id="lead-f-valor" step="0.01" min="0"></div>
@@ -2199,6 +2203,7 @@
 
 <!-- Lógica do painel — módulos carregados em ordem de dependência -->
 <script src="js/utils.js"></script>
+<script src="js/masks.js"></script>
 <script src="js/config.js"></script>
 <script src="js/nav.js"></script>
 <script src="js/office.js"></script>

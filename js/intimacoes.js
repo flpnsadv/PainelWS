@@ -168,7 +168,9 @@ function intAbrirManual() {
 }
 
 async function intSalvarManual() {
-  const numero = document.getElementById('int-m-numero').value.trim();
+  const numEl = document.getElementById('int-m-numero');
+  if (!validarCampoMascarado(numEl)) { numEl.focus(); return; }
+  const numero = numEl.value.trim();
   const { error } = await window._sb.from('intimacoes').insert({
     office_id: officeId(),
     created_by: window._currentUser.id,

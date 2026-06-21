@@ -57,9 +57,13 @@ function cliAbrirForm(id) {
   document.getElementById('cli-form-titulo').textContent = c ? 'Editar cliente' : 'Novo cliente';
   document.getElementById('cli-f-nome').value = c ? c.nome : '';
   document.getElementById('cli-f-tipo').value = c ? c.tipo_pessoa : 'PF';
-  document.getElementById('cli-f-doc').value = c ? (c.cpf_cnpj || '') : '';
+  const docEl = document.getElementById('cli-f-doc');
+  const telEl = document.getElementById('cli-f-tel');
+  docEl.value = c ? maskCpfCnpj(c.cpf_cnpj || '') : '';
   document.getElementById('cli-f-email').value = c ? (c.email || '') : '';
-  document.getElementById('cli-f-tel').value = c ? (c.telefone || '') : '';
+  telEl.value = c ? maskTelefone(c.telefone || '') : '';
+  clearFieldError(docEl); docEl.classList.remove('is-valid');
+  clearFieldError(telEl); telEl.classList.remove('is-valid');
   document.getElementById('cli-f-origem').value = c ? (c.origem || '') : '';
   document.getElementById('cli-f-status').value = c ? c.status : 'ativo';
   document.getElementById('cli-f-obs').value = c ? (c.observacoes || '') : '';
@@ -74,6 +78,11 @@ async function cliSalvar() {
   const id = document.getElementById('cli-form-id').value;
   const nome = document.getElementById('cli-f-nome').value.trim();
   if (!nome) { alert('Informe o nome do cliente.'); return; }
+  // Validação de documento e telefone (bloqueia se inválido; vazio é permitido)
+  const docEl = document.getElementById('cli-f-doc');
+  const telEl = document.getElementById('cli-f-tel');
+  if (!validarCampoMascarado(docEl)) { docEl.focus(); return; }
+  if (!validarCampoMascarado(telEl)) { telEl.focus(); return; }
   const payload = {
     office_id: officeId(),
     nome: nome,

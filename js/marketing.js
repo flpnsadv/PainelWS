@@ -70,7 +70,9 @@ function leadAbrirForm(id) {
   document.getElementById('lead-form-id').value = l ? l.id : '';
   document.getElementById('lead-form-titulo').textContent = l ? 'Editar lead' : 'Novo lead';
   document.getElementById('lead-f-nome').value = l ? l.nome : '';
-  document.getElementById('lead-f-contato').value = l ? (l.contato || '') : '';
+  const contatoEl = document.getElementById('lead-f-contato');
+  contatoEl.value = l ? ((typeof maskTelefone === 'function' && !/[a-zA-Z@]/.test(l.contato || '')) ? maskTelefone(l.contato || '') : (l.contato || '')) : '';
+  if (typeof clearFieldError === 'function') { clearFieldError(contatoEl); contatoEl.classList.remove('is-valid'); }
   document.getElementById('lead-f-origem').value = l ? l.origem : 'indicacao';
   document.getElementById('lead-f-status').value = l ? l.status : 'novo';
   document.getElementById('lead-f-interesse').value = l ? (l.interesse || '') : '';
@@ -88,6 +90,8 @@ async function leadSalvar() {
   const id = document.getElementById('lead-form-id').value;
   const nome = document.getElementById('lead-f-nome').value.trim();
   if (!nome) { alert('Informe o nome.'); return; }
+  const contatoEl = document.getElementById('lead-f-contato');
+  if (!validarCampoMascarado(contatoEl)) { contatoEl.focus(); return; }
   const valor = parseFloat(document.getElementById('lead-f-valor').value);
   const payload = {
     office_id: officeId(),

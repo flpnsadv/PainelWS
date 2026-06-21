@@ -59,7 +59,9 @@ async function casoAbrirForm(id) {
   document.getElementById('caso-form-titulo').textContent = c ? 'Editar caso' : 'Novo caso';
   document.getElementById('caso-f-titulo').value = c ? c.titulo : '';
   sel.value = c ? (c.cliente_id || '') : '';
-  document.getElementById('caso-f-numero').value = c ? (c.numero_processo || '') : '';
+  const numEl = document.getElementById('caso-f-numero');
+  numEl.value = c ? maskProcessoCNJ(c.numero_processo || '') : '';
+  clearFieldError(numEl); numEl.classList.remove('is-valid');
   document.getElementById('caso-f-tribunal').value = c ? (c.tribunal || '') : '';
   document.getElementById('caso-f-vara').value = c ? (c.vara || '') : '';
   document.getElementById('caso-f-area').value = c ? (c.area || '') : '';
@@ -79,6 +81,8 @@ async function casoSalvar() {
   const id = document.getElementById('caso-form-id').value;
   const titulo = document.getElementById('caso-f-titulo').value.trim();
   if (!titulo) { alert('Informe o título do caso.'); return; }
+  const numEl = document.getElementById('caso-f-numero');
+  if (!validarCampoMascarado(numEl)) { numEl.focus(); return; }
   const valor = parseFloat(document.getElementById('caso-f-valor').value);
   const payload = {
     office_id: officeId(),
