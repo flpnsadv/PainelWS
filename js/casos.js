@@ -130,6 +130,12 @@ async function casoAbrir(id) {
   ].filter(p => p[1]).map(p => `<div class="caso-info-pair"><span>${p[0]}</span><strong>${escHtml(p[1])}</strong></div>`).join('') || '<div class="crud-empty" style="padding:8px;">Sem detalhes adicionais.</div>';
   document.getElementById('casoDetModal').classList.remove('hidden');
 
+  // info da última sincronização automática
+  const syncEl = document.getElementById('caso-det-sync');
+  if (syncEl) syncEl.textContent = c.ultima_sincronizacao
+    ? 'Sincronizado em ' + new Date(c.ultima_sincronizacao).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' })
+    : '';
+
   const cont = document.getElementById('caso-det-andamentos');
   cont.innerHTML = '<div class="crud-empty">Carregando…</div>';
   const { data: ands } = await window._sb
@@ -138,10 +144,57 @@ async function casoAbrir(id) {
   cont.innerHTML = (ands && ands.length)
     ? ands.map(a => `
       <div class="and-item">
-        <div class="and-data">${new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}${a.fonte === 'intimacao' ? ' · <span class="crud-badge badge-tipo" style="font-size:9px;">DJEN</span>' : ''}</div>
+        <div class="and-data">${new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}${andSeloFonte(a.fonte)}</div>
         <div class="and-desc">${escHtml(a.descricao)}</div>
       </div>`).join('')
     : '<div class="crud-empty">Nenhum andamento registrado.</div>';
+}
+
+/* Selo da fonte do andamento (DJEN / DataJud) */
+function andSeloFonte(fonte) {
+  if (fonte === 'intimacao') return ' · <span class="crud-badge badge-tipo" style="font-size:9px;">DJEN</span>';
+  if (fonte === 'datajud') return ' · <span class="crud-badge badge-tipo" style="font-size:9px;">DataJud</span>';
+  return '';
+}
+
+/* ── Sincronizar andamentos no DataJud (Edge Function) ── */
+async function casoSincronizar() {
+  if (!_casoAberto) return;
+  const btn = document.getElementById('btn-caso-sync');
+  const info = document.getElementById('caso-det-sync');
+  const txtOrig = btn ? btn.innerHTML : '';
+  if (btn) { btn.disabled = true; btn.innerHTML = 'Sincronizando…'; }
+  if (info) { info.textContent = 'Consultando o DataJud (CNJ)…'; info.style.color = ''; }
+  try {
+    const { data, error } = await window._sb.functions.invoke('sync-andamentos', { body: { caso_id: _casoAberto } });
+    if (error) {
+      // tenta extrair a mensagem amigável do corpo da resposta
+      let msg = 'Falha ao sincronizar.';
+      try { const j = await error.context.json(); if (j && j.error) msg = j.error; } catch (e) {}
+      if (info) { info.textContent = '⚠ ' + msg; info.style.color = 'var(--err)'; }
+      return;
+    }
+    // recarrega a lista (para refletir ultima_sincronizacao) e re-renderiza
+    if (typeof casosCarregar === 'function') await casosCarregar();
+    await casoAbrir(_casoAberto);
+    // mensagem final por último, pois casoAbrir reescreve o mesmo span
+    const info2 = document.getElementById('caso-det-sync');
+    if (info2) {
+      if (data && data.aviso) { info2.textContent = 'ℹ ' + data.aviso; info2.style.color = 'var(--t3)'; }
+      else if (data) {
+        info2.style.color = '';
+        info2.textContent = data.novos > 0
+          ? '✓ ' + data.novos + (data.novos === 1 ? ' novo andamento' : ' novos andamentos') + ' importado(s)'
+          : 'Tudo em dia — nenhum andamento novo.';
+      }
+    }
+  } catch (e) {
+    console.error('casoSincronizar:', e);
+    if (info) { info.textContent = '⚠ Erro inesperado ao sincronizar.'; info.style.color = 'var(--err)'; }
+  } finally {
+    const b = document.getElementById('btn-caso-sync');
+    if (b) { b.disabled = false; b.innerHTML = txtOrig; }
+  }
 }
 
 function casoFecharDet() {
@@ -190,7 +243,7 @@ async function andCarregar() {
         <div class="and-feed-body">
           <div class="and-feed-head">
             <span class="and-feed-caso">${escHtml(a.casos ? a.casos.titulo : 'Caso removido')}</span>
-            <span class="and-feed-data">${new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}${a.fonte === 'intimacao' ? ' · DJEN' : ''}</span>
+            <span class="and-feed-data">${new Date(a.data + 'T12:00:00').toLocaleDateString('pt-BR')}${a.fonte === 'intimacao' ? ' · DJEN' : (a.fonte === 'datajud' ? ' · DataJud' : '')}</span>
           </div>
           <div class="and-feed-desc">${escHtml(a.descricao)}</div>
         </div>
