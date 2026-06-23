@@ -178,7 +178,10 @@ window._currentUser = null;
     var result = await sb.auth.signUp({
       email: email,
       password: senha,
-      options: { data: { nome: nome, whatsapp: whatsapp } }
+      options: {
+        data: { nome: nome, whatsapp: whatsapp },
+        emailRedirectTo: window.location.origin + window.location.pathname
+      }
     });
 
     btn.disabled = false;
