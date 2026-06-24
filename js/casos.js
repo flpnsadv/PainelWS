@@ -289,7 +289,7 @@ function andRender() {
   }
 
   const fmtData = d => new Date(d + 'T12:00:00').toLocaleDateString('pt-BR');
-  const MAX = 5;
+  const MAX = 3;
 
   const itemHtml = a => `
     <div class="proc-tl-item">

@@ -5006,6 +5006,12 @@
 
 /* Linhas de lista */
 .crud-list { display:flex; flex-direction:column; gap:8px; }
+
+/* Grade de cards compactos (clientes, casos, tarefas) — otimiza o espaço da tela */
+.crud-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(290px, 1fr)); gap:10px; align-items:start; }
+.crud-grid > * { min-width:0; }   /* respeita a largura da coluna (deixa o texto truncar) */
+.crud-grid .crud-row, .crud-grid .tar-row { padding:11px 13px; gap:10px; }
+.crud-grid .crud-arrow { display:none; }
 .crud-row, .tar-row, .int-row, .int-djen-item {
   display:flex; align-items:center; gap:12px;
   background:var(--bg2); border:1px solid var(--gb); border-radius:var(--r12);
@@ -5089,7 +5095,8 @@
 
 /* Feed de andamentos */
 /* ═══ Página de Andamentos — cards por processo ═══ */
-.and-feed { max-width:880px; display:flex; flex-direction:column; gap:16px; }
+.and-feed { display:grid; grid-template-columns:repeat(auto-fill, minmax(390px, 1fr)); gap:14px; align-items:start; }
+.and-feed > * { min-width:0; }
 
 .and-toolbar { display:flex; align-items:center; gap:12px; max-width:880px; margin-bottom:16px; flex-wrap:wrap; }
 .and-toolbar .crud-busca { flex:1; min-width:220px; max-width:none; }
@@ -5218,6 +5225,12 @@
   .crud-busca { max-width:none; }
   .mkt-conv-card { width:100%; }
   .tar-right { flex-direction:column; align-items:flex-end; gap:4px; }
+  /* No celular, os cards compactos ocupam a largura toda (uma coluna) */
+  .crud-grid { grid-template-columns:1fr; gap:8px; }
+  .and-feed { grid-template-columns:1fr; gap:12px; }
+  .proc-card-head { padding:13px 14px; gap:11px; }
+  .proc-card-avatar { width:34px; height:34px; font-size:15px; }
+  .proc-timeline { padding:10px 14px 12px; }
 }
 
 
